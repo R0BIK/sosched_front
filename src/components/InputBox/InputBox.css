@@ -1,0 +1,97 @@
+.InputBox {
+    display: flex;
+    flex-direction: column;
+    width: 340px;
+    position: relative;
+
+    &:focus-within .label,
+    .input:not(:placeholder-shown) + .label {
+        bottom: 38px;
+        color: var(--accent-color);
+    }
+
+    &:focus-within .underline::after {
+        transform: translate(0, 50%) scaleX(1);
+    }
+}
+
+.clearInput {
+    position: absolute;
+    background-color: transparent;
+    border: none;
+    top: 13px;
+    left: 320px;
+    visibility: hidden;
+    transition: visibility 0.4s ease-in-out;
+
+    & svg {
+        height: 15px;
+        width: 100%;
+        rotate: -45deg;
+        fill: transparent;
+        transition: rotate 0.4s ease-in-out, fill 0.3s ease-in-out;
+    }
+
+    &:active svg {
+        fill: var(--main-black-color);
+        transition: fill 0.2s ease-in-out;
+    }
+
+}
+
+.input {
+    height: 40px;
+    width: 100%;
+    font-size: 14px;
+    border: none;
+    padding: 0 25px 0 3px;
+    outline: none;
+    color: var(--main-black-color);
+    background-color: transparent;
+
+    &:not(:placeholder-shown) ~ .clearInput svg {
+        rotate: 0deg;
+        fill: var(--second-color);
+        transition: rotate 0.4s ease-in-out, fill 0.3s ease-in-out;
+    }
+
+    &:not(:placeholder-shown) ~ .clearInput {
+        visibility: visible;
+    }
+}
+
+.errorText {
+    position: absolute;
+    color: var(--error-color);
+    top: 50px;
+    left: 3px;
+    font-size: 14px;
+}
+
+.label {
+    position: absolute;
+    color: var(--second-color);
+    bottom: 14px;
+    left: 3px;
+    font-size: 14px;
+    pointer-events: none;
+    transition: bottom 0.4s ease-in-out;
+}
+
+.underline {
+    height: 2px;
+    width: 100%;
+    background-color: var(--second-color);
+    border-radius: 40px;
+
+    &::after {
+        content: "";
+        height: 2px;
+        width: 100%;
+        bottom: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        position: absolute;
+        transform: translate(0, 50%) scaleX(0);
+        transition: transform, color 0.4s ease-in-out;
+    }
+}
