@@ -1,12 +1,22 @@
 import PropTypes from 'prop-types';
 
 import './InputBox.css'
+import {useSessionStorage} from "../../hooks/SignFormHooks.jsx";
+import { CrossIcon, FalseIcon, TrueIcon } from "../../img/svg/Icons.jsx";
+import {useRef} from "react";
 
-export default function InputBox({ name, placeholder, type, autoComplete, onChange, value, onBlur, errorText, ref, onKeyDown, onClick }) {
+export default function InputBox({ name, placeholder, type, autoComplete, onBlur, errorText, ref, onKeyDown, isSaving, formName }) {
+    const containerRef = useRef(null);
 
+    const { values, handleChange } = useSessionStorage(formName, name, isSaving);
+
+    const onCLick = () => {
+        handleChange({ target: {name, value: "" }})
+        onBlur({ target: {name, value: ""} });
+    }
 
     return (
-      <div className="InputBox">
+      <div ref={ containerRef } className="InputBox" data-filled={ !!values } id={ name }>
           <input
               className='input'
               id={ name }
@@ -14,20 +24,33 @@ export default function InputBox({ name, placeholder, type, autoComplete, onChan
               type={ type }
               autoComplete={ autoComplete }
               placeholder=""
-              value={ value }
-              onChange={ onChange }
+              value={ values }
+              onChange={ handleChange }
               onBlur={ onBlur }
               ref={ ref }
               onKeyDown={ onKeyDown }
+              data-filled={ values !== '' }
           required />
           <label className='label' htmlFor={ autoComplete } >{ placeholder }</label>
           <span className="underline"/>
-          <p className="errorText">{ errorText }</p>
-          <button className="clearInput" tabIndex={ -1 } onClick={ onClick }>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 2200">
-                  <path d="M2143 57c-76-76-199.24-76-275.24 0L1100 824.76 332.24 57C256.24-19 133-19 57 57c-76 76.01-76 199.24 0 275.24L824.76 1100 57 1867.75c-76 76.01-76 199.23 0 275.24 38.01 38.01 87.8 57 137.62 57s99.62-19.01 137.62-57L1100 1375.23l767.76 767.76c38 38 87.81 57 137.62 57s99.62-19 137.62-57c76-76.01 76-199.23 0-275.24l-767.76-767.76L2143 332.23c76-76 76-199.23 0-275.24Z"/>
-              </svg>
+          <p className="errorText" data-filled={ !!errorText }>{ errorText }</p>
+          <button type="button"
+                  className="clearInput"
+                  tabIndex={ -1 }
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={ (e) => onCLick(e) }
+          >
+              <CrossIcon />
           </button>
+
+          {(name === 'newPassword') && (
+              <ul className="passwordCheck">
+                  <li className={/[A-Z]/.test(values) ? 'valid' : ''}>{<TrueIcon className="trueIcon"/>}{<FalseIcon className="falseIcon"/>}At least one uppercase letter</li>
+                  <li className={/[a-z]/.test(values) ? 'valid' : ''}>{<TrueIcon className="trueIcon"/>}{<FalseIcon className="falseIcon"/>}At least one lowercase letter</li>
+                  <li className={/\d/.test(values) ? 'valid' : ''}>{<TrueIcon className="trueIcon"/>}{<FalseIcon className="falseIcon"/>}At least one number</li>
+                  <li className={/.{8,}/.test(values) ? 'valid' : ''}>{<TrueIcon className="trueIcon"/>}{<FalseIcon className="falseIcon"/>}At least 8 characters</li>
+              </ul>
+          )}
       </div>
     )
 }
@@ -37,11 +60,10 @@ InputBox.propTypes = {
     placeholder: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     autoComplete: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
     errorText: PropTypes.string.isRequired,
+    formName: PropTypes.string.isRequired,
+    isSaving: PropTypes.bool.isRequired,
     ref: PropTypes.object.isRequired,
-    onChange: PropTypes.func.isRequired,
     onBlur: PropTypes.func.isRequired,
-    onClick: PropTypes.func.isRequired,
     onKeyDown: PropTypes.func.isRequired,
 };

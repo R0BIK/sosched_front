@@ -7,6 +7,10 @@ import { SignIn, SignUp, Default } from './pages'
 
 const router = createBrowserRouter([
     {
+        path: '/',
+        element: <SignIn />
+    },
+    {
         path: '/SignIn',
         element: <SignIn />
     },

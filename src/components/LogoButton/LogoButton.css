@@ -12,9 +12,9 @@
     font-size: 20px;
     font-weight: bold;
     outline: 2px solid var(--second-color);
-    transition: outline, box-shadow 0.3s ease-in-out;
+    transition: box-shadow 0.3s ease-in-out, scale 0.3s ease-in-out;
 
-    & img {
+    & svg {
         position: absolute;
         left: 15px;
         height: 30px;
@@ -28,5 +28,10 @@
     &:focus {
         box-shadow: 0 2px 10px var(--black-shadow);
         outline: none;
+    }
+
+    &:active,
+    &.isActive {
+        scale: 1.05;
     }
 }

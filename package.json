@@ -26,7 +26,6 @@
     "globals": "^15.14.0",
     "prop-types": "^15.8.1",
     "vite": "^6.1.0",
-    "vite-plugin-mkcert": "^1.17.8",
-    "vite-plugin-svgr": "^4.3.0"
+    "vite-plugin-mkcert": "^1.17.8"
   }
 }

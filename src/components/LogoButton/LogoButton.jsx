@@ -1,16 +1,20 @@
 import './LogoButton.css';
 import PropTypes from 'prop-types';
+import { useKeyDownEnterHandler } from "../../hooks/KeyDownHooks.jsx";
 
-export default function LogoButton ( { children, logo } ) {
+export default function LogoButton ( { children, Logo } ) {
+    const { handleEnterSubmit } = useKeyDownEnterHandler();
+
     return (
-        <button className="logoButton">
-            <img src={ logo } alt={ logo } />
+        <button className="logoButton"
+        onKeyDown={ handleEnterSubmit }>
+            { Logo }
             { children }
         </button>
     )
 }
 
 LogoButton.propTypes = {
-    logo: PropTypes.string,
+    Logo: PropTypes.element.isRequired,
     children: PropTypes.string.isRequired
 };

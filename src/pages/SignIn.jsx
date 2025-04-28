@@ -1,60 +1,46 @@
-import {Link, useNavigate} from "react-router-dom";
-import { useSessionStForm, useValidateForm } from "../hooks/Hooks.jsx";
+import { Link, useNavigate } from "react-router-dom";
+import { useValidateForm } from "../hooks/SignFormHooks.jsx";
+import { useRef } from 'react';
+
 
 import Header from '../components/Header/Header.jsx'
 import InputBox from '../components/InputBox/InputBox.jsx'
 import HoverButton from "../components/HoverButton/HoverButton.jsx";
 import LogoButton from "../components/LogoButton/LogoButton.jsx";
+import {GitHubLogo, GoogleLogo} from "../img/svg/Icons.jsx";
 
-import GoogleLogo from "../img/Google_logo.svg";
-import GitHubLogo from "../img/GitHub_logo.svg";
-
-import { SignForm } from "../../data.js";
+import { SignFormData, SignFormNames } from "../../data.js";
 
 import './css/SignForm.css'
-import {useRef} from "react";
+import {useKeyDownEnterHandler} from "../hooks/KeyDownHooks.jsx";
 
 
 export default function SignIn() {
-    const navigate = useNavigate();
     const formFields = ['Email', 'Password'];
 
-    const { errors, validateField, handleSubmit } = useValidateForm();
-
+    const navigate = useNavigate();
     const inputRefs = useRef([]);
     const buttonRef = useRef(null);
-
-    const { values, handleChange } = useSessionStForm(
-        'signInForm',
-        { email: '', password: '' },
-        [SignForm.Password.name]
-    );
+    const { errors, inputOnBlur, handleSubmit } = useValidateForm( { inputRefs, formFields } );
+    const { handleEnterAsTab }  = useKeyDownEnterHandler();
 
     const onSubmit = (e) => {
-        const isValid = handleSubmit(e, values);
-        console.log(isValid)
+        const newErrors = handleSubmit(e);
+        if (Object.values(newErrors).every(error => error === '')) {
+            sessionStorage.removeItem(SignFormNames.SignUp.name);
+            e.target.reset();
+            navigate('/Default');
+        } else {
+            const firstErrorKey = Object.keys(newErrors).find(key => newErrors[key]);
 
-        if (isValid) {
-            navigate('/Default')
-        }
-    }
-
-    const handleKeyDown = (e, index) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-
-            if (index < formFields.length - 1) {
-                inputRefs.current[index + 1].focus();
-            } else {
-                document.activeElement.blur();
-                buttonRef.current?.classList.add('isActive');
-                setTimeout(() => {
-                    buttonRef.current?.classList.remove('isActive');
-                    buttonRef.current?.click();
-                }, 250);
+            if (firstErrorKey) {
+                const index = formFields.findIndex(field => SignFormData[field].name === firstErrorKey);
+                if (index !== -1 && inputRefs.current[index]) {
+                    inputRefs.current[index].focus();
+                }
             }
         }
-    };
+    }
 
     return (
     <>
@@ -63,38 +49,41 @@ export default function SignIn() {
             <div className="panel">
                 <h1>Sign In</h1>
 
-                <form name="sign-in-form" method="POST" noValidate onSubmit={ onSubmit }>
+                <form name={ SignFormNames.SignIn.name } method="POST" noValidate onSubmit={ onSubmit }>
                     {formFields.map((fieldKey, index) => {
-                        const form = SignForm[fieldKey];
+                        const form = SignFormData[fieldKey];
                         return (
                             <InputBox key={form.placeholder}
+                                      className="InputBox"
                                       placeholder={form.placeholder}
                                       type={form.type}
                                       autoComplete={form.autoComplete}
                                       name={form.name}
-                                      onChange={handleChange}
-                                      value={values[form.name] || ''}
-                                      onBlur={(e) => validateField(e.target.name, e.target.value) }
+                                      onBlur={(e) => inputOnBlur(e.target.name, e.target.value) }
                                       errorText={errors[form.name]}
-                                      onKeyDown={(e) => handleKeyDown(e, index)}
+                                      onKeyDown={(e) => handleEnterAsTab({e, index, inputRefs, formFields, buttonRef})}
                                       ref={(el) => (inputRefs.current[index] = el)}
+                                      isSaving={ form.isSaving }
+                                      formName={ SignFormNames.SignUp.name }
                             />
                         );
                     })}
 
-                    <HoverButton type="submit" ref={ buttonRef }>Sign In</HoverButton>
+                    <HoverButton type="submit" ref={ buttonRef }>{ SignFormNames.SignIn.text }</HoverButton>
                 </form>
 
+                <Link className={"forgotPassword"} to="/SignUp">Forgot password?</Link>
+
                 <p className="alternative">Don&apos;t have an account?
-                    {" "}<Link to="/SignUp">Sign Up</Link>.
+                    {" "}<Link to="/SignUp">{ SignFormNames.SignUp.text }</Link>.
                 </p>
 
                 <div className="separator">
                     <span>or</span>
                 </div>
 
-                <LogoButton logo={ GoogleLogo }>Sign in with Google</LogoButton>
-                <LogoButton logo={ GitHubLogo }>Sign in with GitHub</LogoButton>
+                <LogoButton Logo={ <GoogleLogo /> }>Sign in with Google</LogoButton>
+                <LogoButton Logo={ <GitHubLogo /> }>Sign in with GitHub</LogoButton>
             </div>
         </div>
     </>

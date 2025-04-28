@@ -8,13 +8,15 @@
   --main-white-color: #f0f0f0;
   --main-black-color: #141414;
   --second-color: #bdbdbd;
-  --error-color: #ff5e5e;
+  --green-true-color: #44aa55;
+  --red-false-color: #c62c2c;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 

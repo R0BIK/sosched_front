@@ -8,7 +8,13 @@
     font-size: 20px;
     font-weight: bold;
     outline: none;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     transition: box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    touch-action: manipulation;
 
     &:hover {
         box-shadow: 0 0 25px rgba(var(--accent-color-rgb), 0.7);
@@ -23,3 +29,4 @@
         background-color: rgba(var(--accent-color-rgb), 0.8);
     }
 }
+
