@@ -1,19 +1,19 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useValidateForm } from "../../hooks/SignFormHooks.jsx";
-import { useKeyDownEnterHandler } from "../../hooks/KeyDownHooks.jsx";
+import { useValidateForm } from "../../../hooks/SignFormHooks.jsx";
+import { useKeyDownEnterHandler } from "../../../hooks/KeyDownHooks.jsx";
 import { useRef } from 'react';
 
-import InputBox from '../../components/InputBox/InputBox.jsx'
-import HoverButton from "../../components/HoverButton/HoverButton.jsx";
-import LogoButton from "../../components/LogoButton/LogoButton.jsx";
-import { GitHubLogo, GoogleLogo } from "../../img/svg/Icons.jsx";
+import InputBox from '../../InputBox/InputBox.jsx'
+import HoverButton from "../../HoverButton/HoverButton.jsx";
+import LogoButton from "../../LogoButton/LogoButton.jsx";
+import { GitHubLogo, GoogleLogo } from "../../../img/svg/Icons.jsx";
 
-import { SignFormData, SignFormNames } from "../../../data.js";
-
-import './css/SignForm.css'
+import { SignFormData } from "../../../../data.js";
 import PropTypes from "prop-types";
 
-export default function SignForm(props = {}) {
+import './SignFormPanel.css'
+
+export default function SignFormPanel(props = {}) {
     const {
         type,
         formFields,
@@ -35,7 +35,7 @@ export default function SignForm(props = {}) {
             const firstErrorKey = Object.keys(newErrors).find(key => newErrors[key]);
 
             if (firstErrorKey) {
-                const index = formFields.findIndex(field => SignFormData[field].name === firstErrorKey);
+                const index = formFields.findIndex(field => SignFormData.Fields[field].name === firstErrorKey);
                 if (index !== -1 && inputRefs.current[index]) {
                     inputRefs.current[index].focus();
                 }
@@ -45,11 +45,11 @@ export default function SignForm(props = {}) {
 
     return (
         <div className="panel">
-            <h1>Sign Up</h1>
+            <h1>{ SignFormData.Main[type].text }</h1>
 
-            <form name={ SignFormNames.SignUp.name } method="POST" noValidate onSubmit={ onSubmit }>
+            <form name={ SignFormData.Main[type].name } method="POST" noValidate onSubmit={ onSubmit }>
                 {formFields.map((fieldKey, index) => {
-                    const form = SignFormData[fieldKey];
+                    const form = SignFormData.Fields[fieldKey];
                     return (
                         <InputBox key={form.placeholder}
                                   className="InputBox"
@@ -62,29 +62,29 @@ export default function SignForm(props = {}) {
                                   onKeyDown={(e) => handleEnterAsTab({e, index, inputRefs, formFields, buttonRef})}
                                   ref={(el) => (inputRefs.current[index] = el)}
                                   isSaving={ form.isSaving }
-                                  formName={ SignFormNames.SignUp.name }
+                                  formName={ SignFormData.Main[type].name }
                         />
                     );
                 })}
 
-                <HoverButton type="submit" ref={ buttonRef } style={{marginTop: '60px'}}>{ SignFormNames.SignUp.text }</HoverButton>
+                <HoverButton type="submit" ref={ buttonRef } style={{marginTop: '60px'}}>{ SignFormData.Main[type].text }</HoverButton>
             </form>
 
             <p className="alternative">Already have an account?
-                {" "}<Link to="/SignIn">{ SignFormNames.SignIn.text }</Link>.
+                {" "}<Link to={ SignFormData.Main[type].alternativeLink }>{ SignFormData.Main[type].alternative }</Link>.
             </p>
 
             <div className="separator">
                 <span>or</span>
             </div>
 
-            <LogoButton Logo={ <GoogleLogo /> }>Sign up with Google</LogoButton>
-            <LogoButton Logo={ <GitHubLogo /> }>Sign up with GitHub</LogoButton>
+            <LogoButton Logo={ <GoogleLogo /> }>{SignFormData.Main[type].text} with Google</LogoButton>
+            <LogoButton Logo={ <GitHubLogo /> }>{SignFormData.Main[type].text} with GitHub</LogoButton>
         </div>
     )
 }
 
-SignForm.propTypes = {
+SignFormPanel.propTypes = {
     formFields: PropTypes.array.isRequired,
     type: PropTypes.string.isRequired,
 };

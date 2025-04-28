@@ -1,22 +1,32 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
+
+import { Default } from './pages/index.js'
+import { NewSignIn, NewSignUp } from './components/SignFormContent'
+import AuthPage from "./pages/AuthPage.jsx";
+
 import './index.css'
-import { SignIn, SignUp, Default } from './pages'
 
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <SignIn />
-    },
-    {
-        path: '/SignIn',
-        element: <SignIn />
-    },
-    {
-        path: '/SignUp',
-        element: <SignUp />
+        element: <AuthPage />,
+        children: [
+            {
+                index: true,
+                element: <NewSignIn />
+            },
+            {
+                path: 'SignUp',
+                element: <NewSignUp />
+            },
+            {
+                path: 'SignIn',
+                element: <NewSignIn />
+            }
+        ]
     },
     {
         path: '/Default',
