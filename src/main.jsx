@@ -3,8 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 
 import { Default } from './pages/index.js'
-import { NewSignIn, NewSignUp } from './components/SignFormContent'
 import AuthPage from "./pages/AuthPage.jsx";
+import AuthPanel from "./components/AuthPanel.jsx";
+
+import "./i18n/i18n.js";
 
 import './index.css'
 
@@ -16,15 +18,15 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <NewSignIn />
+                element: <AuthPanel type={"SignIn"} />
             },
             {
                 path: 'SignUp',
-                element: <NewSignUp />
+                element: <AuthPanel type={"SignUp"} />
             },
             {
                 path: 'SignIn',
-                element: <NewSignIn />
+                element: <AuthPanel type={"SignIn"} />
             }
         ]
     },

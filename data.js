@@ -1,8 +1,8 @@
-export const SignFormData = {
+export const getSignFormData = (t) => ({
     Fields: {
         Name: {
             name: 'name',
-            placeholder: 'Name',
+            placeholder: t('auth:fields:name'),
             type: 'text',
             autoComplete: 'given-name',
             isSaving: true,
@@ -10,7 +10,7 @@ export const SignFormData = {
 
         LastName: {
             name: 'lastName',
-            placeholder: 'Last Name',
+            placeholder: t('auth:fields:lastName'),
             type: 'text',
             autoComplete: 'family-name',
             isSaving: true,
@@ -18,7 +18,7 @@ export const SignFormData = {
 
         Email: {
             name: 'email',
-            placeholder: 'E-mail',
+            placeholder: t('auth:fields:email'),
             type: 'email',
             autoComplete: 'email',
             isSaving: true,
@@ -26,15 +26,15 @@ export const SignFormData = {
 
         Password: {
             name: 'password',
-            placeholder: 'Password',
+            placeholder: t('auth:fields:password'),
             type: 'Password',
-            autoComplete: 'password',
+            autoComplete: 'current-password',
             isSaving: false,
         },
 
         NewPassword: {
             name: 'newPassword',
-            placeholder: 'Password',
+            placeholder: t('auth:fields:password'),
             type: 'Password',
             autoComplete: 'new-password',
             isSaving: false,
@@ -44,17 +44,22 @@ export const SignFormData = {
     Main: {
         SignUp: {
             name: "sign-up-form",
-            text: "Sign up",
-            alternative: "Sign In",
+            title: t('auth:signUp:title'),
+            button: t('auth:signUp:button'),
+            alternativeText: t('auth:signUp:alternative'),
+            alternative: t('auth:signIn:button'),
             alternativeLink: "/SignIn",
+            additional: t('auth:signUp:additional'),
             fields: ['Name', 'LastName', 'Email', 'NewPassword'],
         },
         SignIn: {
             name: "sign-in-form",
-            text: "Sign in",
-            alternative: "Sign Up",
+            title: t('auth:signIn:title'),
+            button: t('auth:signIn:button'),
+            alternativeText: t('auth:signIn:alternative'),
+            alternative: t('auth:signUp:button'),
             alternativeLink: "/SignUp",
-            additional: "Forgot password?",
+            additional: t('auth:signIn:additional'),
             fields: ['Email', 'Password'],
         },
     },
@@ -64,73 +69,9 @@ export const SignFormData = {
         LastName: "Only letters and '-' are allowed.",
         Email: "Only letters and '-' in name",
         Password: "Only letters and '-' are allowed.",
-        NewPassword: "Only letters and '-' are allowed.",
+        NewPassword: " ",
     },
-
-    Name: {
-        name: 'name',
-        placeholder: 'Name',
-        type: 'text',
-        autoComplete: 'given-name',
-        isSaving: true,
-    },
-
-    LastName: {
-        name: 'lastName',
-        placeholder: 'Last Name',
-        type: 'text',
-        autoComplete: 'family-name',
-        isSaving: true,
-    },
-
-    Email: {
-        name: 'email',
-        placeholder: 'E-mail',
-        type: 'email',
-        autoComplete: 'email',
-        isSaving: true,
-    },
-
-    Password: {
-        name: 'password',
-        placeholder: 'Password',
-        type: 'Password',
-        autoComplete: 'password',
-        isSaving: false,
-    },
-
-    NewPassword: {
-        name: 'newPassword',
-        placeholder: 'Password',
-        type: 'Password',
-        autoComplete: 'new-password',
-        isSaving: false,
-    },
-}
-
-export const Errors = {
-    SignFormErrors: {
-        Name: "Only letters and '-' are allowed.",
-        LastName: "Only letters and '-' are allowed.",
-        Email: "Only letters and '-' in name",
-        Password: "Only letters and '-' are allowed.",
-        NewPassword: "Only letters and '-' are allowed.",
-    }
-}
-
-export const SignFormNames = {
-    SignUp: {
-        name: "sign-up-form",
-        text: "Sign up",
-        alternative: "Sign In",
-    },
-    SignIn: {
-        name: "sign-in-form",
-        text: "Sign in",
-        alternative: "Sign Up",
-        additional: "Forgot password?",
-    },
-}
+})
 
 export const Special = {
     String: {

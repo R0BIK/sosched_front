@@ -1,16 +1,29 @@
 import PropTypes from "prop-types";
 
-export function CrossIcon() {
+export function CrossIcon({className}) {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 2200">
+        <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 2200">
             <path d="M2143 57c-76-76-199.24-76-275.24 0L1100 824.76 332.24 57C256.24-19 133-19 57 57c-76 76.01-76 199.24 0 275.24L824.76 1100 57 1867.75c-76 76.01-76 199.23 0 275.24 38.01 38.01 87.8 57 137.62 57s99.62-19.01 137.62-57L1100 1375.23l767.76 767.76c38 38 87.81 57 137.62 57s99.62-19 137.62-57c76-76.01 76-199.23 0-275.24l-767.76-767.76L2143 332.23c76-76 76-199.23 0-275.24Z"/>
         </svg>
     )
 }
 
-export function GoogleLogo() {
+export function CheckMarkIcon({className}) {
     return (
         <svg
+            className={className}
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 26 26"
+        >
+            <path d="m22.566 4.73-1.793-1.218a1.09 1.09 0 0 0-1.507.285l-8.79 12.96-4.039-4.038a1.085 1.085 0 0 0-1.53 0L3.37 14.254a1.09 1.09 0 0 0 0 1.535L9.582 22c.348.348.895.613 1.387.613s.988-.308 1.308-.773L22.855 6.234a1.08 1.08 0 0 0-.289-1.504"></path>
+        </svg>
+    )
+}
+
+export function GoogleLogo({className}) {
+    return (
+        <svg
+            className={className}
             xmlns="http://www.w3.org/2000/svg"
             xmlSpace="preserve"
             id="Слой_1"
@@ -40,9 +53,10 @@ export function GoogleLogo() {
     )
 }
 
-export function GitHubLogo() {
+export function GitHubLogo({className}) {
     return (
         <svg
+            className={className}
             xmlns="http://www.w3.org/2000/svg"
             xmlSpace="preserve"
             id="Слой_1"
@@ -91,10 +105,31 @@ export function FalseIcon({  className }) {
     )
 }
 
-TrueIcon.propTypes = {
-    className: PropTypes.string.isRequired
+export function SelectorIcon({className}) {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className={ className}
+            viewBox="0 0 629.61 407.19"
+        >
+            <path
+                fill="#323232"
+                d="M574.64 407.19c-15.69 0-31.26-6.67-42.14-19.63L314.81 128.37 97.12 387.56c-19.54 23.26-54.23 26.28-77.49 6.74s-26.28-54.23-6.74-77.49l242.39-288.6C270.34 10.28 292.03 0 314.81 0c22.77 0 44.47 10.28 59.53 28.22l242.39 288.6c19.54 23.26 16.52 57.95-6.74 77.49a54.78 54.78 0 0 1-35.35 12.89Z"
+            ></path>
+        </svg>
+    )
+}
+
+const iconPropTypes = {
+    className: PropTypes.string.isRequired,
 };
 
-FalseIcon.propTypes = {
-    className: PropTypes.string.isRequired
-};
+TrueIcon.propTypes = iconPropTypes;
+FalseIcon.propTypes = iconPropTypes;
+GitHubLogo.propTypes = iconPropTypes;
+GoogleLogo.propTypes = iconPropTypes;
+CrossIcon.propTypes = iconPropTypes;
+CheckMarkIcon.propTypes = iconPropTypes;
+SelectorIcon.propTypes = iconPropTypes;
+
+

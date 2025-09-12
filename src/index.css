@@ -1,13 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-family: "SF Compact Display", sans-serif;
   background-color: var(--main-white-color);
   color: var(--main-black-color);
-  --black-shadow: rgba(0, 0, 0, 0.4);
+  --black-shadow: rgba(11, 18, 21, 0.4);
   --accent-color: #023488;
   --accent-color-rgb: 2, 52, 136;
-  --main-white-color: #f0f0f0;
-  --main-black-color: #141414;
-  --second-color: #bdbdbd;
+  --main-white-color: #FAF9F6;
+  --main-black-color: #0B1215;
+  --second-text-color: rgba(11, 18, 21, 0.30);
   --green-true-color: #44aa55;
   --red-false-color: #c62c2c;
 }
@@ -17,6 +21,15 @@
   padding: 0;
   box-sizing: border-box;
   scroll-behavior: smooth;
+
+  & button {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    touch-action: manipulation;
+    cursor: pointer;
+  }
 }
 
 

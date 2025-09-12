@@ -1,6 +1,7 @@
-import {useState, useEffect, useCallback, useRef} from 'react';
-import {Errors, SignFormData } from "../../data.js";
+import { useState, useEffect, useCallback } from 'react';
+import { getSignFormData } from "../../data.js";
 import { SignFormCheck } from '../Regex/regexPatterns.js'
+import { useTranslation } from "react-i18next";
 
 export function useSessionStorage(groupKey, valueKey, isSaving, initialValue="") {
     const [values, setValue] = useState(() => {
@@ -36,35 +37,37 @@ export function useValidateForm( props = {} ) {
         formFields
     } = props;
 
+    const { t } = useTranslation();
+    const SignFormData = getSignFormData(t);
+
     const [errors, setErrors] = useState(initialErrors);
-    const isValid = useRef(false);
 
     const validateField = useCallback((name, value) => {
         let error = "";
         let isError = false;
 
-        Object.entries(SignFormData).forEach(([key, values]) => {
+        Object.entries(SignFormData.Fields).forEach(([key, values]) => {
             if (name === values.name && value) {
                 if (!SignFormCheck[key]?.test(value.trim())) {
-                    error = Errors.SignFormErrors[key];
+                    error = SignFormData.Errors[key];
                     isError = true;
                 }
             }
         })
 
         return { error, isError };
-    }, [])
+    }, [SignFormData.Errors, SignFormData.Fields])
 
     const activateError = useCallback((name, isError) => {
         formFields.forEach((fieldKey, index) => {
-            if (SignFormData[fieldKey].name === name) {
+            if (SignFormData.Fields[fieldKey].name === name) {
                 const input = inputRefs.current[index];
 
                 if (isError) input.classList.add('error');
                 else input.classList.remove('error');
             }
         });
-    }, [formFields, inputRefs])
+    }, [SignFormData.Fields, formFields, inputRefs])
 
     const inputOnBlur = useCallback((name, value) => {
         const { error, isError } = validateField(name, value);
@@ -83,7 +86,6 @@ export function useValidateForm( props = {} ) {
             const inputElement = inputRefs.current[index];
             if (inputElement) {
                 if (!inputElement.value.trim()) {
-                    isValid.current = false;
                     newErrors[inputElement.name] = "Field is empty";
                     activateError(inputElement.name, true);
                 } else {
@@ -95,7 +97,6 @@ export function useValidateForm( props = {} ) {
         });
 
         setErrors(newErrors);
-        isValid.current = (Object.values(newErrors).every(error => error === ''));
 
         return newErrors;
     }, [formFields, inputRefs, validateField, activateError])
