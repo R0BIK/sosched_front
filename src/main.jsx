@@ -5,10 +5,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Default } from './pages/index.js'
 import AuthPage from "./pages/AuthPage.jsx";
 import AuthPanel from "./components/AuthPanel.jsx";
+import Space from "./pages/Space.jsx";
 
 import "./i18n/i18n.js";
 
 import './index.css'
+
 
 
 const router = createBrowserRouter([
@@ -33,6 +35,10 @@ const router = createBrowserRouter([
     {
         path: '/Default',
         element: <Default />
+    },
+    {
+        path: '/Space',
+        element: <Space />
     }
 ])
 

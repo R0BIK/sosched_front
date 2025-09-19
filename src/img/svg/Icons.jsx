@@ -109,7 +109,7 @@ export function SelectorIcon({className}) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
-            className={ className}
+            className={ className }
             viewBox="0 0 629.61 407.19"
         >
             <path
@@ -121,7 +121,7 @@ export function SelectorIcon({className}) {
 }
 
 const iconPropTypes = {
-    className: PropTypes.string.isRequired,
+    className: PropTypes.string,
 };
 
 TrueIcon.propTypes = iconPropTypes;
