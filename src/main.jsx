@@ -5,13 +5,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Default } from './pages/index.js'
 import AuthPage from "./pages/AuthPage.jsx";
 import AuthPanel from "./components/AuthPanel.jsx";
-import Space from "./pages/Space.jsx";
+import Schedule from "./pages/Schedule.jsx";
 
 import "./i18n/i18n.js";
 
 import './index.css'
-
-
+import AuthorizedLayout from "./components/AuthorizedLayout.jsx";
 
 const router = createBrowserRouter([
     {
@@ -33,12 +32,21 @@ const router = createBrowserRouter([
         ]
     },
     {
+        element: <AuthorizedLayout />,
+        children: [
+            { path: '/schedule', element: <Schedule /> },
+            { path: '/home', element: <Schedule /> },
+            { path: '/teachers', element: <Schedule /> },
+            { path: '/group', element: <Schedule /> },
+        ]
+    },
+    {
         path: '/Default',
         element: <Default />
     },
     {
-        path: '/Space',
-        element: <Space />
+        path: '/Schedule',
+        element: <Schedule />
     }
 ])
 

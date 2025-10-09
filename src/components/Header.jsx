@@ -12,12 +12,10 @@ export default function Header() {
 
     return (
         <header className="flex items-center h-[100px] w-full px-5">
-            {/* Левая часть */}
-            <div className="flex w-full justify-start">
+=            <div className="flex w-full justify-start">
                 <img className="h-[70px]" src={logo} alt="logo" />
             </div>
 
-            {/* Правая часть */}
             <div className="flex w-full justify-end pr-5">
                 <DropDownMenu
                     onChoose={changeLanguage}

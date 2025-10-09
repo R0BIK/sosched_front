@@ -20,12 +20,10 @@ export default function LogoButton({ children, Logo }) {
         [&.isActive]:bg-secondText
       "
         >
-            {/* Иконка слева, фиксированная позиция */}
             <div className="absolute left-[15px] flex items-center h-[30px] w-[30px]">
                 {Logo}
             </div>
 
-            {/* Текст по центру */}
             {children}
         </button>
     );
