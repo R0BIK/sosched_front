@@ -105,6 +105,26 @@ export function FalseIcon({  className }) {
     )
 }
 
+export function ChevronRightIcon({className}) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14.873 21.318" className={className}>
+            <path
+                d="M14.873 10.654a.95.95 0 0 0-.312-.713L4.52.283A.95.95 0 0 0 3.828 0a.953.953 0 0 0-.976.967c0 .263.107.508.283.683l9.355 9.004-9.355 8.994a.95.95 0 0 0-.283.684c0 .557.43.977.976.977a1 1 0 0 0 .693-.284l10.04-9.658a.98.98 0 0 0 .312-.713"
+            ></path>
+        </svg>
+    )
+}
+
+export function ChevronLeftIcon({className}) {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.596 21.318" className={className}>
+            <path
+                d="M0 10.654c0 .274.107.508.313.713l10.039 9.658a1 1 0 0 0 .693.284c.547 0 .976-.42.976-.977a.95.95 0 0 0-.283-.684l-9.355-8.994 9.355-9.004a.97.97 0 0 0 .284-.683.953.953 0 0 0-.977-.967.95.95 0 0 0-.693.283L.312 9.941a.95.95 0 0 0-.312.713"
+            ></path>
+        </svg>
+    );
+}
+
 export function SelectorIcon({className}) {
     return (
         <svg
@@ -131,5 +151,8 @@ GoogleLogo.propTypes = iconPropTypes;
 CrossIcon.propTypes = iconPropTypes;
 CheckMarkIcon.propTypes = iconPropTypes;
 SelectorIcon.propTypes = iconPropTypes;
+ChevronLeftIcon.propTypes = iconPropTypes;
+ChevronRightIcon.propTypes = iconPropTypes;
+
 
 

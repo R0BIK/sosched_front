@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { useValidateForm } from "../hooks/SignFormHooks.jsx";
-import { useKeyDownEnterHandler } from "../hooks/KeyDownHooks.jsx";
+import { useValidateForm } from "../../hooks/SignFormHooks.jsx";
+import { useKeyDownEnterHandler } from "../../hooks/KeyDownHooks.jsx";
 import { useRef } from 'react';
 import { useTranslation } from "react-i18next";
 
 import InputBox from './InputBox.jsx';
 import HoverButton from "./HoverButton.jsx";
 
-import { getSignFormData } from "../../data.js";
+import { getSignFormData } from "../../../data.js";
 import PropTypes from "prop-types";
 
 export default function AnimatedForm(props = {}) {

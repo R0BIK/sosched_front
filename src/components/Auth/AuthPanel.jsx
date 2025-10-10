@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import LogoButton from "./LogoButton.jsx";
-import { GitHubLogo, GoogleLogo } from "../img/svg/Icons.jsx";
+import { GitHubLogo, GoogleLogo } from "../../img/svg/Icons.jsx";
 import AnimatedForm from "./AnimatedForm.jsx";
 
-import { getSignFormData } from "../../data.js";
+import { getSignFormData } from "../../../data.js";
 import PropTypes from "prop-types";
 
 export default function AuthPanel(props = {}) {
@@ -16,7 +16,7 @@ export default function AuthPanel(props = {}) {
     const formFields = SignFormData.Main[type].fields;
 
     return (
-        <div className="flex flex-col items-center justify-center w-[420px] gap-8 p-10 rounded-[10px] shadow-[0_5px_15px_var(--black-shadow)] bg-mainWhite text-center">
+        <div className="flex flex-col items-center justify-center w-[420px] gap-8 p-10 rounded-[10px] shadow-[0_5px_15px] shadow-black-shadow bg-main-white text-center">
             <h1 className="mb-7 font-bold text-3xl">{SignFormData.Main[type].title}</h1>
 
             <AnimatedForm formFields={formFields} type={type} />
@@ -27,17 +27,17 @@ export default function AuthPanel(props = {}) {
                 </Link>
             )}
 
-            <p className="text-secondText">
+            <p className="text-second-text">
                 {SignFormData.Main[type].alternativeText}{" "}
-                <Link className="underline text-mainBlack" to={SignFormData.Main[type].alternativeLink}>
+                <Link className="underline text-main-black" to={SignFormData.Main[type].alternativeLink}>
                     {SignFormData.Main[type].alternative}
                 </Link>.
             </p>
 
-            <div className="flex items-center w-full text-mainBlack text-[16px]">
-                <span className="flex-1 border-t-2 rounded-l-full border-secondText"></span>
+            <div className="flex items-center w-full text-main-black text-[16px]">
+                <span className="flex-1 border-t-2 rounded-l-full border-second-text"></span>
                 <span className="px-2">{t('auth:or')}</span>
-                <span className="flex-1 border-t-2 rounded-r-full border-secondText"></span>
+                <span className="flex-1 border-t-2 rounded-r-full border-second-text"></span>
             </div>
 
             <LogoButton Logo={<GoogleLogo />}>

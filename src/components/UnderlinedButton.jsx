@@ -9,10 +9,9 @@ export default function UnderlinedButton({ text, to }) {
     return (
         <button
             onClick={() => navigate(to)}
-            className="p-[20px] m-[5px] text-mainBlack font-sans text-[18px] relative group">
-            <span className={`border-b-[2px] border-transparent 
-            inline-block translate-y-1 transition-translate duration-200 ease-in-out
-            ${isActive ? "border-accentColor" : "border-transparent group-hover:border-mainBlack"}`}>
+            className="p-[20px] mx-[5px] text-main-black font-noto text-[18px] relative group">
+            <span className={`border-b-[2px] inline-block translate-y-1 transition-translate duration-200 ease-in-out
+            ${isActive ? "border-accent" : "border-transparent group-hover:border-main-black"}`}>
                 {text}
             </span>
         </button>

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
-import DropDownMenu from "./DropDownMenu/DropDownMenu.jsx";
-import { LOCALES_TEXT } from "../i18n/resources.js";
-import logo from '../img/1024.png'
+import DropDownMenu from "../DropDownMenu/DropDownMenu.jsx";
+import { LOCALES_TEXT } from "../../i18n/resources.js";
+import logo from '../../img/1024.png'
 
 export default function Header() {
     const { i18n, t } = useTranslation();
@@ -12,7 +12,7 @@ export default function Header() {
 
     return (
         <header className="flex items-center h-[100px] w-full px-5">
-=            <div className="flex w-full justify-start">
+            <div className="flex w-full justify-start">
                 <img className="h-[70px]" src={logo} alt="logo" />
             </div>
 

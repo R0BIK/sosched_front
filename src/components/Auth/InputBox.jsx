@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
-import { useSessionStorage } from "../hooks/SignFormHooks.jsx";
-import { CrossIcon, FalseIcon, TrueIcon } from "../img/svg/Icons.jsx";
+import { useSessionStorage } from "../../hooks/SignFormHooks.jsx";
+import { CrossIcon, FalseIcon, TrueIcon } from "../../img/svg/Icons.jsx";
 
 export default function InputBox({
      name,
@@ -40,7 +40,7 @@ export default function InputBox({
                 ref={ref}
                 onKeyDown={onKeyDown}
                 required
-                className="peer h-10 w-full text-sm border-none outline-none bg-transparent text-mainBlack px-1
+                className="peer h-10 w-full text-sm border-none outline-none bg-transparent text-main-black px-1
                    data-[filled=true]:pr-6"
                 data-filled={values !== ""}
             />
@@ -48,19 +48,19 @@ export default function InputBox({
             <label
                 htmlFor={name}
                 className="
-                    absolute left-1 text-sm text-secondText
+                    absolute left-1 text-sm text-second-text
                     transition-all duration-300 ease-in-out
                     top-3.5
-                    peer-focus:-top-3 peer-focus:text-accentColor
-                    group-data-[filled=true]:-top-3 group-data-[filled=true]:text-accentColor
+                    peer-focus:-top-3 peer-focus:text-accent
+                    group-data-[filled=true]:-top-3 group-data-[filled=true]:text-accent
                 "
             >
                 {placeholder}
             </label>
 
-            <span className="relative block h-[2px] w-full rounded-full bg-secondText">
+            <span className="relative block h-[2px] w-full rounded-full bg-second-text">
         <span
-            className="absolute inset-0 h-[2px] scale-x-0 rounded-full bg-gradient-to-r from-transparent via-accentColor to-transparent
+            className="absolute inset-0 h-[2px] scale-x-0 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent
                      transition-transform duration-300 ease-in-out peer-focus:scale-x-100"
         />
       </span>
@@ -75,17 +75,17 @@ export default function InputBox({
             <button
                 type="button"
                 className="absolute right-2 top-3 invisible group-data-[filled=true]:visible
-                   transition duration-300 hover:text-mainBlack"
+                   transition duration-300 hover:text-main-black"
                 tabIndex={-1}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={onClick}
             >
-                <CrossIcon className="h-4 w-4 rotate-[-45deg] fill-transparent group-data-[filled=true]:rotate-0 group-data-[filled=true]:fill-secondText transition-all duration-300" />
+                <CrossIcon className="h-4 w-4 rotate-[-45deg] fill-transparent group-data-[filled=true]:rotate-0 group-data-[filled=true]:fill-second-text transition-all duration-300" />
             </button>
 
             {name === "newPassword" && (
                 <ul
-                    className="absolute top-10 left-1 list-none text-sm text-secondText opacity-0 invisible
+                    className="absolute top-10 left-1 list-none text-sm text-second-text opacity-0 invisible
                      transition-all duration-500 ease-in-out
                      peer-focus:opacity-100 peer-focus:visible peer-focus:top-[55px]
                      group-data-[filled=true]:opacity-100 group-data-[filled=true]:visible group-data-[filled=true]:top-[55px]"

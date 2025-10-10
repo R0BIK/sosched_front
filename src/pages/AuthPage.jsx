@@ -2,7 +2,7 @@ import { useOutlet, useLocation } from "react-router-dom";
 import React from "react";
 import { AnimatePresence, motion } from 'framer-motion';
 
-import Header from "../components/Header.jsx";
+import Header from "../components/Auth/Header.jsx";
 
 export default function AuthPage() {
     const { pathname } = useLocation();
@@ -11,7 +11,7 @@ export default function AuthPage() {
     return (
         <>
             <Header />
-            <div className="flex flex-col items-center justify-center p-12 bg-mainWhite">
+            <div className="flex flex-col items-center justify-center p-12 bg-main-white">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={pathname}
