@@ -11,7 +11,6 @@ import "./i18n/i18n.js";
 
 import './index.css'
 import AuthorizedLayout from "./components/AuthorizedLayout.jsx";
-import MonthCalendar from "./components/Schedule/MonthCalendar.jsx";
 import Teachers from "./pages/Teachers.jsx";
 
 const router = createBrowserRouter([

@@ -11,7 +11,7 @@ export default function LogoButton({ children, Logo }) {
         relative flex items-center justify-center w-full h-[50px]
         rounded-[10px] border-0 bg-transparent
         text-main-black text-[20px] font-semibold
-        outline outline-2 outline-second-text
+        outline-2 outline-second-text
         transition duration-300 ease-in-out
         px-10
         hover:shadow-custom hover:outline-none
