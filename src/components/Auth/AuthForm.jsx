@@ -10,7 +10,7 @@ import HoverButton from "./HoverButton.jsx";
 import { getSignFormData } from "../../../data.js";
 import PropTypes from "prop-types";
 
-export default function AnimatedForm(props = {}) {
+export default function AuthForm(props = {}) {
     const { type, formFields } = props;
     const { t } = useTranslation();
     const SignFormData = getSignFormData(t);
@@ -75,7 +75,7 @@ export default function AnimatedForm(props = {}) {
     );
 }
 
-AnimatedForm.propTypes = {
+AuthForm.propTypes = {
     formFields: PropTypes.array.isRequired,
     type: PropTypes.string.isRequired,
 };

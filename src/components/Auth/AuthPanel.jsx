@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import LogoButton from "./LogoButton.jsx";
 import { GitHubLogo, GoogleLogo } from "../../img/svg/Icons.jsx";
-import AnimatedForm from "./AnimatedForm.jsx";
+import AuthForm from "./AuthForm.jsx";
 
 import { getSignFormData } from "../../../data.js";
 import PropTypes from "prop-types";
@@ -17,9 +17,9 @@ export default function AuthPanel(props = {}) {
 
     return (
         <div className="flex flex-col items-center justify-center w-[420px] gap-8 p-10 rounded-[10px] shadow-[0_5px_15px] shadow-black-shadow bg-main-white text-center">
-            <h1 className="mb-7 font-bold text-3xl">{SignFormData.Main[type].title}</h1>
+            <h1 className="mb-7 font-noto font-bold text-3xl">{SignFormData.Main[type].title}</h1>
 
-            <AnimatedForm formFields={formFields} type={type} />
+            <AuthForm formFields={formFields} type={type} />
 
             {type === 'SignIn' && (
                 <Link className="underline" to={SignFormData.Main[type].alternativeLink}>

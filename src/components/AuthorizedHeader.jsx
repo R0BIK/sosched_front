@@ -16,7 +16,7 @@ export default function AuthorizedHeader() {
             </div>
 
             <div className="flex justify-end items-center pr-[60px]">
-                <button className="flex gap-[15px] items-center relative group">
+                <button className="flex gap-[15px] items-center relative group cursor-pointer">
                     <div className="flex flex-col">
                         <p className="font-noto text-main-black/90 group-hover:text-main-black">
                             Цапурда Єгор Дмитрович

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import EventView from "./EventView.jsx";
 import { ChevronLeftIcon, ChevronRightIcon } from "../../img/svg/Icons.jsx";
 
-export default function WeekCalendar({firstWeekDate, events, onTodayClick, onChevronClick}) {
+export default function WeekCalendar({firstWeekDate, selectedDay, events, handleDayClick, onChevronClick}) {
     const weekDate = new Date(firstWeekDate);
     const startHour = 7;
 
@@ -18,21 +18,21 @@ export default function WeekCalendar({firstWeekDate, events, onTodayClick, onChe
         <div className="relative w-full no-scrollbar overflow-x-auto max-w-[1130px] pt-[15px] mx-auto">
             <div className="flex gap-[40px] items-center h-max">
                 <button onClick={() => {onChevronClick(false)}}
-                    className="justify-start ml-[80px] p-[8px]">
-                    <ChevronLeftIcon className="h-[24px] w-[24px] fill-second-text"/>
+                    className="justify-start ml-[80px] p-[8px] cursor-pointer">
+                    <ChevronLeftIcon className="h-[24px] w-[24px] fill-second-text hover:fill-main-black"/>
                 </button>
 
                 <p className="capitalize text-main-black text-[32px] font-noto font-semibold">{new Date(firstWeekDate).toLocaleDateString("uk-UA", { month: "long"})}</p>
 
-                <button onClick={onTodayClick}>
+                <button onClick={() => {handleDayClick(new Date())}} className="cursor-pointer">
                     <div className={`border-[2px] border-second-text rounded-[8px] px-[10px] text-main-black text-[18px] font-noto font-medium`}>
                         Сьогодні
                     </div>
                 </button>
 
                 <button onClick={() => {onChevronClick(true)}}
-                    className="justify-end ml-auto p-[8px]">
-                    <ChevronRightIcon className="h-[24px] w-[24px] fill-second-text" />
+                    className="justify-end ml-auto p-[8px] cursor-pointer">
+                    <ChevronRightIcon className="h-[24px] w-[24px] fill-second-text hover:fill-main-black" />
                 </button>
 
             </div>
@@ -42,11 +42,18 @@ export default function WeekCalendar({firstWeekDate, events, onTodayClick, onChe
                 {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].map((day, i) => {
                     const currentDay = new Date(weekDate.getFullYear(), weekDate.getMonth(), weekDate.getDate() + i);
                     const isToday = isSameDate(currentDay, now);
+                    const isSelected = isSameDate(currentDay, new Date(selectedDay));
 
                     return (
                         <div key={i} className="h-[60px] pl-4 pb-2 content-end">
                             <span className="text-main-black font-noto">{day}</span>
-                            <span className={(isToday ? "bg-red-400" : "") + " rounded px-[4px] py-[1px] ml-[3px] text-main-black font-noto"}>{currentDay.getDate()}</span>
+                            <span
+                                data-is-today={isToday ? '' : undefined}
+                                data-is-selected={isSelected ? '' : undefined}
+                                className="rounded px-[4px] py-[1px] ml-[3px] text-main-black font-noto data-is-today:bg-red-400 data-is-selected:not-data-is-today:bg-second-text"
+                            >
+                                {currentDay.getDate()}
+                            </span>
                         </div>
                     )})}
             </div>
@@ -73,7 +80,7 @@ export default function WeekCalendar({firstWeekDate, events, onTodayClick, onChe
                     })}
                 </div>
 
-                {events.map((event, i) => {
+                {events?.map((event, i) => {
                     const dateStart = new Date(event.start);
                     const dateEnd = new Date(event.end);
 
@@ -190,8 +197,9 @@ function isEventInCurrentWeek(eventStart, eventEnd, firstWeekDate) {
 }
 
 WeekCalendar.propTypes = {
-    firstWeekDate: PropTypes.string,
+    firstWeekDate: PropTypes.string.isRequired,
+    selectedDay: PropTypes.string.isRequired,
     events: PropTypes.array.isRequired,
-    onTodayClick: PropTypes.func.isRequired,
+    handleDayClick: PropTypes.func.isRequired,
     onChevronClick: PropTypes.func.isRequired,
 }

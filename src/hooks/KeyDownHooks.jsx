@@ -6,11 +6,11 @@ export const useKeyDownEnterHandler = () => {
         if (e.key === 'Enter') {
             e.preventDefault();
 
-            e.target.classList.add('isActive');
+            e.target.setAttribute("data-active", true);
             document.activeElement.blur();
             e.target?.click();
             setTimeout(() => {
-                e.target.classList.remove('isActive');
+                e.target.removeAttribute("data-active");
             }, 250);
         }
     }, []);

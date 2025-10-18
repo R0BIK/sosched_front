@@ -63,8 +63,7 @@ export function useValidateForm( props = {} ) {
             if (SignFormData.Fields[fieldKey].name === name) {
                 const input = inputRefs.current[index];
 
-                if (isError) input.classList.add('error');
-                else input.classList.remove('error');
+                input.toggleAttribute("data-error", isError);
             }
         });
     }, [SignFormData.Fields, formFields, inputRefs])

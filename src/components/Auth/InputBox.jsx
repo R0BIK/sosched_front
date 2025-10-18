@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useSessionStorage } from "../../hooks/SignFormHooks.jsx";
-import { CrossIcon, FalseIcon, TrueIcon } from "../../img/svg/Icons.jsx";
+import { CrossIcon } from "../../img/svg/Icons.jsx";
+import PasswordRules from "./PasswordRules.jsx";
 
 export default function InputBox({
      name,
@@ -23,10 +24,9 @@ export default function InputBox({
 
     return (
         <div
-            className={`relative flex flex-col w-full group ${
-                name === "newPassword" ? "mb-[60px]" : ""
-            }`}
-            data-filled={!!values}
+            data-new-password={name === "newPassword" ? '' : undefined}
+            className="relative group flex flex-col w-full data-new-password:mb-[60px]"
+            data-filled={values !== '' ? '' : undefined}
         >
             <input
                 id={name}
@@ -35,98 +35,58 @@ export default function InputBox({
                 autoComplete={autoComplete}
                 placeholder=" "
                 value={values}
-                onChange={handleChange}
+                onChange={ handleChange }
                 onBlur={onBlur}
                 ref={ref}
                 onKeyDown={onKeyDown}
                 required
-                className="peer h-10 w-full text-sm border-none outline-none bg-transparent text-main-black px-1
-                   data-[filled=true]:pr-6"
-                data-filled={values !== ""}
+                className="peer h-10 w-full text-noto text-sm border-none outline-none bg-transparent text-main-black px-1
+                   group-data-filled:pr-[30px]"
             />
 
             <label
                 htmlFor={name}
                 className="
-                    absolute left-1 text-sm text-second-text
+                    absolute left-1 font-noto text-sm text-second-text
                     transition-all duration-300 ease-in-out
                     top-3.5
                     peer-focus:-top-3 peer-focus:text-accent
-                    group-data-[filled=true]:-top-3 group-data-[filled=true]:text-accent
+                    group-data-filled:-top-3 group-data-filled:text-accent
                 "
             >
                 {placeholder}
             </label>
 
             <span className="relative block h-[2px] w-full rounded-full bg-second-text">
-        <span
-            className="absolute inset-0 h-[2px] scale-x-0 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent
-                     transition-transform duration-300 ease-in-out peer-focus:scale-x-100"
-        />
-      </span>
+                <span
+                    className="absolute inset-0 h-[2px] scale-x-0 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent
+                             transition-transform duration-300 ease-in-out peer-focus:scale-x-100"
+                />
+            </span>
             <p
-                className="absolute left-1 top-10 text-sm text-redFalse opacity-0 transition-all duration-300
-                   peer-[.error]:opacity-100 peer-[.error]:top-[50px]
-                   data-[filled=true]:opacity-100"
+                className="absolute font-noto text-xm left-1 top-10 text-sm text-red-false opacity-0 transition-all duration-300
+                   not-group-data-new-password:peer-data-error:opacity-100 peer-data-error:top-[50px] group-data-new-password:opacity-0"
             >
                 {errorText}
             </p>
 
             <button
                 type="button"
-                className="absolute right-2 top-3 invisible group-data-[filled=true]:visible
-                   transition duration-300 hover:text-main-black"
+                className="absolute right-2 top-3 invisible group-data-filled:visible
+                   transition duration-300 text-second-text hover:text-main-black"
                 tabIndex={-1}
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={onClick}
+                onClick={ onClick }
             >
-                <CrossIcon className="h-4 w-4 rotate-[-45deg] fill-transparent group-data-[filled=true]:rotate-0 group-data-[filled=true]:fill-second-text transition-all duration-300" />
+                <CrossIcon className="h-4 w-4 rotate-[-45deg] fill-transparent group-data-filled:rotate-0 group-data-filled:fill-current transition-all duration-300" />
             </button>
 
             {name === "newPassword" && (
-                <ul
-                    className="absolute top-10 left-1 list-none text-sm text-second-text opacity-0 invisible
+                <PasswordRules values={values} className="absolute top-10 left-1 list-none text-sm text-second-text opacity-0 invisible
                      transition-all duration-500 ease-in-out
                      peer-focus:opacity-100 peer-focus:visible peer-focus:top-[55px]
-                     group-data-[filled=true]:opacity-100 group-data-[filled=true]:visible group-data-[filled=true]:top-[55px]"
-                >
-                    <li
-                        className={`relative pl-6 transition-colors ${
-                            /[A-Z]/.test(values) ? "text-greenTrue" : ""
-                        }`}
-                    >
-                        <TrueIcon className={`absolute left-0 top-1 h-3 transition-opacity ${/[A-Z]/.test(values) ? "opacity-100" : "opacity-0"}`} />
-                        <FalseIcon className={`absolute left-0 top-1 h-3 transition-opacity ${/[A-Z]/.test(values) ? "opacity-0" : "opacity-100"}`} />
-                        At least one uppercase letter
-                    </li>
-                    <li
-                        className={`relative pl-6 transition-colors ${
-                            /[a-z]/.test(values) ? "text-greenTrue" : ""
-                        }`}
-                    >
-                        <TrueIcon className={`absolute left-0 top-1 h-3 transition-opacity ${/[a-z]/.test(values) ? "opacity-100" : "opacity-0"}`} />
-                        <FalseIcon className={`absolute left-0 top-1 h-3 transition-opacity ${/[a-z]/.test(values) ? "opacity-0" : "opacity-100"}`} />
-                        At least one lowercase letter
-                    </li>
-                    <li
-                        className={`relative pl-6 transition-colors ${
-                            /\d/.test(values) ? "text-greenTrue" : ""
-                        }`}
-                    >
-                        <TrueIcon className={`absolute left-0 top-1 h-3 transition-opacity ${/\d/.test(values) ? "opacity-100" : "opacity-0"}`} />
-                        <FalseIcon className={`absolute left-0 top-1 h-3 transition-opacity ${/\d/.test(values) ? "opacity-0" : "opacity-100"}`} />
-                        At least one number
-                    </li>
-                    <li
-                        className={`relative pl-6 transition-colors ${
-                            /.{8,}/.test(values) ? "text-greenTrue" : ""
-                        }`}
-                    >
-                        <TrueIcon className={`absolute left-0 top-1 h-3 transition-opacity ${/.{8,}/.test(values) ? "opacity-100" : "opacity-0"}`} />
-                        <FalseIcon className={`absolute left-0 top-1 h-3 transition-opacity ${/.{8,}/.test(values) ? "opacity-0" : "opacity-100"}`} />
-                        At least 8 characters
-                    </li>
-                </ul>
+                     group-data-filled:opacity-100 group-data-filled:visible group-data-filled:top-[55px]
+                     peer-data-error:opacity-100 peer-data-error:top-[55px] peer-data-error:visible"/>
             )}
         </div>
     );
