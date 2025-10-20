@@ -59,8 +59,7 @@ export default function InputBox({
 
             <span className="relative block h-[2px] w-full rounded-full bg-second-text">
                 <span
-                    className="absolute inset-0 h-[2px] scale-x-0 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent
-                             transition-transform duration-300 ease-in-out peer-focus:scale-x-100"
+                    className="absolute inset-0 h-[2px] scale-x-0 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent transition-transform duration-300 ease-in-out group-focus-within:scale-x-100"
                 />
             </span>
             <p

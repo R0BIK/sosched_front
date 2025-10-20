@@ -140,6 +140,28 @@ export function SelectorIcon({className}) {
     )
 }
 
+export function PersonIcon({className}) {
+    return (
+        <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21.494 22.529">
+            <path
+                fillOpacity="0.85"
+                d="M2.06 22.52h17.012c1.28 0 2.06-.616 2.06-1.612 0-3.242-4.052-7.715-10.566-7.715C4.053 13.193 0 17.666 0 20.908c0 .996.781 1.611 2.06 1.611m8.516-11.582c2.725 0 5.01-2.422 5.01-5.547C15.586 2.334 13.28 0 10.576 0c-2.695 0-5 2.373-5 5.41 0 3.106 2.285 5.528 5 5.528"
+            ></path>
+        </svg>
+    )
+}
+
+export function LockIcon({className}) {
+    return (
+        <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.5 25.225">
+            <path
+                fillOpacity="0.85"
+                d="M2.734 24.55h11.67c1.748 0 2.735-1.015 2.735-2.89v-8.887c0-1.865-.987-2.88-2.735-2.88H2.734C.977 9.893 0 10.908 0 12.773v8.887c0 1.875.977 2.89 2.734 2.89m-.498-13.827h1.72V6.729c0-3.252 2.06-5.098 4.608-5.098 2.55 0 4.63 1.846 4.63 5.098v3.994h1.718v-3.79C14.912 2.384 11.943 0 8.564 0 5.195 0 2.236 2.383 2.236 6.934Z"
+            ></path>
+        </svg>
+    )
+}
+
 const iconPropTypes = {
     className: PropTypes.string,
 };
@@ -153,6 +175,7 @@ CheckMarkIcon.propTypes = iconPropTypes;
 SelectorIcon.propTypes = iconPropTypes;
 ChevronLeftIcon.propTypes = iconPropTypes;
 ChevronRightIcon.propTypes = iconPropTypes;
-
+PersonIcon.propTypes = iconPropTypes;
+LockIcon.propTypes = iconPropTypes;
 
 

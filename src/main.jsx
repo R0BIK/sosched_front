@@ -12,6 +12,7 @@ import "./i18n/i18n.js";
 import './index.css'
 import AuthorizedLayout from "./components/AuthorizedLayout.jsx";
 import Teachers from "./pages/Teachers.jsx";
+import Profile from "./pages/Profile.jsx";
 
 const router = createBrowserRouter([
     {
@@ -39,16 +40,13 @@ const router = createBrowserRouter([
             { path: '/home', element: <Schedule /> },
             { path: '/teachers', element: <Teachers /> },
             { path: '/group', element: <Schedule /> },
+            { path: '/profile', element: <Profile /> },
         ]
     },
     {
         path: '/Default',
         element: <Default />
     },
-    {
-        path: '/Schedule',
-        element: <Schedule />
-    }
 ])
 
 createRoot(document.getElementById('root')).render(

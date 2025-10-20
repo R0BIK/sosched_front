@@ -1,10 +1,12 @@
 import PropTypes from "prop-types";
 
-export default function EventView({ dateStart, dateEnd, position, event, index }) {
+export default function EventView({ dateStart, dateEnd, position, event, index, onEventClick }) {
     return (
-        <div className="absolute w-[130px] rounded-[8px] bg-accent pl-[18px] pr-[10px] py-[7px] flex flex-col overflow-hidden"
-             style={{top: position.topStart, left: position.left, height: position.height}} key={`event-${index}`}>
-            <div className="absolute left-0 top-0 h-full w-[10px] bg-black/20 rounded-l-[8px]"></div>
+        <button
+            onClick={onEventClick}
+            className="absolute w-[130px] rounded-[8px] bg-accent pl-[18px] pr-[10px] py-[7px] flex flex-col overflow-hidden text-left"
+            style={{top: position.topStart, left: position.left, height: position.height}} key={`event-${index}`}>
+            <div className="absolute left-0 top-0 h-full w-[9px] bg-white/15 rounded-l-[8px]"></div>
 
             <p className="font-noto text-[14px] break-words overflow-hidden text-main-white" style={{maxHeight: position.tittleMaxHeight}}>
                 {event.title}
@@ -12,13 +14,14 @@ export default function EventView({ dateStart, dateEnd, position, event, index }
             <p className="text-gray-200 mt-[6px] text-[14px] font-noto">
                 {dateStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {dateEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </p>
-        </div>
+        </button>
     )
 }
 
 EventView.propTypes = {
     dateStart: PropTypes.instanceOf(Date).isRequired,
     dateEnd: PropTypes.instanceOf(Date).isRequired,
+    onEventClick: PropTypes.func.isRequired,
     position: PropTypes.shape({
         topStart: PropTypes.number.isRequired,
         left: PropTypes.number.isRequired,

@@ -1,6 +1,9 @@
 import UnderlinedButton from "./UnderlinedButton.jsx";
+import {useNavigate} from "react-router-dom";
 
 export default function AuthorizedHeader() {
+    const navigate = useNavigate();
+
     return (
         <div className="grid grid-cols-3 bg-gray-300/20 w-full h-[70px] items-center content-center">
             <div className="flex items-center pl-[60px]">
@@ -16,7 +19,9 @@ export default function AuthorizedHeader() {
             </div>
 
             <div className="flex justify-end items-center pr-[60px]">
-                <button className="flex gap-[15px] items-center relative group cursor-pointer">
+                <button
+                    onClick={() => {navigate("/profile")}}
+                    className="flex gap-[15px] items-center relative group cursor-pointer">
                     <div className="flex flex-col">
                         <p className="font-noto text-main-black/90 group-hover:text-main-black">
                             Цапурда Єгор Дмитрович
