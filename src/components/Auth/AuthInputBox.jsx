@@ -3,7 +3,7 @@ import { useSessionStorage } from "../../hooks/SignFormHooks.jsx";
 import { CrossIcon } from "../../img/svg/Icons.jsx";
 import PasswordRules from "./PasswordRules.jsx";
 
-export default function InputBox({
+export default function AuthInputBox({
      name,
      placeholder,
      type,
@@ -91,7 +91,7 @@ export default function InputBox({
     );
 }
 
-InputBox.propTypes = {
+AuthInputBox.propTypes = {
     name: PropTypes.string.isRequired,
     placeholder: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,

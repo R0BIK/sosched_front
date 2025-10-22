@@ -162,6 +162,17 @@ export function LockIcon({className}) {
     )
 }
 
+export function EditIcon({className}) {
+    return (
+        <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30.068 29.528">
+            <g>
+                <path d="m22.041 4.288-1.603 1.604h-11.4c-2.217 0-3.467 1.25-3.467 3.467v11.63c0 2.227 1.25 3.477 3.467 3.477H20.67c2.217 0 3.467-1.25 3.467-3.477V9.67L25.75 8.05q.114.612.113 1.317V20.99c0 3.34-1.855 5.206-5.195 5.206H9.039c-3.34 0-5.196-1.866-5.196-5.206V9.37c0-3.34 1.855-5.206 5.195-5.206H20.67q.738-.001 1.372.125"></path>
+                <path d="m12.446 17.913 2.266-1.006L26.46 5.16l-1.553-1.543L13.17 15.364l-1.065 2.198c-.097.185.137.44.342.351M27.35 4.29l.85-.879c.41-.42.42-.957.019-1.357l-.244-.244c-.371-.371-.928-.323-1.319.068l-.86.85Z"></path>
+            </g>
+        </svg>
+    )
+}
+
 const iconPropTypes = {
     className: PropTypes.string,
 };
@@ -177,5 +188,6 @@ ChevronLeftIcon.propTypes = iconPropTypes;
 ChevronRightIcon.propTypes = iconPropTypes;
 PersonIcon.propTypes = iconPropTypes;
 LockIcon.propTypes = iconPropTypes;
+EditIcon.propTypes = iconPropTypes;
 
 

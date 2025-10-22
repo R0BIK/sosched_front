@@ -4,7 +4,7 @@ import { useKeyDownEnterHandler } from "../../hooks/KeyDownHooks.jsx";
 import { useRef } from 'react';
 import { useTranslation } from "react-i18next";
 
-import InputBox from './InputBox.jsx';
+import AuthInputBox from './AuthInputBox.jsx';
 import HoverButton from "./HoverButton.jsx";
 
 import { getSignFormData } from "../../../data.js";
@@ -49,7 +49,7 @@ export default function AuthForm(props = {}) {
             {formFields.map((fieldKey, index) => {
                 const form = SignFormData.Fields[fieldKey];
                 return (
-                    <InputBox
+                    <AuthInputBox
                         key={form.placeholder}
                         className="InputBox w-full"
                         placeholder={form.placeholder}

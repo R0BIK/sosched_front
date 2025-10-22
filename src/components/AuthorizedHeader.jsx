@@ -13,9 +13,8 @@ export default function AuthorizedHeader() {
 
             <div className="flex justify-center items-center whitespace-nowrap">
                 <UnderlinedButton text="Головна" to="/home" />
-                <UnderlinedButton text="Розклад" to="/schedule" />
-                <UnderlinedButton text="Моя група" to="/group" />
-                <UnderlinedButton text="Викладачі" to="/teachers" />
+                <UnderlinedButton text="Календар" to="/schedule" />
+                <UnderlinedButton text="Мій простір" to="/mySpace" />
             </div>
 
             <div className="flex justify-end items-center pr-[60px]">
