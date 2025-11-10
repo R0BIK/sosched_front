@@ -1,6 +1,7 @@
 import WeekCalendar from "../components/Schedule/WeekCalendar.jsx";
 import {useCallback, useEffect, useState} from "react";
 import MonthCalendar from "../components/Schedule/MonthCalendar.jsx";
+import TabComponent from "../components/TabComponent.jsx";
 
 export default function Schedule() {
     const events1 = [
@@ -160,6 +161,7 @@ export default function Schedule() {
             const newDate = new Date(prev);
             newDate.setDate(newDate.getDate() + (isNext ? 7 : -7));
             setSelectedDay(newDate.toISOString());
+            setDisplayedMonth(newDate.toISOString());
             return newDate.toISOString();
         });
     }, []);
@@ -174,12 +176,21 @@ export default function Schedule() {
 
 
     return (
-        <div className="flex">
-            <WeekCalendar events={events} firstWeekDate={firstWeekDate} selectedDay={selectedDay} handleDayClick={handleDayClick} onChevronClick={handleChevronClick} />
-            <div className="p-10">
-                <MonthCalendar selectedDay={selectedDay} displayedMonth={displayedMonth} handleDayClick={handleDayClick} handleMonthChange={handleMonthChange} />
+        <div className="flex-row flex h-full overflow-hidden">
+            <div className="p-5 flex flex-col gap-3 border-r-1 border-gray-200 ">
+                <div className="flex justify-center">
+                    <MonthCalendar selectedDay={selectedDay} displayedMonth={displayedMonth} handleDayClick={handleDayClick} handleMonthChange={handleMonthChange} />
+                </div>
+                <div className="font-noto text-xm mt-10 font-extralight">
+                    <p className="text-second-text ml-4 mb-1">
+                        Простори
+                    </p>
+                    <TabComponent text="КПІ" initial="A" to="/mySpace"/>
+                    <TabComponent text="Мій" initial="B" to="/mySpace"/>
+                    <TabComponent text="MySpace" initial="C" to="/mySpace"/>
+                </div>
             </div>
-
+            <WeekCalendar events={events} firstWeekDate={firstWeekDate} selectedDay={selectedDay} handleDayClick={handleDayClick} onChevronClick={handleChevronClick} />
         </div>
     )
 }

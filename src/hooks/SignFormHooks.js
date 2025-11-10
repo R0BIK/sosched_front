@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getSignFormData } from "../../data.js";
-import { SignFormCheck } from '../Regex/regexPatterns.js'
+import { getSignFormData } from "../../constants.js";
+import { SIGN_FORM_CHECK } from '../Regex/regexPatterns.js'
 import { useTranslation } from "react-i18next";
 
 export function useSessionStorage(groupKey, valueKey, isSaving, initialValue="") {
@@ -46,27 +46,27 @@ export function useValidateForm( props = {} ) {
         let error = "";
         let isError = false;
 
-        Object.entries(SignFormData.Fields).forEach(([key, values]) => {
+        Object.entries(SignFormData.FIELDS).forEach(([key, values]) => {
             if (name === values.name && value) {
-                if (!SignFormCheck[key]?.test(value.trim())) {
-                    error = SignFormData.Errors[key];
+                if (!SIGN_FORM_CHECK[key]?.test(value.trim())) {
+                    error = SignFormData.ERRORS[key];
                     isError = true;
                 }
             }
         })
 
         return { error, isError };
-    }, [SignFormData.Errors, SignFormData.Fields])
+    }, [SignFormData.ERRORS, SignFormData.FIELDS])
 
     const activateError = useCallback((name, isError) => {
         formFields.forEach((fieldKey, index) => {
-            if (SignFormData.Fields[fieldKey].name === name) {
+            if (SignFormData.FIELDS[fieldKey].name === name) {
                 const input = inputRefs.current[index];
 
                 input.toggleAttribute("data-error", isError);
             }
         });
-    }, [SignFormData.Fields, formFields, inputRefs])
+    }, [SignFormData.FIELDS, formFields, inputRefs])
 
     const inputOnBlur = useCallback((name, value) => {
         const { error, isError } = validateField(name, value);

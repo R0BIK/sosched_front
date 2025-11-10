@@ -18,7 +18,7 @@ export default function WeekCalendar({firstWeekDate, selectedDay, events, handle
 
 
     return (
-        <div className="relative w-full no-scrollbar overflow-x-auto max-w-[1130px] pt-[15px] mx-auto">
+        <div className="relative w-full no-scrollbar overflow-x-auto max-w-[1130px] pt-[15px]">
             <EventPopup event={activeEvent} onClose={() => setActiveEvent(null)} />
             <div className="flex gap-[40px] items-center h-max">
                 <button onClick={() => {onChevronClick(false)}}
@@ -35,7 +35,7 @@ export default function WeekCalendar({firstWeekDate, selectedDay, events, handle
                 </button>
 
                 <button onClick={() => {onChevronClick(true)}}
-                    className="justify-end ml-auto p-[8px] cursor-pointer">
+                    className="p-[8px] cursor-pointer">
                     <ChevronRightIcon className="h-[24px] w-[24px] fill-second-text hover:fill-main-black" />
                 </button>
 

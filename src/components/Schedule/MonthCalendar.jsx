@@ -65,7 +65,7 @@ export default function MonthCalendar({ selectedDay, displayedMonth, handleDayCl
 
     return (
         <div className="w-[240px] h-auto">
-            <div className="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
+            <div className="text-center col-start-8 col-end-13 row-start-1">
                 <div className="flex items-center text-main-black justify-center gap-3">
                     <button
                         onClick={() => handleMonthChange(false)}

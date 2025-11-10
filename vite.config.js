@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), mkcert(), tailwindcss()],
   server: {
-    https: true,
+    https: false,
     host: 'localhost'
   }
 });

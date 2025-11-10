@@ -1,12 +1,13 @@
-import UnderlinedButton from "./UnderlinedButton.jsx";
+import UnderlinedButton from "../UnderlinedButton.jsx";
 import {useNavigate} from "react-router-dom";
 
 export default function AuthorizedHeader() {
     const navigate = useNavigate();
 
     return (
-        <div className="grid grid-cols-3 bg-gray-300/20 w-full h-[70px] items-center content-center">
-            <div className="flex items-center pl-[60px]">
+        <header className="fixed top-0 z-50 w-full h-18 items-center content-center grid grid-cols-3 px-9 py-3
+        inset-shadow-current/20 backdrop-blur-sm bg-glass-bg inset-shadow-sm border-b-1 border-b-glass-border">
+            <div className="flex items-center">
                 <p className="font-dancing text-accent text-[40px] select-none">S</p>
                 <p className="font-dancing text-main-black text-[40px] select-none">osched</p>
             </div>
@@ -17,7 +18,7 @@ export default function AuthorizedHeader() {
                 <UnderlinedButton text="Мій простір" to="/mySpace" />
             </div>
 
-            <div className="flex justify-end items-center pr-[60px]">
+            <div className="flex justify-end items-center">
                 <button
                     onClick={() => {navigate("/profile")}}
                     className="flex gap-[15px] items-center relative group cursor-pointer">
@@ -34,12 +35,13 @@ export default function AuthorizedHeader() {
                             </p>
                         </div>
                     </div>
-                    <div className="w-[42px] h-[42px] rounded-full bg-gray-400 flex items-center justify-center">
+                    <div className="min-w-[42px] min-h-[42px] rounded-full bg-gray-400 flex items-center justify-center">
                         {/* Здесь можно вставить иконку пользователя */}
                         <span className="text-white font-bold">U</span>
                     </div>
                 </button>
             </div>
-        </div>
+        </header>
+
     )
 }

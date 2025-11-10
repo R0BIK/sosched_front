@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import {Special} from "../../data.js";
+import {SPECIAL} from "../../constants.js";
 
 export const useKeyDownEnterHandler = () => {
     const handleEnterSubmit = useCallback((e) => {
@@ -25,14 +25,14 @@ export const useKeyDownEnterHandler = () => {
         } = props;
 
 
-        if (e.key === Special.KeyboardKey.Enter.name) {
+        if (e.key === SPECIAL.KeyboardKey.Enter.name) {
             e.preventDefault();
 
             if (index < formFields.length - 1) {
                 inputRefs.current[index + 1].focus();
             } else {
                 document.activeElement.blur();
-                buttonRef.current?.dispatchEvent(Special.KeyboardKey.Enter.KeyboardEvent);
+                buttonRef.current?.dispatchEvent(SPECIAL.KeyboardKey.Enter.KeyboardEvent);
             }
         }
     }, []);

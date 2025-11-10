@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useKeyDownEnterHandler } from "../../hooks/KeyDownHooks.jsx";
+import { useKeyDownEnterHandler } from "../../hooks/KeyDownHooks.js";
 
 export default function LogoButton({ children, Logo }) {
     const { handleEnterSubmit } = useKeyDownEnterHandler();

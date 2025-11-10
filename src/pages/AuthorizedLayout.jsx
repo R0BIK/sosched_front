@@ -1,11 +1,11 @@
-import AuthorizedHeader from "../components/AuthorizedHeader.jsx";
+import AuthorizedHeader from "../components/Headers/AuthorizedHeader.jsx";
 import { Outlet } from "react-router-dom";
 
 export default function AuthorizedLayout() {
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen h-screen flex flex-col">
             <AuthorizedHeader />
-            <div className="flex-1">
+            <div className="pt-18 h-full">
                 <Outlet />
             </div>
         </div>

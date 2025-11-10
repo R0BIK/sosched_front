@@ -3,12 +3,16 @@
 @theme {
   --color-black-shadow: rgba(11, 18, 21, 0.4);
   --color-accent: #023488;
+  --color-accent-on-hover: #0047bf;
   --color-accent-rgb: 2, 52, 136;
   --color-main-white: #FAF9F6;
   --color-main-black: #0B1215;
   --color-second-text: rgba(11, 18, 21, 0.40);
   --color-green-true: #44aa55;
   --color-red-false: #c62c2c;
+
+  --color-glass-bg: color-mix(in oklab, transparent 80%, transparent);
+  --color-glass-border: color-mix(in oklab, var(--color-glass-bg) 70%, white);
 
   --font-sans: "SF Compact Display", sans-serif;
   --font-noto: "Noto", sans-serif;

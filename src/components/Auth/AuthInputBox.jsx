@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useSessionStorage } from "../../hooks/SignFormHooks.jsx";
+import { useSessionStorage } from "../../hooks/SignFormHooks.js";
 import { CrossIcon } from "../../img/svg/Icons.jsx";
 import PasswordRules from "./PasswordRules.jsx";
 

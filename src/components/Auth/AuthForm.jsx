@@ -1,13 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { useValidateForm } from "../../hooks/SignFormHooks.jsx";
-import { useKeyDownEnterHandler } from "../../hooks/KeyDownHooks.jsx";
+import { useValidateForm } from "../../hooks/SignFormHooks.js";
+import { useKeyDownEnterHandler } from "../../hooks/KeyDownHooks.js";
 import { useRef } from 'react';
 import { useTranslation } from "react-i18next";
+import { useMutation } from "@tanstack/react-query";
+import { login, register } from "../../api/auth";
 
 import AuthInputBox from './AuthInputBox.jsx';
 import HoverButton from "./HoverButton.jsx";
 
-import { getSignFormData } from "../../../data.js";
+import {AUTH_TYPES, getSignFormData, SPECIAL} from "../../../constants.js";
 import PropTypes from "prop-types";
 
 export default function AuthForm(props = {}) {
@@ -21,16 +23,30 @@ export default function AuthForm(props = {}) {
     const { errors, inputOnBlur, handleSubmit } = useValidateForm({ inputRefs, formFields });
     const { handleEnterAsTab } = useKeyDownEnterHandler();
 
+    const mutation = useMutation({
+        mutationFn: type === AUTH_TYPES.LOGIN ? login : register,
+        onSuccess: () => {
+            navigate("/schedule");
+        },
+        onError: (error) => {
+            console.error("Auth error:", error);
+            alert("Login failed");
+        },
+    });
+
     const onSubmit = (e) => {
         const newErrors = handleSubmit(e);
-        if (Object.values(newErrors).every(error => error === '')) {
-            sessionStorage.removeItem(SignFormData.Main[type].name);
+        if (Object.values(newErrors).every(error => error === SPECIAL.STRING.EMPTY)) {
+            sessionStorage.removeItem(SignFormData.MAIN[type].name);
+
+            const formData = Object.fromEntries(new FormData(e.target));
+
+            mutation.mutate(formData)
             e.target.reset();
-            navigate('/Default');
         } else {
             const firstErrorKey = Object.keys(newErrors).find(key => newErrors[key]);
             if (firstErrorKey) {
-                const index = formFields.findIndex(field => SignFormData.Fields[field].name === firstErrorKey);
+                const index = formFields.findIndex(field => SignFormData.FIELDS[field].name === firstErrorKey);
                 if (index !== -1 && inputRefs.current[index]) {
                     inputRefs.current[index].focus();
                 }
@@ -40,14 +56,14 @@ export default function AuthForm(props = {}) {
 
     return (
         <form
-            name={SignFormData.Main[type].name}
+            name={SignFormData.MAIN[type].name}
             method="POST"
             noValidate
             onSubmit={onSubmit}
             className="flex flex-col items-center justify-center gap-[50px] w-full text-left"
         >
             {formFields.map((fieldKey, index) => {
-                const form = SignFormData.Fields[fieldKey];
+                const form = SignFormData.FIELDS[fieldKey];
                 return (
                     <AuthInputBox
                         key={form.placeholder}
@@ -63,13 +79,13 @@ export default function AuthForm(props = {}) {
                         }
                         ref={(el) => (inputRefs.current[index] = el)}
                         isSaving={form.isSaving}
-                        formName={SignFormData.Main[type].name}
+                        formName={SignFormData.MAIN[type].name}
                     />
                 );
             })}
 
             <HoverButton type="submit" ref={buttonRef}>
-                {SignFormData.Main[type].button}
+                {SignFormData.MAIN[type].button}
             </HoverButton>
         </form>
     );

@@ -1,7 +1,7 @@
-export const SignFormCheck = {
-    Name: /^[^\d\s]{2,}$/,
-    LastName: /^[^\d\s]{2,}$/,
-    Email: /^\S+@\S+\.\S+$/,
-    Password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-    NewPassword: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+export const SIGN_FORM_CHECK = {
+    FIRST_NAME: /^[^\d\s]{2,}$/,
+    LAST_NAME: /^[^\d\s]{2,}$/,
+    EMAIL: /^\S+@\S+\.\S+$/,
+    PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+    NEW_PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
 }
