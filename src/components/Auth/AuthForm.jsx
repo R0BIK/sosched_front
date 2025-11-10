@@ -4,13 +4,13 @@ import { useKeyDownEnterHandler } from "../../hooks/KeyDownHooks.js";
 import { useRef } from 'react';
 import { useTranslation } from "react-i18next";
 import { useMutation } from "@tanstack/react-query";
-import { login, register } from "../../api/auth";
 
 import AuthInputBox from './AuthInputBox.jsx';
 import HoverButton from "./HoverButton.jsx";
 
 import {AUTH_TYPES, getSignFormData, SPECIAL} from "../../../constants.js";
 import PropTypes from "prop-types";
+import {useAuth} from "../../context/AuthContext.jsx";
 
 export default function AuthForm(props = {}) {
     const { type, formFields } = props;
@@ -22,6 +22,8 @@ export default function AuthForm(props = {}) {
     const buttonRef = useRef(null);
     const { errors, inputOnBlur, handleSubmit } = useValidateForm({ inputRefs, formFields });
     const { handleEnterAsTab } = useKeyDownEnterHandler();
+
+    const { login, register } = useAuth();
 
     const mutation = useMutation({
         mutationFn: type === AUTH_TYPES.LOGIN ? login : register,

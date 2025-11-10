@@ -59,8 +59,6 @@ export default function MonthCalendar({ selectedDay, displayedMonth, handleDayCl
         days.push({ date: nextDate })
     }
 
-    console.log(days)
-
     const monthName = displayDate.toLocaleDateString('uk-UA', { month: 'long' })
 
     return (

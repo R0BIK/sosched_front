@@ -6,7 +6,9 @@ export const API_ENDPOINTS = {
         REGISTER: "/auth/register",
         LOGOUT: "/auth/logout",
         CHECK_AUTH: "/auth/me",
-    }
+    },
+    USER: "/users",
+    SPACE: "/spaces",
 }
 
 export const AUTH_TYPES = {

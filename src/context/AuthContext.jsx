@@ -16,13 +16,15 @@ export function AuthProvider({ children }) {
             .finally(() => setLoading(false));
     }, []);
 
-    console.log(user);
-
-    const login = async (credentials) => {
-        await api.post(API_ENDPOINTS.AUTH.LOGIN, credentials);
-        const res = await api.get(API_ENDPOINTS.AUTH.CHECK_AUTH);
+    const login = async (data) => {
+        const res = await api.post(API_ENDPOINTS.AUTH.LOGIN, data)
         setUser(res.data);
     }
+
+    const register = async (data) => {
+        const response = await api.post(API_ENDPOINTS.AUTH.REGISTER, data);
+        return response.data;
+    };
 
     const logout = async () => {
         await api.post(API_ENDPOINTS.AUTH.LOGOUT, {});
@@ -30,7 +32,7 @@ export function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
             {children}
         </AuthContext.Provider>
     )

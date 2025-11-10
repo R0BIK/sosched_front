@@ -1,8 +1,19 @@
 import UnderlinedButton from "../UnderlinedButton.jsx";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../context/AuthContext.jsx";
+import {useUserById} from "../../tanStackQueries/user/useUserById.js";
 
 export default function AuthorizedHeader() {
     const navigate = useNavigate();
+
+    const { user } = useAuth();
+    const userId = user?.data.id;
+
+    console.log(userId);
+
+
+    const { data: userData, isLoading, error } = useUserById(userId);
+
 
     return (
         <header className="fixed top-0 z-50 w-full h-18 items-center content-center grid grid-cols-3 px-9 py-3
