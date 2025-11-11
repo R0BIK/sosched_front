@@ -24,7 +24,7 @@ export default function AuthInputBox({
 
     return (
         <div
-            data-new-password={name === "newPassword" ? '' : undefined}
+            data-new-password={autoComplete === "new-password" ? '' : undefined}
             className="relative group flex flex-col w-full data-new-password:mb-[60px]"
             data-filled={values !== '' ? '' : undefined}
         >
@@ -80,7 +80,7 @@ export default function AuthInputBox({
                 <CrossIcon className="h-4 w-4 rotate-[-45deg] fill-transparent group-data-filled:rotate-0 group-data-filled:fill-current transition-all duration-300" />
             </button>
 
-            {name === "newPassword" && (
+            {autoComplete === "new-password" && (
                 <PasswordRules values={values} className="absolute top-10 left-1 list-none text-sm text-second-text opacity-0 invisible
                      transition-all duration-500 ease-in-out
                      peer-focus:opacity-100 peer-focus:visible peer-focus:top-[55px]

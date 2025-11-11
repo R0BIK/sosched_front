@@ -7,6 +7,7 @@ import { router } from './router/router.jsx'
 import "./i18n/i18n.js";
 import './index.css'
 import {AuthProvider} from "./context/AuthContext.jsx";
+import {SpaceProvider} from "./context/SpaceContext.jsx";
 
 const queryClient = new QueryClient()
 
@@ -14,7 +15,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
       <QueryClientProvider client={queryClient}>
           <AuthProvider>
-              <RouterProvider router={router} />
+              <SpaceProvider>
+                  <RouterProvider router={router} />
+              </SpaceProvider>
           </AuthProvider>
       </QueryClientProvider>
   </StrictMode>,

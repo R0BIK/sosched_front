@@ -6,13 +6,13 @@ import {useUserById} from "../../tanStackQueries/user/useUserById.js";
 export default function AuthorizedHeader() {
     const navigate = useNavigate();
 
-    const { user } = useAuth();
-    const userId = user?.data.id;
+    // const { user } = useAuth();
+    // const userId = user?.data.id;
 
-    console.log(userId);
+    // console.log(userId);
 
 
-    const { data: userData, isLoading, error } = useUserById(userId);
+    // const { data: userData, isLoading, error } = useUserById(userId);
 
 
     return (

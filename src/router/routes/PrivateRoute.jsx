@@ -8,7 +8,7 @@ export default function PrivateRoute({ children }) {
     // console.log(user);
 
     if (loading) return <p>Loading...</p>;
-    if (!user.data) return <Navigate to="/SignIn" replace />;
+    if (!user || !user.data) return <Navigate to="/SignIn" replace />;
 
     return children;
 }

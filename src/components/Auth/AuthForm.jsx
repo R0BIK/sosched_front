@@ -11,6 +11,7 @@ import HoverButton from "./HoverButton.jsx";
 import {AUTH_TYPES, getSignFormData, SPECIAL} from "../../../constants.js";
 import PropTypes from "prop-types";
 import {useAuth} from "../../context/AuthContext.jsx";
+import {useSpace} from "../../context/SpaceContext.jsx";
 
 export default function AuthForm(props = {}) {
     const { type, formFields } = props;
@@ -25,8 +26,22 @@ export default function AuthForm(props = {}) {
 
     const { login, register } = useAuth();
 
+    const { createSpace } = useSpace();
+
     const mutation = useMutation({
-        mutationFn: type === AUTH_TYPES.LOGIN ? login : register,
+        mutationFn: async (data) => {
+            if (type === AUTH_TYPES.LOGIN) {
+                await login(data);
+            } else {
+                const registerResult = await register(data);
+                const userId = registerResult?.data?.id;
+
+                if (userId) {
+                    await createSpace({name: "MySpace", domain: getDomain(data.email)});
+                    await login({email: data.email, password: data.password});
+                }
+            }
+        },
         onSuccess: () => {
             navigate("/schedule");
         },
@@ -35,6 +50,13 @@ export default function AuthForm(props = {}) {
             alert("Login failed");
         },
     });
+
+    const getDomain = (email) => {
+        if (!email || typeof email !== "string") return "";
+        const [name, domain] = email.split("@");
+        if (!name || !domain) return "";
+        return `${name}.${domain}`;
+    }
 
     const onSubmit = (e) => {
         const newErrors = handleSubmit(e);

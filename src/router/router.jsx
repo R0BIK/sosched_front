@@ -12,6 +12,7 @@ import Roles from "../pages/SpaceTabs/Roles.jsx";
 import Tags from "../pages/SpaceTabs/Tags.jsx";
 import {AUTH_TYPES} from "../../constants.js";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
+import {SpaceProvider} from "../context/SpaceContext.jsx";
 
 export const router = createBrowserRouter([
     {
@@ -24,7 +25,10 @@ export const router = createBrowserRouter([
         ],
     },
     {
-        element: <PrivateRoute><AuthorizedLayout /></PrivateRoute>,
+        element: (
+            <PrivateRoute>
+                    <AuthorizedLayout />
+            </PrivateRoute>),
         children: [
             { path: '/schedule', element: <Schedule /> },
             { path: '/home', element: <Schedule /> },

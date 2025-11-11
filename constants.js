@@ -11,6 +11,11 @@ export const API_ENDPOINTS = {
     SPACE: "/spaces",
 }
 
+export const LOCAL_STORAGE_NAMES = {
+    ACTIVE_SPACE: "activeSpace"
+}
+
+
 export const AUTH_TYPES = {
     LOGIN: "SIGN_IN",
     REGISTER: "SIGN_UP",
