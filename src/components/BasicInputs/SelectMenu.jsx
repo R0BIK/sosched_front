@@ -5,21 +5,52 @@ import { ChevronUpDownIcon } from '@heroicons/react/16/solid'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import PropTypes from "prop-types";
 import {SPECIAL} from "../../../constants.js";
+import {useEffect} from "react"; // Предполагается, что путь верный
 
-export default function SelectMenu({array, value, label, onChange, withColor}) {
+export default function SelectMenu({
+   array,
+   value,
+   label,
+   onChange = null,
+   withColor = false
+}) {
     const getColorByName = (name) =>
         Object.values(SPECIAL.tagColors).find(color => color.name === name)?.text;
 
+    // Находим полный объект по 'value', который теперь является 'id'
+    const selectedItem = array.length > 0
+        ? array.find(item => item.id === value) || array[0]
+        : null;
+
+    // Внутренний onChange Headless UI вернет весь объект
+    // Мы извлекаем из него 'id' и передаем дальше
+    const handleOnChange = (selectedObject) => {
+        if (onChange) {
+            onChange(selectedObject.id); // Передаем только ID
+        }
+    };
+
+    useEffect(() => {
+        if (!value && onChange && array.length > 0) {
+            onChange(array[0].id);
+        }
+    }, [value, onChange, array]);
+
     return (
-        <Listbox value={value} onChange={onChange}>
+        // Listbox теперь в качестве 'value' использует весь найденный объект
+        <Listbox value={selectedItem} onChange={handleOnChange}>
             <Label className="block text-xm font-semibold ml-1 font-noto text-gray-900">{label}</Label>
-            <div className="relative mt-2">
+            <div className="relative mt-2 font-noto">
                 <ListboxButton className="flex w-full justify-between cursor-default grid-cols-1 rounded-md bg-main-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
                     <div className="flex items-center">
-                        {withColor && (
-                            <div className="rounded-full w-4 h-4 mr-2" style={{backgroundColor: getColorByName(value)}}/>
+                        {withColor && selectedItem && ( // Проверяем, что selectedItem найден
+                            <div
+                                className="rounded-full w-4 h-4 mr-2"
+                                style={{backgroundColor: getColorByName(selectedItem.name)}} // Используем .name
+                            />
                         )}
-                        <span className="truncate pr-6">{value}</span>
+                        {/* Отображаем .name найденного объекта */}
+                        <span className="truncate pr-6">{selectedItem ? selectedItem.name : ''}</span>
                     </div>
                     <ChevronUpDownIcon
                         aria-hidden="true"
@@ -33,14 +64,20 @@ export default function SelectMenu({array, value, label, onChange, withColor}) {
                 >
                     {array.map((item) => (
                         <ListboxOption
-                            key={item}
-                            value={item}
-                            className="group relative flex items-center font-noto cursor-default py-2 pr-9 pl-3 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden"
+                            key={item.id} // Ключ по ID
+                            value={item}    // Значение - весь объект
+                            className="group relative flex items-center cursor-default py-2 pr-9 pl-3 text-gray-900 select-none data-focus:bg-indigo-600 data-focus:text-white data-focus:outline-hidden"
                         >
                             {withColor && (
-                                <div className="rounded-full w-4 h-4 mr-2" style={{backgroundColor: getColorByName(item)}}/>
+                                <div
+                                    className="rounded-full w-4 h-4 mr-2"
+                                    style={{backgroundColor: getColorByName(item.name)}} // Используем .name
+                                />
                             )}
-                            <span className="block font-noto truncate font-normal group-data-selected:font-semibold">{item}</span>
+                            {/* Отображаем .name */}
+                            <span className="block truncate font-normal group-data-selected:font-semibold">
+                                {item.name}
+                            </span>
 
                             <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 group-not-data-selected:hidden group-data-focus:text-white">
                                 <CheckIcon aria-hidden="true" className="size-5" />
@@ -54,9 +91,12 @@ export default function SelectMenu({array, value, label, onChange, withColor}) {
 }
 
 SelectMenu.propTypes = {
-    array: PropTypes.objectOf(PropTypes.string).isRequired,
-    value: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
+    array: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.any.isRequired,
+        name: PropTypes.string.isRequired
+    })).isRequired,
+    value: PropTypes.any,
+    label: PropTypes.string,
+    onChange: PropTypes.func,
     withColor: PropTypes.bool,
 }

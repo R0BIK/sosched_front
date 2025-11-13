@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-export default function EventView({ dateStart, dateEnd, position, event, index, onEventClick }) {
+export default function EventView({ dateStart, dateEnd, position, name, index, onEventClick }) {
     return (
         <button
             onClick={onEventClick}
@@ -9,7 +9,7 @@ export default function EventView({ dateStart, dateEnd, position, event, index, 
             <div className="absolute left-0 top-0 h-full w-[9px] bg-white/15 rounded-l-[8px]"></div>
 
             <p className="font-noto text-[14px] break-words overflow-hidden text-main-white" style={{maxHeight: position.tittleMaxHeight}}>
-                {event.title}
+                {name}
             </p>
             <p className="text-gray-200 mt-[6px] text-[14px] font-noto">
                 {dateStart.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {dateEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -29,9 +29,5 @@ EventView.propTypes = {
         tittleMaxHeight: PropTypes.number.isRequired,
     }).isRequired,
     index: PropTypes.number.isRequired,
-    event: PropTypes.shape({
-        title: PropTypes.string.isRequired,
-        start: PropTypes.string.isRequired,
-        end: PropTypes.string.isRequired,
-    }).isRequired,
+    name: PropTypes.string.isRequired,
 };

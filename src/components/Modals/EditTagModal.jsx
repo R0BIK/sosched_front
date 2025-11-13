@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-import ClassicInputBox from "../BasicInputs/ClassicInputBox.jsx";
+import InputBox from "../BasicInputs/InputBox.jsx";
 import SelectMenu from "../BasicInputs/SelectMenu.jsx";
 import { SPECIAL } from "../../../constants.js";
 import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx"; // ✅ обёртка для всех модалок
@@ -33,7 +33,7 @@ export default function EditTagModal({ handleClose, tag, handleSaveTag, handleDe
             onDelete={() => handleDeleteTag(tag.id)}
         >
             <div className="flex w-full mt-5 gap-20">
-                <ClassicInputBox
+                <InputBox
                     id="fullName"
                     type="text"
                     name="Повна назва тегу"
@@ -42,7 +42,7 @@ export default function EditTagModal({ handleClose, tag, handleSaveTag, handleDe
                     className="w-full"
                     onChange={(e) => handleChange("name", e.target.value)}
                 />
-                <ClassicInputBox
+                <InputBox
                     id="shortName"
                     type="text"
                     name="Коротка назва тегу"

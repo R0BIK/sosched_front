@@ -85,8 +85,8 @@ export default function WeekCalendar({firstWeekDate, selectedDay, events, handle
                 </div>
 
                 {events?.map((event, i) => {
-                    const dateStart = new Date(event.start);
-                    const dateEnd = new Date(event.end);
+                    const dateStart = new Date(event.dateStart);
+                    const dateEnd = new Date(event.dateEnd);
 
                     if (!isEventInCurrentWeek(dateStart, dateEnd, firstWeekDate)) return null;
 

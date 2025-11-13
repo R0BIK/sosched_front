@@ -1,5 +1,5 @@
-import api from "../api/axios.js";
 import { API_ENDPOINTS } from "../../constants.js";
+import {api} from "../api/apiClient.js";
 
 export const createSpace = async (data) => {
     try {

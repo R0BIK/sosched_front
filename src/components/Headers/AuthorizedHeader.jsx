@@ -2,18 +2,19 @@ import UnderlinedButton from "../UnderlinedButton.jsx";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../context/AuthContext.jsx";
 import {useUserById} from "../../tanStackQueries/user/useUserById.js";
+import {useSpace} from "../../context/SpaceContext.jsx";
 
 export default function AuthorizedHeader() {
     const navigate = useNavigate();
 
-    // const { user } = useAuth();
-    // const userId = user?.data.id;
+    const { user } = useAuth();
 
-    // console.log(userId);
+    const { activeSpace } = useSpace()
 
+    const domain = activeSpace?.domain;
+    const userId = user?.id;
 
-    // const { data: userData, isLoading, error } = useUserById(userId);
-
+    const { data: userData, isLoading, error } = useUserById(userId, domain);
 
     return (
         <header className="fixed top-0 z-50 w-full h-18 items-center content-center grid grid-cols-3 px-9 py-3
@@ -35,7 +36,7 @@ export default function AuthorizedHeader() {
                     className="flex gap-[15px] items-center relative group cursor-pointer">
                     <div className="flex flex-col">
                         <p className="font-noto text-main-black/90 group-hover:text-main-black">
-                            Цапурда Єгор Дмитрович
+                            {userData?.lastName} {userData?.firstName} {userData?.patronymic}
                         </p>
                         <div className="flex gap-[10px] justify-end items-center">
                             <p className="font-noto text-second-text text-[14px] group-hover:text-main-black">

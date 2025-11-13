@@ -1,154 +1,169 @@
 import WeekCalendar from "../components/Schedule/WeekCalendar.jsx";
-import {useCallback, useEffect, useState} from "react";
+import { useCallback, useState } from "react";
 import MonthCalendar from "../components/Schedule/MonthCalendar.jsx";
 import TabComponent from "../components/TabComponent.jsx";
+import { useSpace } from "../context/SpaceContext.jsx";
+import { useGetEvents } from "../tanStackQueries/event/useGetEvents.js";
+import { useGetEventTypes } from "../tanStackQueries/eventType/useGetEventTypes.js";
+import CreateEvent from "../components/Schedule/CreateEvent.jsx";
+import Drawer from "../components/Schedule/Drawer.jsx";
+import {useCreateEvent} from "../tanStackQueries/event/useCreateEvent.js";
 
 export default function Schedule() {
-    const events1 = [
-        // Понеділок (2025-10-13)
-        {
-            title: "Програмування мовою Java",
-            start: "2025-10-13T07:30:00.000Z",
-            end: "2025-10-13T09:00:00.000Z",
-        },
-        {
-            title: "Комп'ютерна графіка",
-            start: "2025-10-13T09:30:00.000Z",
-            end: "2025-10-13T11:00:00.000Z",
-        },
-        {
-            title: "Філософія науки",
-            start: "2025-10-13T13:00:00.000Z",
-            end: "2025-10-13T14:30:00.000Z",
-        },
+    const { switchSpace, spaces, activeSpace } = useSpace();
+    const domain = activeSpace?.domain;
 
-        // Вівторок (2025-10-14)
-        {
-            title: "Розробка мобільних застосувань під iOS",
-            start: "2025-10-14T08:00:00.000Z",
-            end: "2025-10-14T09:30:00.000Z",
-        },
-        {
-            title: "Тестування програмного забезпечення",
-            start: "2025-10-14T10:00:00.000Z",
-            end: "2025-10-14T11:30:00.000Z",
-        },
-        {
-            title: "Математичні методи в ІТ",
-            start: "2025-10-14T15:00:00.000Z",
-            end: "2025-10-14T16:30:00.000Z",
-        },
+    const { mutate: createEventMutate } = useCreateEvent(domain);
 
-        // Середа (2025-10-15)
-        {
-            title: "Бази даних та SQL",
-            start: "2025-10-15T07:45:00.000Z",
-            end: "2025-10-15T09:15:00.000Z",
-        },
-        {
-            title: "Архітектура комп'ютерних систем",
-            start: "2025-10-15T10:00:00.000Z",
-            end: "2025-10-15T11:30:00.000Z",
-        },
-        {
-            title: "Основи UX/UI дизайну",
-            start: "2025-10-15T14:30:00.000Z",
-            end: "2025-10-15T16:00:00.000Z",
-        },
-
-        // Четвер (2025-10-16)
-        {
-            title: "Технології та засоби розробки комп'ютерної графіки та мультимедіа",
-            start: "2025-10-16T08:15:00.000Z",
-            end: "2025-10-16T09:45:00.000Z",
-        },
-        {
-            title: "Розробка мобільних застосувань під iOS",
-            start: "2025-10-16T10:15:00.000Z",
-            end: "2025-10-16T11:45:00.000Z",
-        },
-        {
-            title: "Штучний інтелект і машинне навчання",
-            start: "2025-10-16T13:45:00.000Z",
-            end: "2025-10-16T15:15:00.000Z",
-        },
-
-        // П’ятниця (2025-10-17)
-        {
-            title: "Комп'ютерні мережі",
-            start: "2025-10-17T07:30:00.000Z",
-            end: "2025-10-17T09:00:00.000Z",
-        },
-        {
-            title: "Теорія алгоритмів",
-            start: "2025-10-17T10:00:00.000Z",
-            end: "2025-10-17T11:30:00.000Z",
-        },
-        {
-            title: "Операційні системи",
-            start: "2025-10-17T14:00:00.000Z",
-            end: "2025-10-17T15:30:00.000Z",
-        },
-        {
-            title: "Інженерія програмного забезпечення",
-            start: "2025-10-17T16:00:00.000Z",
-            end: "2025-10-17T17:30:00.000Z",
-        },
-
-        // Субота (2025-10-18)
-        {
-            title: "Менеджмент ІТ-проєктів",
-            start: "2025-10-18T08:30:00.000Z",
-            end: "2025-10-18T10:00:00.000Z",
-        },
-        {
-            title: "Командна розробка та Git",
-            start: "2025-10-18T10:30:00.000Z",
-            end: "2025-10-18T12:00:00.000Z",
-        },
-        {
-            title: "UI-прототипування",
-            start: "2025-10-18T13:30:00.000Z",
-            end: "2025-10-18T15:00:00.000Z",
-        },
-
-        // Неділя (2025-10-19)
-        {
-            title: "Самостійна робота над курсовим проєктом",
-            start: "2025-10-19T09:00:00.000Z",
-            end: "2025-10-19T11:00:00.000Z",
-        },
-        {
-            title: "Підготовка до тестів",
-            start: "2025-10-19T12:00:00.000Z",
-            end: "2025-10-19T13:30:00.000Z",
-        },
-        {
-            title: "Робота над дипломом",
-            start: "2025-10-19T15:00:00.000Z",
-            end: "2025-10-19T17:00:00.000Z",
-        },
-    ];
-
+    // -------------------------------
+    // 📅 Calendar State
+    // -------------------------------
     const [firstWeekDate, setFirstWeekDate] = useState(getFirstWeekDate(new Date()));
     const [selectedDay, setSelectedDay] = useState(firstWeekDate);
     const [displayedMonth, setDisplayedMonth] = useState(firstWeekDate);
-    const [events, setEvents] = useState(events1);
 
-    useEffect(() => {
-
-    }, [firstWeekDate]);
-
-    function getFirstWeekDate(date) {
-        const day = date.getDay() === 0 ? 6 : date.getDay() - 1;
-        const monday = new Date(date);
-        monday.setDate(date.getDate() - day);
-        monday.setHours(0, 0, 0, 0);
-        date.setHours(0, 0, 0, 0);
-
-        return monday.toISOString();
+    const dataForE = {
+        dateFrom: firstWeekDate,
+        dateTo: new Date(new Date(firstWeekDate).setDate(new Date(firstWeekDate).getDate() + 6)).toISOString()
     }
 
+    const { data: eventsData } = useGetEvents(dataForE, domain);
+
+    const events = eventsData?.items;
+    console.log(events);
+
+    // -------------------------------
+    // 🧾 Drawer + Form State
+    // -------------------------------
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isRepeating, setIsRepeating] = useState(false);
+
+    const [eventForm, setEventForm] = useState({
+        name: "",
+        type: "",
+        location: "",
+        date: "",
+        timeStart: "",
+        timeEnd: "",
+    });
+
+    const [repeatRule, setRepeatRule] = useState({
+        period: "Day",
+        count: 1,
+        repeatEnd: ""
+    });
+
+    const handleRepeatChange = (key, value) => {
+        setRepeatRule((prev) => ({ ...prev, [key]: value }));
+    };
+
+    const handleRepeatToggle = (e) => {
+        setIsRepeating(e.target.checked);
+    };
+
+    // -------------------------------
+    // 🧠 Controlled Inputs
+    // -------------------------------
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setEventForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSelectChange = (value) => {
+        setEventForm((prev) => ({ ...prev, type: value }));
+    };
+
+    // -------------------------------
+    // 🧩 Submit / Cancel
+    // -------------------------------
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (!eventForm.date || !eventForm.timeStart || !eventForm.timeEnd) {
+            alert("Будь ласка, вкажіть дату та час події");
+            return;
+        }
+
+        // -------------------------------
+        // 🔹 Объединяем дату и время
+        // -------------------------------
+        const dateStart = new Date(`${eventForm.date}T${eventForm.timeStart}`);
+        const dateEnd = new Date(`${eventForm.date}T${eventForm.timeEnd}`);
+
+        // -------------------------------
+        // 🔹 RepeatInfo
+        // -------------------------------
+        let repeatInfo = null;
+        if (isRepeating) {
+            repeatInfo = {
+                RepeatNumber: repeatRule.count,
+                RepeatType: repeatRule.period, // "Day" | "Week" | "Month"
+                RepeatEnd: repeatRule.repeatEnd ? new Date(repeatRule.repeatEnd) : null
+            };
+        }
+
+        // -------------------------------
+        // 🔹 Собираем объект для бэка
+        // -------------------------------
+        const requestData = {
+            Name: eventForm.name,
+            Location: eventForm.location || null,
+            // Description: "", // можно добавить поле Description в форму, пока пустое
+            Color: "#000000", // можно сделать выбор цвета позже, пока дефолт
+            DateStart: dateStart.toISOString(),
+            DateEnd: dateEnd.toISOString(),
+            EventTypeId: eventForm.type,
+            // CoordinatorId: null, // пока нет
+            RepeatInfo: repeatInfo,
+            Confirmed: false
+        };
+
+        console.log(requestData);
+
+        createEventMutate(requestData);
+
+        setIsDrawerOpen(false);
+
+        // очищаем форму
+        setEventForm({
+            name: "",
+            type: "",
+            location: "",
+            date: "",
+            timeStart: "",
+            timeEnd: "",
+        });
+        setIsRepeating(false);
+        setRepeatRule({
+            period: "Day",
+            count: 1,
+            repeatEnd: ""
+        });
+    };
+
+    const handleCancel = (e) => {
+        e.preventDefault();
+        setIsDrawerOpen(false);
+        setEventForm({
+            name: "",
+            type: "",
+            location: "",
+            date: "",
+            timeStart: "",
+            timeEnd: "",
+        });
+        setIsRepeating(false);
+    };
+
+    // -------------------------------
+    // 🔗 API: event types
+    // -------------------------------
+    const { data: eventTypes } = useGetEventTypes();
+    const eventTypesArray = eventTypes?.items?.map((item) => ({ id: item.id, name: item.name }))
+
+    // -------------------------------
+    // 📅 Calendar Handlers
+    // -------------------------------
     const handleDayClick = useCallback((date) => {
         const day = getFirstWeekDate(date);
         setSelectedDay(date.toISOString());
@@ -157,7 +172,7 @@ export default function Schedule() {
     }, []);
 
     const handleChevronClick = useCallback((isNext) => {
-        setFirstWeekDate(prev => {
+        setFirstWeekDate((prev) => {
             const newDate = new Date(prev);
             newDate.setDate(newDate.getDate() + (isNext ? 7 : -7));
             setSelectedDay(newDate.toISOString());
@@ -167,31 +182,93 @@ export default function Schedule() {
     }, []);
 
     const handleMonthChange = useCallback((isNext) => {
-        setDisplayedMonth(prev => {
+        setDisplayedMonth((prev) => {
             const newMonth = new Date(prev);
             newMonth.setMonth(newMonth.getMonth() + (isNext ? 1 : -1));
             return newMonth.toISOString();
         });
     }, []);
 
+    const toggleDrawer = () => setIsDrawerOpen((prev) => !prev);
 
+    // -------------------------------
+    // ⚙️ Render
+    // -------------------------------
     return (
         <div className="flex-row flex h-full overflow-hidden">
-            <div className="p-5 flex flex-col gap-3 border-r-1 border-gray-200 ">
-                <div className="flex justify-center">
-                    <MonthCalendar selectedDay={selectedDay} displayedMonth={displayedMonth} handleDayClick={handleDayClick} handleMonthChange={handleMonthChange} />
+            {/* Left Sidebar */}
+            <div className="p-5 flex flex-col justify-between border-r border-gray-200">
+                <div>
+                    <div className="flex justify-center">
+                        <MonthCalendar
+                            selectedDay={selectedDay}
+                            displayedMonth={displayedMonth}
+                            handleDayClick={handleDayClick}
+                            handleMonthChange={handleMonthChange}
+                        />
+                    </div>
+                    <div className="font-noto text-xm mt-10 font-extralight">
+                        <p className="text-second-text ml-4 mb-1">Простори</p>
+                        {spaces.map((space) => (
+                            <TabComponent
+                                key={space.id}
+                                text={space.name}
+                                initial={getInitial(space.domain)}
+                                isActive={activeSpace?.domain === space.domain}
+                                onClick={() => switchSpace(space)}
+                            />
+                        ))}
+                    </div>
                 </div>
-                <div className="font-noto text-xm mt-10 font-extralight">
-                    <p className="text-second-text ml-4 mb-1">
-                        Простори
-                    </p>
-                    <TabComponent text="КПІ" initial="A" to="/mySpace"/>
-                    <TabComponent text="Мій" initial="B" to="/mySpace"/>
-                    <TabComponent text="MySpace" initial="C" to="/mySpace"/>
-                </div>
+                <button
+                    type="button"
+                    onClick={toggleDrawer}
+                    className="flex justify-center items-center whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                    Створити подію
+                </button>
             </div>
-            <WeekCalendar events={events} firstWeekDate={firstWeekDate} selectedDay={selectedDay} handleDayClick={handleDayClick} onChevronClick={handleChevronClick} />
+
+            {/* Main Calendar + Drawer */}
+            <div className="flex-1 flex overflow-hidden justify-between">
+                <WeekCalendar
+                    events={events}
+                    firstWeekDate={firstWeekDate}
+                    selectedDay={selectedDay}
+                    handleDayClick={handleDayClick}
+                    onChevronClick={handleChevronClick}
+                />
+
+                <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+                    <CreateEvent
+                        eventForm={eventForm}
+                        repeatRule={repeatRule}
+                        isRepeating={isRepeating}
+                        eventTypes={eventTypesArray}
+                        handleInputChange={handleInputChange}
+                        handleSelectChange={handleSelectChange}
+                        handleRepeatChange={handleRepeatChange}
+                        handleRepeatToggle={handleRepeatToggle}
+                        handleSubmit={handleSubmit}
+                        handleCancel={handleCancel}
+                    />
+                </Drawer>
+            </div>
         </div>
-    )
+    );
 }
 
+// -------------------------------
+// 🧮 Helpers
+// -------------------------------
+function getInitial(name) {
+    return name[0].toUpperCase();
+}
+
+function getFirstWeekDate(date) {
+    const day = date.getDay() === 0 ? 6 : date.getDay() - 1;
+    const monday = new Date(date);
+    monday.setDate(date.getDate() - day);
+    monday.setHours(0, 0, 0, 0);
+    return monday.toISOString();
+}

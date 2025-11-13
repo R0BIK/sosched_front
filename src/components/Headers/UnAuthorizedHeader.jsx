@@ -3,7 +3,7 @@ import DropDownMenu from "../DropDownMenu/DropDownMenu.jsx";
 import { LOCALES_TEXT } from "../../i18n/resources.js";
 import logo from '../../img/1024.png'
 
-export default function Header() {
+export default function UnAuthorizedHeader() {
     const { i18n, t } = useTranslation();
 
     const changeLanguage = (key) => {

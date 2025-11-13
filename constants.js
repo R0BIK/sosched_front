@@ -9,6 +9,8 @@ export const API_ENDPOINTS = {
     },
     USER: "/users",
     SPACE: "/spaces",
+    EVENT: "/events",
+    EVENT_TYPE: "/eventTypes",
 }
 
 export const LOCAL_STORAGE_NAMES = {

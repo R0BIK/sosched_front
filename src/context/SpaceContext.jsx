@@ -1,9 +1,8 @@
 import PropTypes from "prop-types";
 import {createContext, useContext, useEffect, useState} from "react";
 import {useAuth} from "./AuthContext.jsx";
-import api from "../api/axios.js";
 import {API_ENDPOINTS, LOCAL_STORAGE_NAMES} from "../../constants.js";
-import {unpackResponse} from "../utils/unpackResponse.js";
+import {api} from "../api/apiClient.js";
 
 const SpaceContext = createContext();
 
@@ -19,17 +18,10 @@ export function SpaceProvider({ children }) {
         setLoading(true);
         api.get(API_ENDPOINTS.SPACE)
             .then((res) => {
-                const { data, error, pagination } = unpackResponse(res.data);
-                if (error) {
-                    console.error("Error unpacking spaces:", error);
-                    return;
-                }
-
-                setSpaces(data || []);
+                setSpaces(res.data.items || []);
                 const saved = localStorage.getItem(LOCAL_STORAGE_NAMES.ACTIVE_SPACE);
-                const defaultSpace =
-                    (pagination?.data.find(s => s.domain === saved) || data[0]) ?? null;
-                setActiveSpace(defaultSpace);
+                const defaultSpace = res.data.items.find(d => d.domain === saved) || res.data.items[0];
+                switchSpace(defaultSpace);
             })
             .catch((err) => console.error("Error fetching spaces:", err))
             .finally(() => setLoading(false));

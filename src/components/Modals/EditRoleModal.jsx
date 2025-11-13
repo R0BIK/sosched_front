@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-import ClassicInputBox from "../BasicInputs/ClassicInputBox.jsx";
+import InputBox from "../BasicInputs/InputBox.jsx";
 
 import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx"; // 🔹 добавили обёртку
 
@@ -25,7 +25,7 @@ export default function EditRoleModal({ handleClose, role, handleSaveRole, handl
         >
             {/* --- Контент внутри модалки --- */}
             <div className="flex w-full gap-20">
-                <ClassicInputBox
+                <InputBox
                     id="fullName"
                     type="text"
                     name="Назва ролі"
@@ -34,7 +34,7 @@ export default function EditRoleModal({ handleClose, role, handleSaveRole, handl
                     className="w-full"
                     onChange={(e) => handleChange("name", e.target.value)}
                 />
-                <ClassicInputBox
+                <InputBox
                     id="shortName"
                     type="text"
                     name="Коротка назва тегу"
