@@ -11,10 +11,18 @@ export const API_ENDPOINTS = {
     SPACE: "/spaces",
     EVENT: "/events",
     EVENT_TYPE: "/eventTypes",
+    TAG: "/tags",
+    TAG_TYPE: "/tagTypes",
 }
 
 export const LOCAL_STORAGE_NAMES = {
     ACTIVE_SPACE: "activeSpace"
+}
+
+export const DRAWER_MODES = {
+    CREATE: "create",
+    VIEW: "view",
+    EDIT: "edit"
 }
 
 
@@ -106,7 +114,7 @@ export const SPECIAL = {
         SPACE: ' ',
     },
 
-    tagColors: {
+    TAG_COLORS: {
         gray: {
             bg: "#f3f4f6",   // bg-gray-100
             text: "#4b5563", // text-gray-600
@@ -149,7 +157,7 @@ export const SPECIAL = {
         },
     },
 
-    KeyboardKey: {
+    KEYBOARD_KEYS: {
         Enter: {
             name: 'Enter',
             KeyboardEvent: new KeyboardEvent('keydown', {

@@ -1,5 +1,5 @@
-import TabComponent from "../components/TabComponent.jsx";
-import {LockIcon, PersonIcon} from "../img/svg/Icons.jsx";
+import TabComponent from "../../components/TabComponent.jsx";
+import {LockIcon, PersonIcon} from "../../img/svg/Icons.jsx";
 
 export default function Profile() {
     return (

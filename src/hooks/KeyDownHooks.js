@@ -25,14 +25,14 @@ export const useKeyDownEnterHandler = () => {
         } = props;
 
 
-        if (e.key === SPECIAL.KeyboardKey.Enter.name) {
+        if (e.key === SPECIAL.KEYBOARD_KEYS.Enter.name) {
             e.preventDefault();
 
             if (index < formFields.length - 1) {
                 inputRefs.current[index + 1].focus();
             } else {
                 document.activeElement.blur();
-                buttonRef.current?.dispatchEvent(SPECIAL.KeyboardKey.Enter.KeyboardEvent);
+                buttonRef.current?.dispatchEvent(SPECIAL.KEYBOARD_KEYS.Enter.KeyboardEvent);
             }
         }
     }, []);

@@ -1,11 +1,24 @@
 import PropTypes from "prop-types";
 
 import InitialBadge from "./Badges/InitialBadge.jsx";
+import {useLocation, useNavigate} from "react-router-dom";
 
-export default function TabComponent({ text, Icon, initial, onClick, isActive }) {
+export default function TabComponent({ text, Icon, initial, onClick, to, isActive : externalActive }) {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+
     const handleClick = () => {
-        if (onClick) onClick();
-    }
+        if (to) {
+            navigate(to);
+        } else if (onClick) {
+            onClick();
+        }
+    };
+
+    const isActive = to
+        ? location.pathname === to || location.pathname.startsWith(to + "/")
+        : externalActive;
 
     return (
         <button
@@ -31,5 +44,6 @@ TabComponent.propTypes = {
     Icon: PropTypes.elementType,
     initial: PropTypes.string,
     onClick: PropTypes.func,
+    to: PropTypes.string,
     isActive: PropTypes.bool,
 }

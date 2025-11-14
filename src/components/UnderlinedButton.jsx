@@ -4,7 +4,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 export default function UnderlinedButton({ text, to }) {
     const navigate = useNavigate();
     const location = useLocation();
-    const isActive = location.pathname === to;
+    const isActive = location.pathname === to || location.pathname.startsWith(to + "/");
 
     return (
         <button

@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-import Badge from "../../components/Badges/Badge.jsx";
+import Badge from "../../../../components/Badges/Badge.jsx";
 
 const tags1 = [
     {id: "1", name: "IP-33", members: "20", tag: "ІП-33", tagColor: "red"},

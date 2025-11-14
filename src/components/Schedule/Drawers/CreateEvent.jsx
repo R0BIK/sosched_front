@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
-import InputBox from "../BasicInputs/InputBox.jsx";
-import SelectMenu from "../BasicInputs/SelectMenu.jsx";
-import { DateBox } from "../BasicInputs/DateBox.jsx";
-import { TimeBox } from "../BasicInputs/TimeBox.jsx";
-import Checkbox from "../BasicInputs/CheckBox.jsx";
-import RepeatSelector from "./RepeatSelector.jsx";
+import InputBox from "../../BasicInputs/InputBox.jsx";
+import SelectMenu from "../../BasicInputs/SelectMenu.jsx";
+import { DateBox } from "../../BasicInputs/DateBox.jsx";
+import { TimeBox } from "../../BasicInputs/TimeBox.jsx";
+import Checkbox from "../../BasicInputs/CheckBox.jsx";
+import RepeatSelector from "../RepeatSelector.jsx";
 
 export default function CreateEvent({
     eventForm,
@@ -80,7 +80,7 @@ export default function CreateEvent({
                         onChange={handleRepeatChange}
                     />
                 )}
-                <div className="flex flex-row gap-4 mt-10">
+                <div className="flex flex-row gap-4 my-10">
                     <button
                         type="submit"
                         className="flex w-full justify-center items-center whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500"

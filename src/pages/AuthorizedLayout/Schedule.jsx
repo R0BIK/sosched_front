@@ -1,13 +1,14 @@
-import WeekCalendar from "../components/Schedule/WeekCalendar.jsx";
-import { useCallback, useState } from "react";
-import MonthCalendar from "../components/Schedule/MonthCalendar.jsx";
-import TabComponent from "../components/TabComponent.jsx";
-import { useSpace } from "../context/SpaceContext.jsx";
-import { useGetEvents } from "../tanStackQueries/event/useGetEvents.js";
-import { useGetEventTypes } from "../tanStackQueries/eventType/useGetEventTypes.js";
-import CreateEvent from "../components/Schedule/CreateEvent.jsx";
-import Drawer from "../components/Schedule/Drawer.jsx";
-import {useCreateEvent} from "../tanStackQueries/event/useCreateEvent.js";
+import WeekCalendar from "../../components/Schedule/WeekCalendar.jsx";
+import {useCallback, useMemo, useState} from "react";
+import MonthCalendar from "../../components/Schedule/MonthCalendar.jsx";
+import TabComponent from "../../components/TabComponent.jsx";
+import { useSpace } from "../../context/SpaceContext.jsx";
+import { useGetEvents } from "../../tanStackQueries/event/useGetEvents.js";
+import { useGetEventTypes } from "../../tanStackQueries/eventType/useGetEventTypes.js";
+import CreateEvent from "../../components/Schedule/Drawers/CreateEvent.jsx";
+import Drawer from "../../components/Schedule/Drawers/Drawer.jsx";
+import {useCreateEvent} from "../../tanStackQueries/event/useCreateEvent.js";
+import {DRAWER_MODES} from "../../../constants.js";
 
 export default function Schedule() {
     const { switchSpace, spaces, activeSpace } = useSpace();
@@ -22,12 +23,12 @@ export default function Schedule() {
     const [selectedDay, setSelectedDay] = useState(firstWeekDate);
     const [displayedMonth, setDisplayedMonth] = useState(firstWeekDate);
 
-    const dataForE = {
+    const dataForEvents = useMemo(() => ({
         dateFrom: firstWeekDate,
         dateTo: new Date(new Date(firstWeekDate).setDate(new Date(firstWeekDate).getDate() + 6)).toISOString()
-    }
+    }), [firstWeekDate]);
 
-    const { data: eventsData } = useGetEvents(dataForE, domain);
+    const { data: eventsData } = useGetEvents(dataForEvents, domain);
 
     const events = eventsData?.items;
     console.log(events);
@@ -35,7 +36,12 @@ export default function Schedule() {
     // -------------------------------
     // 🧾 Drawer + Form State
     // -------------------------------
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [drawerMode, setDrawerMode] = useState(null);
+    const isDrawerOpen = drawerMode !== null;
+
+    const [selectedEvent, setSelectedEvent] = useState(null);
+
+
     const [isRepeating, setIsRepeating] = useState(false);
 
     const [eventForm, setEventForm] = useState({
@@ -122,7 +128,7 @@ export default function Schedule() {
 
         createEventMutate(requestData);
 
-        setIsDrawerOpen(false);
+        setDrawerMode(null);
 
         // очищаем форму
         setEventForm({
@@ -143,7 +149,7 @@ export default function Schedule() {
 
     const handleCancel = (e) => {
         e.preventDefault();
-        setIsDrawerOpen(false);
+        setDrawerMode(null);
         setEventForm({
             name: "",
             type: "",
@@ -189,8 +195,6 @@ export default function Schedule() {
         });
     }, []);
 
-    const toggleDrawer = () => setIsDrawerOpen((prev) => !prev);
-
     // -------------------------------
     // ⚙️ Render
     // -------------------------------
@@ -222,14 +226,13 @@ export default function Schedule() {
                 </div>
                 <button
                     type="button"
-                    onClick={toggleDrawer}
+                    onClick={() => setDrawerMode(DRAWER_MODES.CREATE)}
                     className="flex justify-center items-center whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
                     Створити подію
                 </button>
             </div>
 
-            {/* Main Calendar + Drawer */}
             <div className="flex-1 flex overflow-hidden justify-between">
                 <WeekCalendar
                     events={events}
@@ -237,9 +240,13 @@ export default function Schedule() {
                     selectedDay={selectedDay}
                     handleDayClick={handleDayClick}
                     onChevronClick={handleChevronClick}
+                    onEventClick={(event) => {
+                        setSelectedEvent(event);
+                        setDrawerMode(DRAWER_MODES.VIEW);
+                    }}
                 />
 
-                <Drawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+                <Drawer isOpen={isDrawerOpen} onClose={() => setDrawerMode(null)}>
                     <CreateEvent
                         eventForm={eventForm}
                         repeatRule={repeatRule}

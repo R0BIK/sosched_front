@@ -2,8 +2,8 @@ import PropTypes from "prop-types";
 import {SPECIAL} from "../../../constants.js";
 
 export default function Badge({text, color}) {
-    const bgStyle = SPECIAL.tagColors[color].bg || SPECIAL.tagColors.gray.bg;
-    const textStyle = SPECIAL.tagColors[color].text || SPECIAL.tagColors.gray.text;
+    const bgStyle = SPECIAL.TAG_COLORS[color].bg || SPECIAL.TAG_COLORS.gray.bg;
+    const textStyle = SPECIAL.TAG_COLORS[color].text || SPECIAL.TAG_COLORS.gray.text;
 
     return (
         <span className="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium" style={{backgroundColor: bgStyle, color: textStyle}}>

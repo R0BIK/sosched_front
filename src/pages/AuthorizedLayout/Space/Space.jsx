@@ -1,10 +1,11 @@
 import {Outlet} from "react-router-dom";
-import TabComponent from "../components/TabComponent.jsx";
+import TabComponent from "../../../components/TabComponent.jsx";
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import LabelIcon from '@mui/icons-material/Label';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import GppGoodIcon from '@mui/icons-material/GppGood';
+import StyleIcon from '@mui/icons-material/Style';
 
 export default function Space() {
     return (
@@ -14,6 +15,7 @@ export default function Space() {
                     <TabComponent text="Учасники" Icon={PeopleAltIcon} to="/mySpace/members" />
                     <TabComponent text="Ролі" Icon={GppGoodIcon} to="/mySpace/roles" />
                     <TabComponent text="Теги" Icon={LabelIcon} to="/mySpace/tags" />
+                    <TabComponent text="Типи тегів" Icon={StyleIcon} to="/mySpace/tagTypes" />
                 </div>
                 <div className="mt-auto">
                     <TabComponent text="Налаштування" Icon={SettingsIcon} to="/mySpace/settings" />

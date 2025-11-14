@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
-import {EditIcon} from "../../img/svg/Icons.jsx";
-import EditRoleModal from "../../components/Modals/EditRoleModal.jsx";
-import {useLockBodyScroll} from "../../hooks/useLockBodyScroll.js";
+import {EditIcon} from "../../../../img/svg/Icons.jsx";
+import EditRoleModal from "../../../../components/Modals/EditRoleModal.jsx";
+import {useLockBodyScroll} from "../../../../hooks/useLockBodyScroll.js";
 
 const permissions = [
     {id: 1, name: "Міняти ролі", description: "Change role", isGranted: "true" },

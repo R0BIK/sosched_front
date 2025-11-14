@@ -15,7 +15,7 @@ export default function SelectMenu({
    withColor = false
 }) {
     const getColorByName = (name) =>
-        Object.values(SPECIAL.tagColors).find(color => color.name === name)?.text;
+        Object.values(SPECIAL.TAG_COLORS).find(color => color.name === name)?.text;
 
     // Находим полный объект по 'value', который теперь является 'id'
     const selectedItem = array.length > 0
@@ -31,10 +31,11 @@ export default function SelectMenu({
     };
 
     useEffect(() => {
-        if (!value && onChange && array.length > 0) {
+        if (value == null && array.length > 0) {
             onChange(array[0].id);
         }
-    }, [value, onChange, array]);
+        // вызывается только при первом появлении array
+    }, [array.length]);
 
     return (
         // Listbox теперь в качестве 'value' использует весь найденный объект
@@ -49,7 +50,6 @@ export default function SelectMenu({
                                 style={{backgroundColor: getColorByName(selectedItem.name)}} // Используем .name
                             />
                         )}
-                        {/* Отображаем .name найденного объекта */}
                         <span className="truncate pr-6">{selectedItem ? selectedItem.name : ''}</span>
                     </div>
                     <ChevronUpDownIcon

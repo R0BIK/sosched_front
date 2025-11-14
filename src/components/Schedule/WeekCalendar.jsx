@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import EventView from "./EventView.jsx";
 import { ChevronLeftIcon, ChevronRightIcon } from "../../img/svg/Icons.jsx";
-import EventPopup from "./EventPopup.jsx";
 
-export default function WeekCalendar({firstWeekDate, selectedDay, events, handleDayClick, onChevronClick}) {
+export default function WeekCalendar({firstWeekDate, selectedDay, events, onEventClick, handleDayClick, onChevronClick}) {
     const weekDate = new Date(firstWeekDate);
     const startHour = 7;
 
     const [now, setNow] = useState(new Date());
-    const [activeEvent, setActiveEvent] = useState(null);
 
     useEffect(() => {
         const timer = setInterval(() => setNow(new Date()), 60000);
@@ -19,7 +17,6 @@ export default function WeekCalendar({firstWeekDate, selectedDay, events, handle
 
     return (
         <div className="relative w-full no-scrollbar overflow-x-auto max-w-[1130px] pt-[15px]">
-            <EventPopup event={activeEvent} onClose={() => setActiveEvent(null)} />
             <div className="flex gap-[40px] items-center h-max">
                 <button onClick={() => {onChevronClick(false)}}
                     className="justify-start ml-[80px] p-[8px] cursor-pointer">
@@ -93,7 +90,7 @@ export default function WeekCalendar({firstWeekDate, selectedDay, events, handle
                     const position = getEventPosition(dateStart, dateEnd);
 
                     return (
-                        <EventView onEventClick={() => setActiveEvent(event)} dateStart={dateStart} dateEnd={dateEnd} position={position} key={i} index={i} event={event} />
+                        <EventView onEventClick={() => onEventClick(event)} dateStart={dateStart} dateEnd={dateEnd} position={position} key={i} index={i} name={event.name} />
                     )
                 })}
 
@@ -204,6 +201,7 @@ WeekCalendar.propTypes = {
     firstWeekDate: PropTypes.string.isRequired,
     selectedDay: PropTypes.string.isRequired,
     events: PropTypes.array.isRequired,
+    onEventClick: PropTypes.func,
     handleDayClick: PropTypes.func.isRequired,
     onChevronClick: PropTypes.func.isRequired,
 }

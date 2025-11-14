@@ -1,4 +1,4 @@
-import AuthorizedHeader from "../components/Headers/AuthorizedHeader.jsx";
+import AuthorizedHeader from "../../components/Headers/AuthorizedHeader.jsx";
 import { Outlet } from "react-router-dom";
 
 export default function AuthorizedLayout() {
