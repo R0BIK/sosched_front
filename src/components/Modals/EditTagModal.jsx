@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState, useMemo } from "react";
+import {useState, useMemo, useCallback} from "react";
 
 import InputBox from "../BasicInputs/InputBox.jsx";
 import SelectMenu from "../BasicInputs/SelectMenu.jsx";
@@ -10,10 +10,9 @@ import SelectMenuLazy from "../BasicInputs/SelectMenuLazy.jsx";
 export default function EditTagModal({ handleClose, tag, handleSaveTag, handleDeleteTag, tagTypesQuery }) {
     const [formData, setFormData] = useState({ ...tag });
 
-    const handleChange = (key, value) => {
-        console.log(key, value);
+    const handleChange = useCallback((key, value) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
-    };
+    }, [setFormData]);
 
     const handleSubmit = () => {
         handleSaveTag(formData);
@@ -60,7 +59,7 @@ export default function EditTagModal({ handleClose, tag, handleSaveTag, handleDe
                     <SelectMenu
                         withColor
                         array={tagColorOptions}
-                        value={formData.tagColor}
+                        value={formData.color}
                         onChange={(id) => handleChange("color", id)}
                         label="Оберіть колір тегу"
                     />

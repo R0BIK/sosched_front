@@ -35,12 +35,11 @@ export default function SelectMenuLazy({
         : null;
 
     useEffect(() => {
-        const selectedItem = array.length
-            ? array.find((i) => i.id === value) || array[0]
-            : null;
-
-        onChange(selectedItem.id);
-    }, [array.length, value]);
+        if (!onChange) return;
+        if (!value && array.length > 0) {
+            onChange(array[0].id);
+        }
+    }, [array]);
 
     // Scroll handler
     const onScroll = useCallback(() => {
@@ -61,7 +60,7 @@ export default function SelectMenuLazy({
             </Label>
 
             <div className="relative mt-2 font-noto">
-                <ListboxButton className="flex w-full justify-between cursor-default rounded-md bg-main-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline outline-1 outline-gray-300 sm:text-sm">
+                <ListboxButton className="flex w-full justify-between cursor-default rounded-md bg-main-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 outline-gray-300 sm:text-sm">
                     <div className="flex items-center">
                         {withColor && selectedItem && (
                             <div

@@ -1,5 +1,6 @@
 import { API_ENDPOINTS } from '../../constants.js';
 import {api} from "../api/apiClient.js";
+import {generateFilterString} from "./filterStringGenerator/generateFilterString.js";
 
 export const getUserById = async (userId, domain) => {
     const response = await api.get(`${domain}${API_ENDPOINTS.USER}/${userId}`);
@@ -11,17 +12,24 @@ export const getUserById = async (userId, domain) => {
     return response.data;
 };
 
-// export const getUsers = async (filter, domain) => {
-//     try {
-//         const response = await api.get(`${domain}${API_ENDPOINTS.USER}`, {
-//             params: {
-//                 DateFrom: data.dateFrom,
-//                 DateTo: data.dateTo,
-//             }
-//         });
-//         return response.data;
-//     } catch (error) {
-//         console.error("Error fetching spaces:", error);
-//         throw error;
-//     }
-// }
+export const getUsers = async (domain, paging, filterObj, search) => {
+    const filterString = generateFilterString(filterObj);
+
+    const response = await api.get(
+        `${domain}${API_ENDPOINTS.USER}`,
+        {
+            params: {
+                page: paging.page,
+                pageSize: paging.pageSize,
+                filter: filterString || undefined,
+                search: search || undefined,
+            }
+        }
+    );
+
+    if (!response.isSuccess || !response.data) {
+        throw Error("Failed to get users: " + response.error);
+    }
+
+    return response.data;
+};
