@@ -9,6 +9,8 @@ import CreateEvent from "../../components/Schedule/Drawers/CreateEvent.jsx";
 import Drawer from "../../components/Schedule/Drawers/Drawer.jsx";
 import {useCreateEvent} from "../../tanStackQueries/event/useCreateEvent.js";
 import {DRAWER_MODES} from "../../../constants.js";
+import EventView from "../../components/Schedule/EventView.jsx";
+import EventInfo from "../../components/Schedule/Drawers/EventInfo.jsx";
 
 export default function Schedule() {
     const { switchSpace, spaces, activeSpace } = useSpace();
@@ -31,7 +33,6 @@ export default function Schedule() {
     const { data: eventsData } = useGetEvents(dataForEvents, domain);
 
     const events = eventsData?.items;
-    console.log(events);
 
     // -------------------------------
     // 🧾 Drawer + Form State
@@ -124,13 +125,10 @@ export default function Schedule() {
             Confirmed: false
         };
 
-        console.log(requestData);
-
         createEventMutate(requestData);
 
         setDrawerMode(null);
 
-        // очищаем форму
         setEventForm({
             name: "",
             type: "",
@@ -195,9 +193,6 @@ export default function Schedule() {
         });
     }, []);
 
-    // -------------------------------
-    // ⚙️ Render
-    // -------------------------------
     return (
         <div className="flex-row flex h-full overflow-hidden">
             {/* Left Sidebar */}
@@ -241,24 +236,32 @@ export default function Schedule() {
                     handleDayClick={handleDayClick}
                     onChevronClick={handleChevronClick}
                     onEventClick={(event) => {
+                        console.log(event);
                         setSelectedEvent(event);
-                        setDrawerMode(DRAWER_MODES.VIEW);
+                        setDrawerMode(DRAWER_MODES.INFO);
                     }}
                 />
 
                 <Drawer isOpen={isDrawerOpen} onClose={() => setDrawerMode(null)}>
-                    <CreateEvent
-                        eventForm={eventForm}
-                        repeatRule={repeatRule}
-                        isRepeating={isRepeating}
-                        eventTypes={eventTypesArray}
-                        handleInputChange={handleInputChange}
-                        handleSelectChange={handleSelectChange}
-                        handleRepeatChange={handleRepeatChange}
-                        handleRepeatToggle={handleRepeatToggle}
-                        handleSubmit={handleSubmit}
-                        handleCancel={handleCancel}
-                    />
+                    {drawerMode === DRAWER_MODES.CREATE && (
+                        <CreateEvent
+                            eventForm={eventForm}
+                            repeatRule={repeatRule}
+                            isRepeating={isRepeating}
+                            eventTypes={eventTypesArray}
+                            handleInputChange={handleInputChange}
+                            handleSelectChange={handleSelectChange}
+                            handleRepeatChange={handleRepeatChange}
+                            handleRepeatToggle={handleRepeatToggle}
+                            handleSubmit={handleSubmit}
+                            handleCancel={handleCancel}
+                        />
+                    )}
+                    {drawerMode === DRAWER_MODES.INFO && (
+                        <EventInfo
+                            eventForm={selectedEvent}
+                        />
+                    )}
                 </Drawer>
             </div>
         </div>

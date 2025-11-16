@@ -23,7 +23,7 @@ export default function SelectMenu({
         : array[0] || null;
 
     useEffect(() => {
-        if (!onChange) return;
+        if (!onChange || !selectedItem) return;
         onChange(selectedItem.id);
     }, [selectedItem]);
 
@@ -58,7 +58,7 @@ export default function SelectMenu({
                 </ListboxButton>
 
                 <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-1 outline-black/5 sm:text-sm">
-                    {array.map((item) => (
+                    {array?.map((item) => (
                         <ListboxOption
                             key={item.id}
                             value={item.id} // теперь value — это ID

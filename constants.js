@@ -21,7 +21,7 @@ export const LOCAL_STORAGE_NAMES = {
 
 export const DRAWER_MODES = {
     CREATE: "create",
-    VIEW: "view",
+    INFO: "info",
     EDIT: "edit"
 }
 
