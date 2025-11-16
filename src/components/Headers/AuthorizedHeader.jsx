@@ -40,11 +40,11 @@ export default function AuthorizedHeader() {
                         </p>
                         <div className="flex gap-[10px] justify-end items-center">
                             <p className="font-noto text-second-text text-[14px] group-hover:text-main-black">
-                                Студент
+                                {userData?.role}
                             </p>
-                            <p className="border-[2px] text-second-text text-[12px] rounded-[5px] border-second-text px-[5px] group-hover:text-main-black group-hover:border-main-black">
-                                11-A
-                            </p>
+                            {/*<p className="border-[2px] text-second-text text-[12px] rounded-[5px] border-second-text px-[5px] group-hover:text-main-black group-hover:border-main-black">*/}
+                            {/*    11-A*/}
+                            {/*</p>*/}
                         </div>
                     </div>
                     <div className="min-w-[42px] min-h-[42px] rounded-full bg-gray-400 flex items-center justify-center">

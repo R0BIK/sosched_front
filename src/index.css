@@ -24,6 +24,7 @@
 @layer base {
   body {
     background-color: var(--color-main-white);
+    font-family: var(--font-noto), serif;
   }
 }
 

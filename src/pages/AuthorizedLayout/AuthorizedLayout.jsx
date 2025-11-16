@@ -3,9 +3,9 @@ import { Outlet } from "react-router-dom";
 
 export default function AuthorizedLayout() {
     return (
-        <div className="min-h-screen h-screen flex flex-col">
+        <div className="min-h-screen h-screen flex flex-col overflow-hidden">
             <AuthorizedHeader />
-            <div className="pt-18 h-full">
+            <div className="mt-18 h-full overflow-auto">
                 <Outlet />
             </div>
         </div>
