@@ -66,7 +66,7 @@ export default function InfiniteScrollWrapper({
     return (
         <div
             ref={containerRef}
-            className={`overflow-y-auto overflow-x-hidden no-scrollbar h-full ${className}`}
+            className={`overflow-y-auto flex-col overflow-x-hidden no-scrollbar h-full ${className}`}
         >
             {children}
 
