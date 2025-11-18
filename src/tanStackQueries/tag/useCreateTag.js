@@ -8,8 +8,8 @@ export function useCreateTag(domain) {
         mutationFn: (request) => createTag(request, domain),
         onSuccess: async (data) => {
             console.log('Tag created successfully:', data);
-            // Обновляем кэш для запроса тегов
             void queryClient.invalidateQueries(['tags', domain]);
+            return data;
         },
         onError: (error) => {
             console.error('Error creating tag:', error);

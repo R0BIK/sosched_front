@@ -55,12 +55,12 @@ export default function SelectMenuLazy({
 
     return (
         <Listbox value={selectedItem} onChange={(val) => onChange(val.id)}>
-            <Label className="block text-xm font-semibold ml-1 font-noto text-gray-900">
+            <Label className="block text-xm font-semibold ml-1 font-noto text-main-black">
                 {label}
             </Label>
 
             <div className="relative mt-2 font-noto">
-                <ListboxButton className="flex w-full justify-between cursor-default rounded-md bg-main-white py-1.5 pr-2 pl-3 text-left text-gray-900 outline-1 outline-gray-300 sm:text-sm">
+                <ListboxButton className="flex w-full justify-between cursor-default rounded-md bg-main-white py-1.5 pr-2 pl-3 text-left text-main-black outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent text-sm/6">
                     <div className="flex items-center">
                         {withColor && selectedItem && (
                             <div
@@ -72,19 +72,22 @@ export default function SelectMenuLazy({
                             {selectedItem ? selectedItem.name : ''}
                         </span>
                     </div>
-                    <ChevronUpDownIcon className="size-5 text-gray-500" />
+                    <ChevronUpDownIcon
+                        aria-hidden="true"
+                        className="self-center justify-self-end text-second-text size-4"
+                    />
                 </ListboxButton>
 
                 <ListboxOptions
                     ref={containerRef}
                     onScroll={onScroll}
-                    className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline outline-1 outline-black/5 sm:text-sm"
+                    className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg outline-1 outline-black/5 sm:text-sm"
                 >
                     {array.map((item) => (
                         <ListboxOption
                             key={item.id}
                             value={item}
-                            className="group relative flex items-center cursor-default py-2 pr-9 pl-3 text-gray-900 data-focus:bg-indigo-600 data-focus:text-white"
+                            className="group relative flex items-center cursor-default py-2 pr-9 pl-3 text-gray-900 data-focus:bg-accent data-focus:text-main-white"
                         >
                             {withColor && (
                                 <div
@@ -97,7 +100,7 @@ export default function SelectMenuLazy({
                                 {item.name}
                             </span>
 
-                            <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-600 group-not-data-selected:hidden group-data-focus:text-white">
+                            <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-accent group-not-data-selected:hidden group-data-focus:text-main-white">
                                 <CheckIcon className="size-5" />
                             </span>
                         </ListboxOption>

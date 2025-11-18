@@ -22,7 +22,7 @@ export default function Members() {
     const handleClear = () => setSearch("");
 
     return (
-        <div className="py-5 px-9 w-full overflow-hidden">
+        <div className="pt-5 px-9 w-full h-full flex flex-col overflow-auto">
             <div className="flex justify-between">
                 <div className="flex flex-col">
                     <h1 className="text-3xl font-semibold text-main-black">Учасники</h1>
@@ -57,11 +57,11 @@ export default function Members() {
                         )}
                     </div>
                 </form>
-
             </div>
-            <div className="mt-2 w-full h-[calc(100vh-200px)]">
+            {/*<div className="flex flex-col h-full w-full bg-accent mt-10 min-h-50"></div>*/}
+            <div className="mt-2 w-full flex flex-col h-full">
                 <InfiniteScrollWrapper query={userQuery}>
-                    <div className="inline-block min-w-full align-middle">
+                    <div className="flex flex-col h-full min-w-full align-middle">
                         <table className="min-w-full divide-y divide-gray-300 font-noto">
                             <thead>
                             <tr>

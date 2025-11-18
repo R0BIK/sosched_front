@@ -21,7 +21,9 @@ export default function Space() {
                     <TabComponent text="Налаштування" Icon={SettingsIcon} to="/mySpace/settings" />
                 </div>
             </div>
-            <Outlet />
+            <div className="flex flex-col h-full w-full">
+                <Outlet />
+            </div>
         </div>
     );
 }

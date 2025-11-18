@@ -1,6 +1,5 @@
 import {createBrowserRouter, Navigate} from "react-router-dom"
 
-import { Default } from '../pages/index.js'
 import AuthPage from "../pages/AuthPage.jsx";
 import AuthPanel from "../components/Auth/AuthPanel.jsx";
 import Schedule from "../pages/AuthorizedLayout/Schedule.jsx";
@@ -47,9 +46,5 @@ export const router = createBrowserRouter([
             { path: '/profile/edit', element: <Profile isEdit={true} isOwner={true} /> },
             { path: '/users/:id', element: <Profile isEdit={false} isOwner={false} /> },
         ],
-    },
-    {
-        path: '/Default',
-        element: <Default />,
-    },
+    }
 ]);

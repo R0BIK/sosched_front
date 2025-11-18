@@ -28,6 +28,7 @@ export const getUsers = async (domain, paging, filterObj, search) => {
     );
 
     if (!response.isSuccess || !response.data) {
+        console.error(response.error);
         throw Error("Failed to get users: " + response.error);
     }
 

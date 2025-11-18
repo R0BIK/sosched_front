@@ -25,31 +25,7 @@ export default function AuthForm(props = {}) {
     const { handleEnterAsTab } = useKeyDownEnterHandler();
 
     const { login, register } = useAuth();
-
     const { createSpace } = useSpace();
-
-    const mutation = useMutation({
-        mutationFn: async (data) => {
-            if (type === AUTH_TYPES.LOGIN) {
-                await login(data);
-            } else {
-                const registerResult = await register(data);
-                const userId = registerResult?.data?.id;
-
-                if (userId) {
-                    await createSpace({name: "MySpace", domain: getDomain(data.email)});
-                    await login({email: data.email, password: data.password});
-                }
-            }
-        },
-        onSuccess: () => {
-            navigate("/schedule");
-        },
-        onError: (error) => {
-            console.error("Auth error:", error);
-            alert("Login failed");
-        },
-    });
 
     const getDomain = (email) => {
         if (!email || typeof email !== "string") return "";
@@ -58,15 +34,35 @@ export default function AuthForm(props = {}) {
         return `${name}.${domain}`;
     }
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         const newErrors = handleSubmit(e);
         if (Object.values(newErrors).every(error => error === SPECIAL.STRING.EMPTY)) {
             sessionStorage.removeItem(SignFormData.MAIN[type].name);
 
             const formData = Object.fromEntries(new FormData(e.target));
 
-            mutation.mutate(formData)
-            e.target.reset();
+            try {
+                if (type === AUTH_TYPES.LOGIN) {
+                    await login(formData);
+                } else {
+                    const registerResult = await register(formData);
+                    const userId = registerResult?.id;
+
+                    if (userId) {
+                        await createSpace({
+                            name: "MySpace",
+                            domain: getDomain(formData.email),
+                        });
+
+                        await login(formData);
+                    }
+                }
+
+                navigate("/schedule");
+                e.target.reset();
+            } catch (error) {
+                console.log(error);
+            }
         } else {
             const firstErrorKey = Object.keys(newErrors).find(key => newErrors[key]);
             if (firstErrorKey) {

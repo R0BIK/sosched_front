@@ -30,3 +30,29 @@ export const deleteTag = async (id, domain) => {
 
     return response.data;
 };
+
+export const updateTag = async (id, domain, tagData) => {
+    const response = await api.patch(
+        `${domain}${API_ENDPOINTS.TAG}/${id}`,
+        tagData
+    );
+
+    if (!response.isSuccess) {
+        throw Error("Failed to update tag: " + response.error);
+    }
+
+    return response.data;
+}
+
+export const updateUsers = async (tagId, data, domain) => {
+    const response = await api.patch(
+        `${domain}${API_ENDPOINTS.TAG}/${tagId}/users`,
+        data
+    );
+
+    if (!response.isSuccess || !response.data) {
+        throw Error("Failed to update tag users: " + response.error);
+    }
+
+    return response.data;
+};

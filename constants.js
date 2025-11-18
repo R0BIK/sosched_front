@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
     EVENT_TYPE: "/eventTypes",
     TAG: "/tags",
     TAG_TYPE: "/tagTypes",
+    SEARCH: "/search",
 }
 
 export const LOCAL_STORAGE_NAMES = {

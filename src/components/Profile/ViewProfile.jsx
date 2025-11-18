@@ -15,13 +15,13 @@ export default function ViewProfile({user}) {
                                 id="lastName"
                                 name="lastName"
                                 label="Прізвище"
-                                value={user.lastName}
+                                value={user?.lastName}
                                 className="w-80"
                             />
                             <DisplayBox
                                 id="firstName"
                                 label="Імʼя"
-                                value={user.firstName}
+                                value={user?.firstName}
                                 className="w-80"
                             />
                         </div>
@@ -29,27 +29,27 @@ export default function ViewProfile({user}) {
                             <DisplayBox
                                 id="patronymic"
                                 label="По-батькові"
-                                value={user.patronymic}
+                                value={user?.patronymic}
                                 className="w-80"
                             />
                             <DisplayBox
                                 id="birthdate"
                                 label="Дата народження"
                                 className="w-80"
-                                value={user.birthDate}
+                                value={user?.birthDate}
                             />
                         </div>
                         <div className="flex gap-10">
                             <DisplayBox
                                 id="email"
                                 label="Пошта"
-                                value={user.email}
+                                value={user?.email}
                                 className="w-full"
                             />
                             <DisplayBox
                                 id="role"
                                 label="Роль"
-                                value={user.role}
+                                value={user?.role}
                                 className="w-full"
                             />
                         </div>

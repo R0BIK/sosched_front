@@ -2,13 +2,13 @@ import { useEffect, useRef, useCallback, useState } from "react";
 import PropTypes from "prop-types";
 
 export default function InfiniteScrollWrapper({
-                                                  query,
-                                                  children,
-                                                  scrollThreshold = 200,
-                                                  loadingText = "Loading...",
-                                                  showNoMoreText = true,
-                                                  className = "",
-                                              }) {
+    query,
+    children,
+    scrollThreshold = 200,
+    loadingText = "Loading...",
+    showNoMoreText = true,
+    className = "",
+}) {
     const containerRef = useRef(null);
     const [isManualLoading, setIsManualLoading] = useState(false); // защита от параллельных вызовов
 
@@ -70,11 +70,11 @@ export default function InfiniteScrollWrapper({
         >
             {children}
 
-            {(isFetchingAny || isManualLoading) && (
-                <div className="flex justify-center py-4 text-gray-500">
-                    {loadingText}
-                </div>
-            )}
+            {/*{(isFetchingAny || isManualLoading) && (*/}
+            {/*    <div className="flex justify-center py-4 text-gray-500">*/}
+            {/*        {loadingText}*/}
+            {/*    </div>*/}
+            {/*)}*/}
 
             {/*{!isFetchingAny && !hasMore && showNoMoreText && (*/}
             {/*    <div className="flex justify-center py-4 text-gray-400 text-sm">*/}

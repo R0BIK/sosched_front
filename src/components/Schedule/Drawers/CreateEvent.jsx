@@ -10,9 +10,7 @@ export default function CreateEvent({
     eventForm,
     repeatRule,
     isRepeating,
-    eventTypes,
     handleInputChange,
-    handleSelectChange,
     handleRepeatChange,
     handleRepeatToggle,
     handleSubmit,
@@ -29,12 +27,6 @@ export default function CreateEvent({
                     placeholder="Зустріч"
                     value={eventForm.name}
                     onChange={handleInputChange}
-                />
-                <SelectMenu
-                    array={eventTypes}
-                    label="Тип події"
-                    value={eventForm.type}
-                    onChange={handleSelectChange}
                 />
                 <InputBox
                     id="1"

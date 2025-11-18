@@ -10,6 +10,8 @@ import {useDeleteTag} from "../../../../tanStackQueries/tag/useDeleteTag.js";
 import {useCreateTag} from "../../../../tanStackQueries/tag/useCreateTag.js";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {SPECIAL} from "../../../../../constants.js";
+import {useUpdateTagUsers} from "../../../../tanStackQueries/tag/useUpdateTagUsers.js";
+import {useUpdateTag} from "../../../../tanStackQueries/tag/useUpdateApi.js";
 import InfiniteScrollWrapper from "../../../../components/Scroll/InfiniteScrollWrapper.jsx";
 
 export default function Tags() {
@@ -23,34 +25,68 @@ export default function Tags() {
     const tags = tagQuery.data?.pages.flatMap((p) => p.items) ?? [];
     const totalCount = tagQuery.data?.pages?.[0]?.totalCount ?? 0;
 
-    const { mutate: createTagMutate } = useCreateTag(domain);
+    const { mutateAsync: createTagMutate } = useCreateTag(domain);
     const { mutate: deleteTagMutate } = useDeleteTag(domain);
+    const { mutateAsync: updateTagMutate } = useUpdateTag(domain);
+    const { mutate: updateUsersMutate } = useUpdateTagUsers(domain);
 
     const [selectedTag, setSelectedTag] = useState(null);
     useLockBodyScroll(!!selectedTag);
 
-    const handleEdit = (tag) => setSelectedTag(tag);
+    const handleEdit = (tag) => setSelectedTag({ tag: tag, type: "edit" });
     const handleClose = () => setSelectedTag(null);
 
     const handleCreate = () => {
-        setSelectedTag({
+        setSelectedTag({ tag: {
             id: null,
             name: "",
             shortName: "",
             tagType: null,
             color: SPECIAL.TAG_COLORS.gray.name,
-        });
+        }, type: "create"});
     };
 
     const handleDeleteTag = useCallback((id) => {
         deleteTagMutate(id);
     }, [deleteTagMutate]);
 
-    const handleSaveTag = useCallback((updatedTag) => {
-        if (!updatedTag.name.trim()) return;
+    const isUpdateDataEmpty = (updateData) => {
+        return (
+            (!updateData.add || updateData.add.length === 0) &&
+            (!updateData.remove || updateData.remove.length === 0) &&
+            (!updateData.addFromTags || updateData.addFromTags.length === 0)
+        );
+    };
 
-        createTagMutate(updatedTag);
-    }, [createTagMutate]);
+    const handleSaveTag = useCallback(async (updatedTag, usersToAdd, type) => {
+        if (!updatedTag.name.trim() || !updatedTag.shortName.trim()) return;
+
+        if (type === "edit") {
+            const changedData = getChangedFields(selectedTag.tag, updatedTag);
+
+            if (changedData) {
+                await updateTagMutate({
+                    id: updatedTag.id,
+                    data: changedData
+                });
+            }
+
+            updateUsersMutate({
+                tagId: updatedTag.id,
+                data: usersToAdd
+            });
+        } else {
+            const created = await createTagMutate(updatedTag);
+
+            if (isUpdateDataEmpty(usersToAdd)) return;
+
+            updateUsersMutate({
+                tagId: created.id,
+                data: usersToAdd
+            });
+        }
+
+    }, [createTagMutate, updateUsersMutate, updateTagMutate, selectedTag?.tag]);
 
     return (
         <div className="py-5 px-9 w-full overflow-hidden">
@@ -138,8 +174,20 @@ export default function Tags() {
             </div>
 
             {selectedTag && (
-                <EditTagModal handleClose={handleClose} tag={selectedTag} handleSaveTag={handleSaveTag} handleDeleteTag={handleDeleteTag} tagTypesQuery={tagTypesQuery} />
+                <EditTagModal handleClose={handleClose} selected={selectedTag} handleSaveTag={handleSaveTag} handleDeleteTag={handleDeleteTag} tagTypesQuery={tagTypesQuery} />
             )}
         </div>
     );
+}
+
+function getChangedFields(original, updated) {
+    const changed = {};
+
+    Object.keys(updated).forEach(key => {
+        if (updated[key] !== original[key]) {
+            changed[key] = updated[key];
+        }
+    });
+
+    return changed;
 }

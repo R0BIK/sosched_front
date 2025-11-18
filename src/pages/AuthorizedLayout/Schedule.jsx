@@ -4,12 +4,10 @@ import MonthCalendar from "../../components/Schedule/MonthCalendar.jsx";
 import TabComponent from "../../components/TabComponent.jsx";
 import { useSpace } from "../../context/SpaceContext.jsx";
 import { useGetEvents } from "../../tanStackQueries/event/useGetEvents.js";
-import { useGetEventTypes } from "../../tanStackQueries/eventType/useGetEventTypes.js";
 import CreateEvent from "../../components/Schedule/Drawers/CreateEvent.jsx";
 import Drawer from "../../components/Schedule/Drawers/Drawer.jsx";
 import {useCreateEvent} from "../../tanStackQueries/event/useCreateEvent.js";
 import {DRAWER_MODES} from "../../../constants.js";
-import EventView from "../../components/Schedule/EventView.jsx";
 import EventInfo from "../../components/Schedule/Drawers/EventInfo.jsx";
 
 export default function Schedule() {
@@ -47,7 +45,6 @@ export default function Schedule() {
 
     const [eventForm, setEventForm] = useState({
         name: "",
-        type: "",
         location: "",
         date: "",
         timeStart: "",
@@ -76,9 +73,6 @@ export default function Schedule() {
         setEventForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSelectChange = (value) => {
-        setEventForm((prev) => ({ ...prev, type: value }));
-    };
 
     // -------------------------------
     // 🧩 Submit / Cancel
@@ -158,12 +152,6 @@ export default function Schedule() {
         });
         setIsRepeating(false);
     };
-
-    // -------------------------------
-    // 🔗 API: event types
-    // -------------------------------
-    const { data: eventTypes } = useGetEventTypes();
-    const eventTypesArray = eventTypes?.items?.map((item) => ({ id: item.id, name: item.name }))
 
     // -------------------------------
     // 📅 Calendar Handlers
@@ -248,9 +236,7 @@ export default function Schedule() {
                             eventForm={eventForm}
                             repeatRule={repeatRule}
                             isRepeating={isRepeating}
-                            eventTypes={eventTypesArray}
                             handleInputChange={handleInputChange}
-                            handleSelectChange={handleSelectChange}
                             handleRepeatChange={handleRepeatChange}
                             handleRepeatToggle={handleRepeatToggle}
                             handleSubmit={handleSubmit}
@@ -268,9 +254,6 @@ export default function Schedule() {
     );
 }
 
-// -------------------------------
-// 🧮 Helpers
-// -------------------------------
 function getInitial(name) {
     return name[0].toUpperCase();
 }
