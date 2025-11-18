@@ -9,9 +9,11 @@ import Profile from "../pages/AuthorizedLayout/Profile.jsx";
 import Space from "../pages/AuthorizedLayout/Space/Space.jsx";
 import Roles from "../pages/AuthorizedLayout/Space/SpaceTabs/Roles.jsx";
 import Tags from "../pages/AuthorizedLayout/Space/SpaceTabs/Tags.jsx";
-import {AUTH_TYPES} from "../../constants.js";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
 import TagTypes from "../pages/AuthorizedLayout/Space/SpaceTabs/TagTypes.jsx";
+import Events from "../pages/AuthorizedLayout/Space/SpaceTabs/Events.jsx";
+
+import {AUTH_TYPES} from "../../constants.js";
 
 export const router = createBrowserRouter([
     {
@@ -40,6 +42,7 @@ export const router = createBrowserRouter([
                     { path: '/mySpace/members', element: <Members /> },
                     { path: '/mySpace/tags', element: <Tags /> },
                     { path: '/mySpace/tagTypes', element: <TagTypes /> },
+                    { path: '/mySpace/events', element: <Events /> },
                 ],
             },
             { path: '/profile', element: <Profile isEdit={false} isOwner={true} /> },

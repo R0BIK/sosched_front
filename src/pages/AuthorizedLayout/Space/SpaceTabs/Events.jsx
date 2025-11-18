@@ -22,7 +22,7 @@ import { useUpdateTag } from "../../../../tanStackQueries/tag/useUpdateApi.js";
 
 import { SPECIAL } from "../../../../../constants.js";
 
-export default function Tags() {
+export default function Events() {
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
 
@@ -33,6 +33,8 @@ export default function Tags() {
     const tags = tagQuery.data?.pages.flatMap((p) => p.items) ?? [];
     const totalCount = tagQuery.data?.pages?.[0]?.totalCount ?? 0;
 
+    console.log(tags);
+    // --- Infinite Scroll Hook ---
     const loadMoreRef = useInfiniteScroll(tagQuery);
 
     // --- Mutations ---
@@ -73,33 +75,31 @@ export default function Tags() {
         );
     };
 
-    const handleSaveTag = useCallback(async (updatedTag, updatedUsers, type) => {
+    const handleSaveTag = useCallback(async (updatedTag, usersToAdd, type) => {
         if (!updatedTag.name.trim() || !updatedTag.shortName.trim()) return;
 
         if (type === "edit") {
             const changedData = getChangedFields(selectedTag.tag, updatedTag);
 
-            if (changedData.length > 0) {
+            if (changedData) {
                 await updateTagMutate({
-                    id: updatedTag.id, // Исправил ключ на tagId (как в хуке)
-                    data: changedData  // Исправил ключ на tagData (как в хуке)
+                    tagId: updatedTag.id, // Исправил ключ на tagId (как в хуке)
+                    tagData: changedData  // Исправил ключ на tagData (как в хуке)
                 });
             }
 
-            if (isUpdateDataEmpty(updatedUsers)) return;
-
             updateUsersMutate({
                 tagId: updatedTag.id,
-                data: updatedUsers
+                data: usersToAdd
             });
         } else {
             const created = await createTagMutate(updatedTag);
 
-            if (isUpdateDataEmpty(updatedUsers)) return;
+            if (isUpdateDataEmpty(usersToAdd)) return;
 
             updateUsersMutate({
                 tagId: created.id,
-                data: updatedUsers
+                data: usersToAdd
             });
         }
 

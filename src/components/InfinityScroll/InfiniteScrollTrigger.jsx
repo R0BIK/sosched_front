@@ -6,7 +6,7 @@ const InfiniteScrollTrigger = forwardRef(({ isFetching }, ref) => {
     return (
         <div
             ref={ref}
-            className="h-2 w-full flex justify-center items-center p-2 shrink-0"
+            className="h-1 w-full flex justify-center items-center shrink-0"
         >
             {isFetching && (
                 // Тут может быть спиннер вместо текста

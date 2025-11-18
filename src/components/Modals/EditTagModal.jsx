@@ -7,16 +7,19 @@ import { SPECIAL } from "../../../constants.js";
 import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx";
 import SelectMenuLazy from "../BasicInputs/SelectMenuLazy.jsx";
 import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from '@mui/icons-material/Clear';
 import {useSpace} from "../../context/SpaceContext.jsx";
 import {useSearch} from "../../tanStackQueries/search/useSearch.jsx";
 import Badge from "../Badges/Badge.jsx";
-import InfiniteScrollWrapper from "../Scroll/InfiniteScrollWrapper.jsx";
 import {useGetUsers} from "../../tanStackQueries/user/useGetUsers.js";
+
+import { useInfiniteScroll } from "../InfinityScroll/useInfiniteScroll.js";
+import InfiniteScrollTrigger from "../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
 
 export default function EditTagModal({ handleClose, selected, handleSaveTag, handleDeleteTag, tagTypesQuery }) {
     const [formData, setFormData] = useState({ ...selected?.tag });
     const [search, setSearch] = useState("");
-    const [entityToAdd, setEntityToAdd] = useState([]);
+    const [entityToChange, setEntityToChange] = useState([]);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const filterObj = { tag: [selected.tag.shortName] }
 
@@ -30,17 +33,33 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
     const userQuery = useGetUsers(domain, filterObj, null);
 
     const users = userQuery.data?.pages.flatMap((p) => p.items) ?? [];
-    const totalCount = userQuery.data?.pages?.[0]?.totalCount ?? 0;
+    const displayedUsers = users.filter(user =>
+        !entityToChange.some(change => change.id === user.id && change.type === "remove")
+    );
+
+    const removedCount = entityToChange.filter(e => e.type === "remove").length;
+    const totalUsersCount = (userQuery.data?.pages?.[0]?.totalCount ?? 0) - removedCount;
+
+    const loadMoreRef = useInfiniteScroll(userQuery);
 
     const onEntityClick = (item, type) => {
         setIsSearchFocused(false);
         setSearch("");
-        setEntityToAdd((prev) => {
-            // Проверяем, что такого id И типа еще нет
-            if (prev.some((e) => e.id === item.id && e.type === type)) return prev;
+        setEntityToChange((prev) => {
+            if (type === "user" && prev.some((e) => e.id === item.id && e.type === "remove")) {
+                return prev.filter((e) => !(e.id === item.id && e.type === "remove"));
+            }
 
-            // Добавляем item И его type
+            if (prev.some((e) => e.id === item.id && e.type === type)) return prev;
             return [...prev, { ...item, type: type }];
+        });
+    };
+
+    const handleMarkForRemoval = (userId) => {
+        setEntityToChange((prev) => {
+            if (prev.some(e => e.id === userId && e.type === "remove")) return prev;
+
+            return [...prev, { id: userId, type: "remove" }];
         });
     };
 
@@ -49,18 +68,22 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
     }, [setFormData]);
 
     const buildUpdateUsersData = () => {
-        const usersToAdd = entityToAdd
+        const usersToAdd = entityToChange
             .filter(e => e.type === "user")
             .map(e => e.id);
 
-        const tagsToAddUsersFrom = entityToAdd
+        const tagsToAddUsersFrom = entityToChange
             .filter(e => e.type === "tag")
+            .map(e => e.id);
+
+        const usersToRemove = entityToChange
+            .filter(e => e.type === "remove")
             .map(e => e.id);
 
         return {
             add: usersToAdd.length ? usersToAdd : undefined,
             addFromTags: tagsToAddUsersFrom.length ? tagsToAddUsersFrom : undefined,
-            remove: undefined // при необходимости добавишь
+            remove: usersToRemove.length ? usersToRemove : undefined
         };
     };
 
@@ -72,7 +95,7 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
     };
 
     const handleRemove = (id, type) => {
-        setEntityToAdd(prev => prev.filter(item =>
+        setEntityToChange(prev => prev.filter(item =>
             !(item.id === id && item.type === type)
         ));
     };
@@ -200,12 +223,12 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
                     </div>
                 )}
                 <div className="w-full mt-2 flex flex-wrap gap-4 p-2 max-h-30 h-auto overflow-auto">
-                    {entityToAdd?.map((item) => {
+                    {entityToChange?.map((item) => {
                         if (item.type === "tag") {
                             return (
                                 <Badge
                                     key={`added-tag-${item.id}`}
-                                    text={item.subtitle} // У тега в SearchResult 'subtitle' - это shortName
+                                    text={item.subtitle}
                                     color={item.color}
                                     onRemove={() => handleRemove(item.id, "tag")}
                                 />
@@ -215,7 +238,7 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
                             return (
                                 <Badge
                                     key={`added-user-${item.id}`}
-                                    text={item.title} // У юзера 'title' - это ФИО
+                                    text={item.title}
                                     color="gray"
                                     onRemove={() => handleRemove(item.id, "user")}
                                 />
@@ -225,14 +248,14 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
                     })}
                 </div>
 
-                {selected.type === "edit" && users.length > 0 && (
+                {selected.type === "edit" && displayedUsers.length > 0 && (
                     <>
-                        <p className="font-bold ml-1 mt-2">Список користувачів</p>
-                        <div className="w-full h-auto max-h-60 mt-2 border border-gray-300 rounded-md">
-                            <InfiniteScrollWrapper query={userQuery}>
-                                {users.map((user) => {
-                                    return (
-                                        <div key={user.id} className="flex w-full p-2 items-center gap-4">
+                        <p className="font-bold ml-1 mt-2">Список користувачів – {totalUsersCount}</p>
+                        <div className="w-full h-auto max-h-60 mt-2 border border-gray-300 rounded-md overflow-y-auto">
+                            {displayedUsers?.map((user) => {
+                                return (
+                                    <div key={user.id} className="flex w-full p-2 items-center justify-between">
+                                        <div className="gap-4 flex items-center">
                                             <div className="rounded-full bg-accent h-8 w-8" />
                                             <div className="flex flex-col justify-center">
                                                 <p className="text-main-black text-sm">
@@ -243,9 +266,20 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
                                                 </p>
                                             </div>
                                         </div>
-                                    )
-                                })}
-                            </InfiniteScrollWrapper>
+                                        <button
+                                            className="text-second-text"
+                                            onClick={() => handleMarkForRemoval(user.id)}
+                                        >
+                                            <ClearIcon />
+                                        </button>
+                                    </div>
+                                )
+                            })}
+
+                            <InfiniteScrollTrigger
+                                ref={loadMoreRef}
+                                isFetching={userQuery.isFetchingNextPage}
+                            />
                         </div>
                     </>
                 )}

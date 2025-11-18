@@ -1,30 +1,43 @@
-import {useCallback, useState} from "react";
-import {EditIcon} from "../../../../img/svg/Icons.jsx";
-import {useLockBodyScroll} from "../../../../hooks/useLockBodyScroll.js";
-import {useSpace} from "../../../../context/SpaceContext.jsx";
-import EditTagTypeModal from "../../../../components/Modals/EditTagTypeModal.jsx";
-import {useCreateTagType} from "../../../../tanStackQueries/tagType/useCreateTagType.js";
-import {useGetTagTypes} from "../../../../tanStackQueries/tagType/useGetTagTypes.js";
-import InfiniteScrollWrapper from "../../../../components/Scroll/InfiniteScrollWrapper.jsx";
-
+import { useCallback, useState } from "react";
+import { EditIcon } from "../../../../img/svg/Icons.jsx";
 import DeleteIcon from '@mui/icons-material/Delete';
-import {useDeleteTagType} from "../../../../tanStackQueries/tagType/useDeleteTagType.js";
+
+// Компоненты
+import EditTagTypeModal from "../../../../components/Modals/EditTagTypeModal.jsx";
+import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
+
+// Хуки и контекст
+import { useLockBodyScroll } from "../../../../hooks/useLockBodyScroll.js";
+import { useSpace } from "../../../../context/SpaceContext.jsx";
+import { useInfiniteScroll } from "../../../../components/InfinityScroll/useInfiniteScroll.js";
+
+// Запросы
+import { useCreateTagType } from "../../../../tanStackQueries/tagType/useCreateTagType.js";
+import { useGetTagTypes } from "../../../../tanStackQueries/tagType/useGetTagTypes.js";
+import { useDeleteTagType } from "../../../../tanStackQueries/tagType/useDeleteTagType.js";
 
 export default function TagTypes() {
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
 
+    // --- Queries ---
     const tagTypesQuery = useGetTagTypes(domain);
 
     const tagTypes = tagTypesQuery.data?.pages.flatMap((p) => p.items) ?? [];
     const totalCount = tagTypesQuery.data?.pages?.[0]?.totalCount ?? 0;
 
+    // --- Infinite Scroll Hook ---
+    const loadMoreRef = useInfiniteScroll(tagTypesQuery);
+
+    // --- Mutations ---
     const { mutate: createTagTypeMutate } = useCreateTagType(domain);
     const { mutate: deleteTagTypeMutate } = useDeleteTagType(domain);
 
+    // --- State ---
     const [selectedTagType, setSelectedTagType] = useState(null);
     useLockBodyScroll(!!selectedTagType);
 
+    // --- Handlers ---
     const handleEdit = (tagType) => setSelectedTagType(tagType);
     const handleClose = () => setSelectedTagType(null);
 
@@ -46,7 +59,7 @@ export default function TagTypes() {
     }, [createTagTypeMutate]);
 
     return (
-        <div className="py-5 px-9 w-full overflow-hidden">
+        <div className="pt-5 px-9 w-full h-full flex flex-col overflow-auto">
             <div className="flex justify-between">
                 <div className="flex flex-col">
                     <h1 className="text-3xl font-semibold text-main-black">Типи тегів</h1>
@@ -64,68 +77,75 @@ export default function TagTypes() {
                     </button>
                 </div>
             </div>
-            <div className="mt-8 w-full h-[calc(100vh-200px)]">
-                <InfiniteScrollWrapper query={tagTypesQuery}>
-                    <div className="inline-block min-w-full align-middle">
-                        <table className="min-w-full divide-y divide-gray-300 font-noto">
-                            <thead>
-                            <tr>
-                                <th
-                                    scope="col"
-                                    className="w-9/20 py-3.5 text-left text-sm font-semibold text-main-black"
-                                >
-                                    Тип тегу – {totalCount}
-                                </th>
-                                <th scope="col" className="w-1/4 py-3.5 text-center text-sm font-semibold text-main-black">
-                                    Теги
-                                </th>
-                                <th scope="col" className="w-1/4 py-3.5 text-center text-sm font-semibold text-main-black">
-                                    Учасники
-                                </th>
-                                <th scope="col" className="w-1/40 py-3.5">
-                                    <span className="sr-only">Edit</span>
-                                </th>
-                                <th scope="col" className="w-1/40 py-3.5">
-                                    <span className="sr-only">Delete</span>
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200 bg-transparent">
-                            {tagTypes?.map((tagType) => (
-                                <tr key={tagType.id} className="w-full">
-                                    <td className="w-9/20 py-4 text-sm break-all text-main-black">
-                                        {tagType.name}
-                                    </td>
-                                    <td className="w-1/4 py-4 text-sm break-all text-second-text text-center">{tagType.tagsCount}</td>
-                                    <td className="w-1/4 py-4 text-center text-sm whitespace-nowrap text-second-text">{tagType.usersCount}</td>
-                                    <td className="w-1/40 text-right">
-                                        <button
-                                            onClick={() => handleEdit(tagType)}
-                                            title="Редагувати"
-                                            className="p-1 inline-block group relative"
-                                        >
-                                            <EditIcon className="fill-second-text size-6 group-hover:fill-main-black"/>
-                                        </button>
-                                    </td>
-                                    <td className="w-1/40 text-right">
-                                        <button
-                                            onClick={() => handleDeleteTagType(tagType.id)}
-                                            title="Видалити"
-                                            className="p-1 inline-block group relative text-second-text hover:text-red-600"
-                                        >
-                                            <DeleteIcon/>
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
+
+            <div className="mt-8 w-full flex flex-col min-h-0">
+                <div className="flex w-full border-b border-gray-300 py-3.5 text-sm font-semibold text-main-black z-10">
+                    <div className="w-9/20 text-left">
+                        Тип тегу – {totalCount}
                     </div>
-                </InfiniteScrollWrapper>
+                    <div className="w-1/4 text-center">
+                        Теги
+                    </div>
+                    <div className="w-1/4 text-center">
+                        Учасники
+                    </div>
+                    <div className="w-1/40 min-w-8">
+                        <span className="sr-only">Edit</span>
+                    </div>
+                    <div className="w-1/40 min-w-8">
+                        <span className="sr-only">Delete</span>
+                    </div>
+                </div>
+
+                <div className="w-full overflow-y-auto h-full min-h-40 no-scrollbar">
+                    <div className="flex flex-col divide-y divide-gray-200">
+                        {tagTypes?.map((tagType) => (
+                            <div key={tagType.id} className="flex w-full items-center py-3">
+                                <div className="w-9/20 text-sm break-all text-main-black">
+                                    {tagType.name}
+                                </div>
+                                <div className="w-1/4 text-sm break-all text-second-text text-center">
+                                    {tagType.tagsCount}
+                                </div>
+                                <div className="w-1/4 text-sm break-all text-second-text text-center">
+                                    {tagType.usersCount}
+                                </div>
+                                <div className="w-1/40 text-right flex justify-end min-w-8">
+                                    <button
+                                        onClick={() => handleEdit(tagType)}
+                                        title="Редагувати"
+                                        className="p-1 inline-block group relative"
+                                    >
+                                        <EditIcon className="fill-second-text size-6 group-hover:fill-main-black"/>
+                                    </button>
+                                </div>
+                                <div className="w-1/40 flex justify-end min-w-8">
+                                    <button
+                                        onClick={() => handleDeleteTagType(tagType.id)}
+                                        title="Видалити"
+                                        className="p-1 inline-block group relative text-second-text hover:text-red-600"
+                                    >
+                                        <DeleteIcon/>
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <InfiniteScrollTrigger
+                        ref={loadMoreRef}
+                        isFetching={tagTypesQuery.isFetchingNextPage}
+                    />
+                </div>
             </div>
 
             {selectedTagType && (
-                <EditTagTypeModal handleClose={handleClose} tagType={selectedTagType} handleSaveTagType={handleSaveTagType} handleDeleteTagType={handleDeleteTagType}/>
+                <EditTagTypeModal
+                    handleClose={handleClose}
+                    tagType={selectedTagType}
+                    handleSaveTagType={handleSaveTagType}
+                    handleDeleteTagType={handleDeleteTagType}
+                />
             )}
         </div>
     );

@@ -6,6 +6,7 @@ import LabelIcon from '@mui/icons-material/Label';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import GppGoodIcon from '@mui/icons-material/GppGood';
 import StyleIcon from '@mui/icons-material/Style';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 
 export default function Space() {
     return (
@@ -13,6 +14,7 @@ export default function Space() {
             <div className="p-5 flex h-full flex-col justify-between border-r-1 border-gray-200">
                 <div className="flex flex-col gap-3">
                     <TabComponent text="Учасники" Icon={PeopleAltIcon} to="/mySpace/members" />
+                    <TabComponent text="Події" Icon={EventNoteIcon} to="/mySpace/events" />
                     <TabComponent text="Ролі" Icon={GppGoodIcon} to="/mySpace/roles" />
                     <TabComponent text="Теги" Icon={LabelIcon} to="/mySpace/tags" />
                     <TabComponent text="Типи тегів" Icon={StyleIcon} to="/mySpace/tagTypes" />

@@ -81,50 +81,46 @@ export default function Members() {
                     </div>
                 </div>
 
-                {/* Скроллящийся список */}
                 <div className="w-full overflow-y-auto h-full min-h-40">
-                    {users?.map((user) => (
-                        <div key={user.id} className="flex w-full items-center py-4 hover:bg-gray-50 transition-colors">
-
-                            {/* Колонка 1: Участник */}
-                            <div className="w-9/20 text-sm break-all text-main-black pl-3">
-                                <div className="flex justify-start items-center gap-4">
-                                    <div className="shrink-0 min-h-10 min-w-10 rounded-full bg-red-400" />
-                                    <div className="flex flex-col justify-center">
-                                        <p className="text-main-black text-lg leading-tight">
-                                            {user.lastName} {user.firstName} {user.patronymic}
-                                        </p>
-                                        <a href={`mailto:${user.email}`} className="hover:underline text-second-text text-xs mt-0.5">
-                                            {user.email}
-                                        </a>
+                    <div className="flex flex-col divide-y divide-gray-200">
+                        {users?.map((user) => (
+                            <div key={user.id} className="flex w-full items-center py-3">
+                                <div className="w-9/20 text-sm break-all text-main-black pl-3">
+                                    <div className="flex justify-start items-center gap-4">
+                                        <div className="shrink-0 min-h-10 min-w-10 rounded-full bg-red-400" />
+                                        <div className="flex flex-col justify-center">
+                                            <p className="text-main-black text-lg leading-tight">
+                                                {user.lastName} {user.firstName} {user.patronymic}
+                                            </p>
+                                            <a href={`mailto:${user.email}`} className="hover:underline text-second-text text-xs mt-0.5">
+                                                {user.email}
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Колонка 2: Роль */}
-                            <div className="w-1/4 text-sm break-all text-second-text text-center px-2">
-                                {user.role}
-                            </div>
+                                <div className="w-1/4 text-sm break-all text-second-text text-center px-2">
+                                    {user.role}
+                                </div>
 
-                            {/* Колонка 3: Теги */}
-                            <div className="w-1/4 text-center text-sm px-2">
-                                <div className="flex gap-2 justify-center flex-wrap">
-                                    {Array.isArray(user.userTags) && user.userTags.length > 0 ? (
-                                        user.userTags.map((tag) => (
-                                            <Badge key={tag.id} text={tag.shortName} color={tag.color} />
-                                        ))
-                                    ) : (
-                                        <span className="text-gray-400">—</span>
-                                    )}
+                                <div className="w-1/4 text-center text-sm px-2">
+                                    <div className="flex gap-2 justify-center flex-wrap">
+                                        {Array.isArray(user.userTags) && user.userTags.length > 0 ? (
+                                            user.userTags.map((tag) => (
+                                                <Badge key={tag.id} text={tag.shortName} color={tag.color} />
+                                            ))
+                                        ) : (
+                                            <span className="text-gray-400">—</span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="w-1/20 text-right pr-2">
+                                    {/* Кнопки действий */}
                                 </div>
                             </div>
-
-                            {/* Колонка 4: Действия */}
-                            <div className="w-1/20 text-right pr-2">
-                                {/* Кнопки действий */}
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
 
                     {/* 4. Невидимый элемент-триггер в самом низу списка */}
                     <InfiniteScrollTrigger
