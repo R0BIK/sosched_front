@@ -1,5 +1,5 @@
 import UnderlinedButton from "../UnderlinedButton.jsx";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, Link} from "react-router-dom";
 
 export default function UnAuthorizedHeader() {
     const location = useLocation();
@@ -20,9 +20,9 @@ export default function UnAuthorizedHeader() {
             </div>
 
             <div className="flex justify-end items-center">
-                <a href={!isLogin ? "/login" : "/register"}>
+                <Link to={!isLogin ? "/login" : "/register"}>
                     {!isLogin ? "Увійти" : "Зареєструватись"}
-                </a>
+                </Link>
             </div>
         </header>
     )

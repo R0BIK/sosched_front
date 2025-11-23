@@ -1,5 +1,5 @@
-const EMAIL = {
-    key: "EMAIL",
+const Email = {
+    id: "Email",
     name: 'email',
     placeholder: "Email",
     type: 'email',
@@ -7,8 +7,8 @@ const EMAIL = {
     isSaving: true,
 }
 
-const PASSWORD = {
-    key: "PASSWORD",
+const Password = {
+    id: "Password",
     name: 'password',
     placeholder: "Пароль",
     type: 'password',
@@ -16,8 +16,8 @@ const PASSWORD = {
     isSaving: false,
 }
 
-const FIRST_NAME = {
-    key: "FIRST_NAME",
+const FirstName = {
+    id: "FirstName",
     name: 'firstName',
     placeholder: 'Імʼя',
     type: 'text',
@@ -25,8 +25,8 @@ const FIRST_NAME = {
     isSaving: true,
 }
 
-const LAST_NAME = {
-    key: "LAST_NAME",
+const LastName = {
+    id: "LastName",
     name: 'lastName',
     placeholder: 'Прізвище',
     type: 'text',
@@ -34,22 +34,12 @@ const LAST_NAME = {
     isSaving: true,
 }
 
-const NEW_PASSWORD = {
-    key: "NEW_PASSWORD",
-    name: 'password',
-    placeholder: "Пароль",
-    type: 'password',
-    autoComplete: 'new-password',
-    isSaving: false,
-}
-
 export const ERRORS = {
-    FIRST_NAME: "Не правильний формат імʼя.",
-    LAST_NAME: "Не правильний формат прізвища.",
-    EMAIL: "Не правильний формат E-mail.",
-    PASSWORD: "Не правильний формат паролю.",
-    NEW_PASSWORD: " ",
+    FirstName: "Не правильний формат імʼя.",
+    LastName: "Не правильний формат прізвища.",
+    Email: "Не правильний формат E-mail.",
+    Password: "Не правильний формат паролю.",
 }
 
-export const LOGIN_FIELDS = [EMAIL, PASSWORD];
-export const REGISTER_FIELDS = [FIRST_NAME, LAST_NAME, EMAIL, NEW_PASSWORD];
+export const LOGIN_FIELDS = [Email, Password];
+export const REGISTER_FIELDS = [FirstName, LastName, Email, Password];

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ERRORS } from '../constants/authConstants.js';
-import { SIGN_FORM_CHECK } from '../Regex/regexPatterns.js'
+import { AUTH_FORM_CHECK } from '../Regex/regexPatterns.js'
 
 export function useSessionStorage(groupKey, valueKey, isSaving, initialValue="") {
     const [values, setValue] = useState(() => {
@@ -37,7 +37,7 @@ export function useValidateForm( props = {} ) {
         let error = "";
         let isError = false;
 
-        if (value && !SIGN_FORM_CHECK[id]?.test(value.trim())) {
+        if (value && !AUTH_FORM_CHECK[id]?.test(value.trim())) {
             error = ERRORS[id]
             isError = true;
         }
@@ -78,7 +78,7 @@ export function useValidateForm( props = {} ) {
                 activateError(inputElement, true);
             } else {
                 const { error, isError} = validateField(inputElement.id, inputElement.value);
-
+                console.log(error)
                 newErrors[inputElement.id] = error;
                 activateError(inputElement, isError);
             }

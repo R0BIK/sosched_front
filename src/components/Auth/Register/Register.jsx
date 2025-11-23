@@ -6,14 +6,10 @@ import { useRef } from 'react';
 import AuthInputBox from './../AuthInputBox.jsx';
 import HoverButton from "./../HoverButton.jsx";
 
-import {LOGIN_FIELDS, REGISTER_FIELDS} from "../../../constants/authConstants.js";
+import {REGISTER_FIELDS} from "../../../constants/authConstants.js";
 import {useAuth} from "../../../context/AuthContext.jsx";
 import {SPECIAL} from "../../../constants/constants.js";
-import {
-    getFieldKey,
-    getFriendlyErrorMessage,
-    getValidationErrorsMap
-} from "../../../services/errorMaping/errorMapping.js";
+import { getValidationErrorsMap } from "../../../services/errorMaping/errorMapping.js";
 import {useSpace} from "../../../context/SpaceContext.jsx";
 import {login} from "../../../services/api/authApi.js";
 
@@ -57,23 +53,23 @@ export default function RegisterForm() {
                 navigate("/schedule");
                 e.target.reset();
             } catch (error) {
-                console.log(error.details);
-                console.log(getValidationErrorsMap(error));
-                // const message = getFriendlyErrorMessage(error)
-                // const key = getFieldKey(error)
-                // const inputRef = getRef(key);
-                // await addError(key, message, inputRef);
-                // focusFirstErrorField(errors, inputRef);
+                const errors = getValidationErrorsMap(error);
+                console.log(errors);
+                for (const [key, value] of Object.entries(errors)) {
+                    const inputRef = getRef(key);
+                    await addError(key, value, inputRef);
+                }
+                focusFirstErrorField(errors);
             }
         } else {
             focusFirstErrorField(newErrors);
         }
     }
 
-    const getRef = (key) => {
-        if (key) {
-            const index = LOGIN_FIELDS.findIndex(fieldKey =>
-                fieldKey.key === key
+    const getRef = (id) => {
+        if (id) {
+            const index = REGISTER_FIELDS.findIndex(fieldKey =>
+                fieldKey.id === id
             );
 
             if (index !== -1 && inputRefs.current[index]) {
@@ -84,7 +80,7 @@ export default function RegisterForm() {
 
     const focusFirstErrorField = (newErrors, inputRef=null) => {
         if (!inputRef) {
-            const firstErrorKey = Object.keys(newErrors).find(key => newErrors[key]);
+            const firstErrorKey = Object.keys(newErrors).find(id => newErrors[id]);
             inputRef = getRef(firstErrorKey);
         }
 
@@ -97,21 +93,21 @@ export default function RegisterForm() {
             method="POST"
             noValidate
             onSubmit={onSubmit}
-            className="flex flex-col items-center justify-center gap-[50px] w-full text-left"
+            className="flex flex-col items-center justify-center gap-13 w-full text-left"
         >
             {REGISTER_FIELDS.map((field, index) => {
                 const autoComplete = field.name === "password" ? "new-password" : field.autoComplete;
                 return (
                     <AuthInputBox
                         key={index}
-                        id={field.key}
+                        id={field.id}
                         className="w-full"
                         placeholder={field.placeholder}
                         type={field.type}
                         autoComplete={autoComplete}
                         name={field.name}
                         onBlur={(e) => inputOnBlur(e.target)}
-                        errorText={errors[field.key]}
+                        errorText={errors[field.id]}
                         onKeyDown={(e) =>
                             handleEnterAsTab({ e, index, formFields: REGISTER_FIELDS, inputRefs, buttonRef })
                         }

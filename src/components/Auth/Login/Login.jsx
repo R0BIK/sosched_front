@@ -9,7 +9,9 @@ import HoverButton from "./../HoverButton.jsx";
 import {LOGIN_FIELDS} from "../../../constants/authConstants.js";
 import {useAuth} from "../../../context/AuthContext.jsx";
 import {SPECIAL} from "../../../constants/constants.js";
-import {getFieldKey, getFriendlyErrorMessage} from "../../../services/errorMaping/errorMapping.js";
+import {
+    getValidationErrorsMap
+} from "../../../services/errorMaping/errorMapping.js";
 
 export default function LoginForm() {
     const navigate = useNavigate();
@@ -22,7 +24,6 @@ export default function LoginForm() {
 
     const onSubmit = async (e) => {
         const newErrors = handleSubmit(e);
-        console.log(errors)
         if (Object.values(newErrors).every(error => error === SPECIAL.STRING.EMPTY)) {
             sessionStorage.removeItem("login-form");
 
@@ -34,21 +35,22 @@ export default function LoginForm() {
                 navigate("/schedule");
                 e.target.reset();
             } catch (error) {
-                const message = getFriendlyErrorMessage(error)
-                const key = getFieldKey(error)
-                const inputRef = getRef(key);
-                await addError(key, message, inputRef);
-                focusFirstErrorField(errors, inputRef);
+                const errors = getValidationErrorsMap(error);
+                for (const [key, value] of Object.entries(errors)) {
+                    const inputRef = getRef(key);
+                    await addError(key, value, inputRef);
+                }
+                focusFirstErrorField(errors);
             }
         } else {
             focusFirstErrorField(newErrors);
         }
     }
 
-    const getRef = (key) => {
-        if (key) {
+    const getRef = (id) => {
+        if (id) {
             const index = LOGIN_FIELDS.findIndex(fieldKey =>
-                fieldKey.key === key
+                fieldKey.id === id
             );
 
             if (index !== -1 && inputRefs.current[index]) {
@@ -78,14 +80,14 @@ export default function LoginForm() {
                 return (
                     <AuthInputBox
                         key={index}
-                        id={field.key}
+                        id={field.id}
                         className="w-full"
                         placeholder={field.placeholder}
                         type={field.type}
                         autoComplete={field.autoComplete}
                         name={field.name}
                         onBlur={(e) => inputOnBlur(e.target)}
-                        errorText={errors[field.key]}
+                        errorText={errors[field.id]}
                         onKeyDown={(e) =>
                             handleEnterAsTab({ e, index, formFields: LOGIN_FIELDS, inputRefs, buttonRef })
                         }
