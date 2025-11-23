@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import {SPECIAL} from "../../../constants.js";
+import {SPECIAL} from "../../constants/constants.js";
 
 export default function Badge({text, color, onRemove}) {
     const colorConfig = SPECIAL.TAG_COLORS[color] ?? SPECIAL.TAG_COLORS.gray;

@@ -66,7 +66,7 @@ export default function Members() {
             <div className="mt-2 w-full flex flex-col min-h-0">
 
                 {/* Шапка таблицы (фиксированная) */}
-                <div className="flex w-full border-b border-gray-300 py-3.5 text-sm font-semibold text-main-black shrink-0 pr-2 z-10">
+                <div className="flex w-full border-b border-gray-300 py-3.5 text-sm font-semibold text-main-black shrink-0 z-10">
                     <div className="w-9/20 text-left pl-3">
                         Учасники – {totalCount}
                     </div>
@@ -81,7 +81,7 @@ export default function Members() {
                     </div>
                 </div>
 
-                <div className="w-full overflow-y-auto h-full min-h-40">
+                <div className="w-full overflow-y-auto h-full min-h-40 no-scrollbar">
                     <div className="flex flex-col divide-y divide-gray-200">
                         {users?.map((user) => (
                             <div key={user.id} className="flex w-full items-center py-3">

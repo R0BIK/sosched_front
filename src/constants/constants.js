@@ -99,10 +99,10 @@ export const getSignFormData = (t) => ({
     },
 
     ERRORS: {
-        FIRST_NAME: "Only letters and '-' are allowed.",
-        LAST_NAME: "Only letters and '-' are allowed.",
-        EMAIL: "Only letters and '-' in name",
-        PASSWORD: "Only letters and '-' are allowed.",
+        FIRST_NAME: "Не правильний формат імʼя.",
+        LAST_NAME: "Не правильний формат прізвища.",
+        EMAIL: "Не правильний формат E-mail.",
+        PASSWORD: "Не правильний формат паролю.",
         NEW_PASSWORD: " ",
     },
 });

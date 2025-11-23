@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import InputBox from "../../BasicInputs/InputBox.jsx";
-import SelectMenu from "../../BasicInputs/SelectMenu.jsx";
 import { DateBox } from "../../BasicInputs/DateBox.jsx";
 import { TimeBox } from "../../BasicInputs/TimeBox.jsx";
 import Checkbox from "../../BasicInputs/CheckBox.jsx";
@@ -66,8 +65,8 @@ export default function CreateEvent({
                 />
                 {isRepeating && (
                     <RepeatSelector
-                        period={repeatRule.period}
-                        count={repeatRule.count}
+                        repeatType={repeatRule.repeatType}
+                        repeatNumber={repeatRule.repeatNumber}
                         repeatEnd={repeatRule.repeatEnd}
                         onChange={handleRepeatChange}
                     />

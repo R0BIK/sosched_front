@@ -18,9 +18,9 @@ import { useGetTagTypes } from "../../../../tanStackQueries/tagType/useGetTagTyp
 import { useDeleteTag } from "../../../../tanStackQueries/tag/useDeleteTag.js";
 import { useCreateTag } from "../../../../tanStackQueries/tag/useCreateTag.js";
 import { useUpdateTagUsers } from "../../../../tanStackQueries/tag/useUpdateTagUsers.js";
-import { useUpdateTag } from "../../../../tanStackQueries/tag/useUpdateApi.js";
+import { useUpdateTag } from "../../../../tanStackQueries/tag/useUpdateTag.js";
 
-import { SPECIAL } from "../../../../../constants.js";
+import { SPECIAL } from "../../../../constants/constants.js";
 
 export default function Tags() {
     const { activeSpace } = useSpace();

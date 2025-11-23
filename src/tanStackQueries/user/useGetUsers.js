@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getUsers } from "../../services/userApi.js";
+import { getUsers } from "../../services/api/userApi.js";
 import {generateFilterString} from "../../services/filterStringGenerator/generateFilterString.js";
 
 export function useGetUsers(domain, filterObj, search) {

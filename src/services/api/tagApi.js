@@ -1,5 +1,5 @@
-import { api } from "../api/apiClient.js";
-import { API_ENDPOINTS } from "../../constants.js";
+import { api } from "../../api/apiClient.ts";
+import { API_ENDPOINTS } from "../../constants/constants.js";
 
 export const getTags = async (domain, params) => {
     const response = await api.get(`${domain}${API_ENDPOINTS.TAG}`, { params });
@@ -44,7 +44,7 @@ export const updateTag = async (id, domain, tagData) => {
     return response.data;
 }
 
-export const updateUsers = async (tagId, data, domain) => {
+export const updateTagUsers = async (tagId, data, domain) => {
     const response = await api.patch(
         `${domain}${API_ENDPOINTS.TAG}/${tagId}/users`,
         data

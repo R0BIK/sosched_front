@@ -1,10 +1,6 @@
 import { useCallback, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { EditIcon } from "../../../../img/svg/Icons.jsx";
-
-// Компоненты
-import EditTagModal from "../../../../components/Modals/EditTagModal.jsx";
-import Badge from "../../../../components/Badges/Badge.jsx";
 import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx"; // <-- Новый компонент
 
 // Хуки и контекст
@@ -12,60 +8,57 @@ import { useLockBodyScroll } from "../../../../hooks/useLockBodyScroll.js";
 import { useSpace } from "../../../../context/SpaceContext.jsx";
 import { useInfiniteScroll } from "../../../../components/InfinityScroll/useInfiniteScroll.js"; // <-- Новый хук
 
-// Запросы (React Query)
-import { useGetTags } from "../../../../tanStackQueries/tag/useGetTags.js";
-import { useGetTagTypes } from "../../../../tanStackQueries/tagType/useGetTagTypes.js";
-import { useDeleteTag } from "../../../../tanStackQueries/tag/useDeleteTag.js";
-import { useCreateTag } from "../../../../tanStackQueries/tag/useCreateTag.js";
-import { useUpdateTagUsers } from "../../../../tanStackQueries/tag/useUpdateTagUsers.js";
-import { useUpdateTag } from "../../../../tanStackQueries/tag/useUpdateApi.js";
-
-import { SPECIAL } from "../../../../../constants.js";
+import { SPECIAL } from "../../../../constants/constants.js";
+import {useGetPagedEvents} from "../../../../tanStackQueries/event/useGetPagedEvents.js";
+import EditEventModal from "../../../../components/Modals/EditEventModal.jsx";
+import {useUpdateEventUsers} from "../../../../tanStackQueries/event/useUpdateEventUsers.js";
+import {useUpdateEvent} from "../../../../tanStackQueries/event/useUpdateEvent.js";
+import {useDeleteEvent} from "../../../../tanStackQueries/event/useDeleteEvent.js";
+import {useCreateEvent} from "../../../../tanStackQueries/event/useCreateEvent.js";
 
 export default function Events() {
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
 
     // --- Queries ---
-    const tagTypesQuery = useGetTagTypes(domain);
-    const tagQuery = useGetTags(domain);
+    const eventQuery = useGetPagedEvents(null, domain);
 
-    const tags = tagQuery.data?.pages.flatMap((p) => p.items) ?? [];
-    const totalCount = tagQuery.data?.pages?.[0]?.totalCount ?? 0;
+    const events = eventQuery.data?.pages.flatMap((p) => p.items) ?? [];
+    const totalCount = eventQuery.data?.pages?.[0]?.totalCount ?? 0;
 
-    console.log(tags);
-    // --- Infinite Scroll Hook ---
-    const loadMoreRef = useInfiniteScroll(tagQuery);
+    const loadMoreRef = useInfiniteScroll(eventQuery);
 
-    // --- Mutations ---
-    const { mutateAsync: createTagMutate } = useCreateTag(domain);
-    const { mutate: deleteTagMutate } = useDeleteTag(domain);
-    const { mutateAsync: updateTagMutate } = useUpdateTag(domain);
-    const { mutate: updateUsersMutate } = useUpdateTagUsers(domain);
+    const { mutateAsync: createEventMutate } = useCreateEvent(domain);
+    const { mutate: deleteEventMutate } = useDeleteEvent(domain);
+    const { mutateAsync: updateEventMutate } = useUpdateEvent(domain);
+    const { mutate: updateEventUsersMutate } = useUpdateEventUsers(domain);
 
     // --- State ---
-    const [selectedTag, setSelectedTag] = useState(null);
-    useLockBodyScroll(!!selectedTag);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    useLockBodyScroll(!!selectedEvent);
 
     // --- Handlers ---
-    const handleEdit = (tag) => setSelectedTag({ tag: tag, type: "edit" });
-    const handleClose = () => setSelectedTag(null);
-
+    const handleEdit = (event) => setSelectedEvent({ event: event, type: "edit" });
+    const handleClose = () => setSelectedEvent(null);
+    //
     const handleCreate = () => {
-        setSelectedTag({
-            tag: {
+        setSelectedEvent({
+            event: {
                 id: null,
                 name: "",
-                shortName: "",
-                tagType: null,
+                location: "",
+                description: "",
+                coordinator: null,
+                dateStart: null,
+                dateEnd: null,
                 color: SPECIAL.TAG_COLORS.gray.name,
             }, type: "create"
         });
     };
 
-    const handleDeleteTag = useCallback((id) => {
-        deleteTagMutate(id);
-    }, [deleteTagMutate]);
+    const handleDeleteEvent = useCallback((id) => {
+        deleteEventMutate(id);
+    }, [deleteEventMutate]);
 
     const isUpdateDataEmpty = (updateData) => {
         return (
@@ -75,41 +68,73 @@ export default function Events() {
         );
     };
 
-    const handleSaveTag = useCallback(async (updatedTag, usersToAdd, type) => {
-        if (!updatedTag.name.trim() || !updatedTag.shortName.trim()) return;
+    const handleSaveEvent = useCallback(async (updatedEvent, usersToAdd, type, repeatRule, isRepeating) => {
+        if (!updatedEvent.name.trim() ||
+            !updatedEvent.color.trim() ||
+            !updatedEvent.dateStart ||
+            !updatedEvent.dateEnd
+        ) return;
+
+        const request = {
+            name: updatedEvent.name,
+            location: updatedEvent.location,
+            description: updatedEvent.description,
+            coordinatorId: updatedEvent.coordinator?.id,
+            dateStart: updatedEvent.dateStart,
+            dateEnd: updatedEvent.dateEnd,
+            color: updatedEvent.color,
+        }
 
         if (type === "edit") {
-            const changedData = getChangedFields(selectedTag.tag, updatedTag);
+            const currentEvent = selectedEvent.event;
+
+            const currentObj = {
+                name: currentEvent.name,
+                location: currentEvent.location,
+                description: currentEvent.description,
+                coordinatorId: currentEvent.coordinator?.id,
+                dateStart: currentEvent.dateStart,
+                dateEnd: currentEvent.dateEnd,
+                color: currentEvent.color,
+            }
+
+            const changedData = getChangedFields(currentObj, request);
 
             if (changedData) {
-                await updateTagMutate({
-                    tagId: updatedTag.id, // Исправил ключ на tagId (как в хуке)
-                    tagData: changedData  // Исправил ключ на tagData (как в хуке)
+                await updateEventMutate({
+                    id: updatedEvent.id,
+                    data: changedData
                 });
             }
 
-            updateUsersMutate({
-                tagId: updatedTag.id,
+            updateEventUsersMutate({
+                eventId: updatedEvent.id,
                 data: usersToAdd
             });
         } else {
-            const created = await createTagMutate(updatedTag);
+            if (!isRepeating) repeatRule = null;
+
+            const created = await createEventMutate({...request, repeatInfo: repeatRule, confirmed: true});
 
             if (isUpdateDataEmpty(usersToAdd)) return;
 
-            updateUsersMutate({
-                tagId: created.id,
-                data: usersToAdd
+            const data = {...usersToAdd, eventIds: created.eventIds};
+
+            updateEventUsersMutate({
+                eventId: created.id,
+                data: data
             });
         }
 
-    }, [createTagMutate, updateUsersMutate, updateTagMutate, selectedTag?.tag]);
+    }, [createEventMutate, updateEventUsersMutate, updateEventMutate, selectedEvent?.event]);
+
+    // console.log(events);
 
     return (
         <div className="pt-5 px-9 w-full h-full flex flex-col overflow-auto">
             <div className="flex justify-between">
                 <div className="flex flex-col">
-                    <h1 className="text-3xl font-semibold text-main-black">Теги</h1>
+                    <h1 className="text-3xl font-semibold text-main-black">Події</h1>
                     <p className="mt-2 text-sm text-gray-700">
                         A list of all the users in your account including their name, title, email and role.
                     </p>
@@ -120,7 +145,7 @@ export default function Events() {
                         onClick={handleCreate}
                         className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
-                        Створити тег
+                        Створити подію
                     </button>
                 </div>
             </div>
@@ -128,16 +153,16 @@ export default function Events() {
             <div className="mt-8 w-full flex flex-col min-h-0">
                 <div className="flex w-full border-b border-gray-300 py-3.5 text-sm font-semibold text-main-black z-10">
                     <div className="w-7/20 text-left">
-                        Тег – {totalCount}
+                        Подія – {totalCount}
                     </div>
                     <div className="w-1/5 text-center">
                         Учасники
                     </div>
                     <div className="w-1/5 text-center">
-                        Тип тегу
+                        Дата події
                     </div>
                     <div className="w-1/5 text-center">
-                        Бейдж
+                        Створив
                     </div>
                     <div className="w-1/40 min-w-8">
                         <span className="sr-only">Edit</span>
@@ -149,23 +174,27 @@ export default function Events() {
 
                 <div className="w-full overflow-y-auto h-full min-h-40 no-scrollbar">
                     <div className="flex flex-col divide-y divide-gray-200">
-                        {tags?.map((tag) => (
-                            <div key={tag.id} className="flex w-full items-center py-3">
+                        {events?.map((event) => (
+                            <div key={event.id} className="flex w-full items-center py-3">
                                 <div className="w-7/20 text-sm break-all text-main-black">
-                                    {tag.name}
+                                    {event.name}
                                 </div>
                                 <div className="w-1/5 text-sm break-all text-second-text text-center">
-                                    {tag.usersCount}
+                                    {event.usersCount}
                                 </div>
                                 <div className="w-1/5 text-sm break-all text-second-text text-center">
-                                    {tag.tagType}
+                                    {new Date(event.dateStart).toLocaleDateString('uk-UA', {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit'
+                                    })}
                                 </div>
-                                <div className="w-1/5 text-center text-sm whitespace-nowrap text-main-black flex justify-center">
-                                    <Badge text={tag.shortName} color={tag.color} />
+                                <div className="w-1/5 text-center text-sm whitespace-nowrap text-second-text flex justify-center">
+                                    {event.creator.fullName}
                                 </div>
                                 <div className="w-1/40 text-right flex justify-end min-w-8">
                                     <button
-                                        onClick={() => handleEdit(tag)}
+                                        onClick={() => handleEdit(event)}
                                         title="Редагувати"
                                         className="p-1 inline-block group relative"
                                     >
@@ -174,7 +203,7 @@ export default function Events() {
                                 </div>
                                 <div className="w-1/40 flex justify-end min-w-8">
                                     <button
-                                        onClick={() => handleDeleteTag(tag.id)}
+                                        onClick={() => handleDeleteEvent(event.id)}
                                         title="Видалити"
                                         className="p-1 inline-block text-second-text hover:text-red-600"
                                     >
@@ -187,18 +216,17 @@ export default function Events() {
 
                     <InfiniteScrollTrigger
                         ref={loadMoreRef}
-                        isFetching={tagQuery.isFetchingNextPage}
+                        isFetching={eventQuery.isFetchingNextPage}
                     />
                 </div>
             </div>
 
-            {selectedTag && (
-                <EditTagModal
+            {selectedEvent && (
+                <EditEventModal
                     handleClose={handleClose}
-                    selected={selectedTag}
-                    handleSaveTag={handleSaveTag}
-                    handleDeleteTag={handleDeleteTag}
-                    tagTypesQuery={tagTypesQuery}
+                    selected={selectedEvent}
+                    handleSaveEvent={handleSaveEvent}
+                    handleDeleteEvent={handleDeleteEvent}
                 />
             )}
         </div>
@@ -209,6 +237,10 @@ function getChangedFields(original, updated) {
     const changed = {};
 
     Object.keys(updated).forEach(key => {
+        if (key === "coordinatorId") {
+            changed[key] = updated[key];
+            return;
+        }
         if (updated[key] !== original[key]) {
             changed[key] = updated[key];
         }

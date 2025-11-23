@@ -3,7 +3,7 @@ import {useState, useMemo, useCallback} from "react";
 
 import InputBox from "../BasicInputs/InputBox.jsx";
 import SelectMenu from "../BasicInputs/SelectMenu.jsx";
-import { SPECIAL } from "../../../constants.js";
+import { SPECIAL } from "../../constants/constants.js";
 import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx";
 import SelectMenuLazy from "../BasicInputs/SelectMenuLazy.jsx";
 import SearchIcon from "@mui/icons-material/Search";
@@ -120,7 +120,7 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
                 <InputBox
                     id="name"
                     name="name"
-                    label="Повна назва тегу"
+                    label="Назва тегу"
                     placeholder="Студент"
                     value={formData.name}
                     className="w-full"
@@ -290,7 +290,7 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
 
 EditTagModal.propTypes = {
     handleClose: PropTypes.func.isRequired,
-    handleSaveTag: PropTypes.func.isRequired,
+    handleSaveEvent: PropTypes.func.isRequired,
     handleDeleteTag: PropTypes.func.isRequired,
     selected: PropTypes.shape({
         tag: PropTypes.shape({

@@ -14,7 +14,6 @@ export default function WeekCalendar({firstWeekDate, selectedDay, events, onEven
         return () => clearInterval(timer);
     }, []);
 
-
     return (
         <div className="relative w-full no-scrollbar overflow-x-auto max-w-[1130px] pt-[15px]">
             <div className="flex gap-[40px] items-center h-max">

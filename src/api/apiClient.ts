@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import {failure, isResultPattern, ResultError, ResultPattern, success} from "./resultPattern";
-import {API_BASE_URL} from "../../constants.js";
+import {API_BASE_URL} from "../constants/constants.js";
 
 
 // --- Error messages ---

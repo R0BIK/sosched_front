@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUsersAndTags } from "../../services/searchApi.js";
+import { getUsersAndTags } from "../../services/api/searchApi.js";
 
 export function useSearch(domain, search) {
     return useQuery({

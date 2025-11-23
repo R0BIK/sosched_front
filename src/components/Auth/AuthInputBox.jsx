@@ -1,9 +1,14 @@
 import PropTypes from "prop-types";
 import { useSessionStorage } from "../../hooks/SignFormHooks.js";
-import { CrossIcon } from "../../img/svg/Icons.jsx";
 import PasswordRules from "./PasswordRules.jsx";
+import {Lineicons} from "@lineiconshq/react-lineicons";
+import { XmarkOutlined } from "@lineiconshq/free-icons";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import {useCallback, useRef, useState} from "react";
 
 export default function AuthInputBox({
+     id,
      name,
      placeholder,
      type,
@@ -16,36 +21,59 @@ export default function AuthInputBox({
      formName,
  }) {
     const { values, handleChange } = useSessionStorage(formName, name, isSaving);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const onClick = () => {
         handleChange({ target: { name, value: "" } });
-        onBlur({ target: { name, value: "" } });
+        const inputElement = internalRef.current;
+        inputElement.value = ""
+        const e = {
+            target: inputElement
+        };
+        onBlur(e);
     };
+
+    const onEyeClick = () => {
+        setIsPasswordVisible(!isPasswordVisible);
+    }
+
+    const internalRef = useRef(null);
+
+    const setRefs = useCallback(el => {
+        internalRef.current = el;
+        if (typeof ref === 'function') {
+            ref(el);
+        } else if (ref) {
+            ref.current = el;
+        }
+    }, [ref]);
 
     return (
         <div
             data-new-password={autoComplete === "new-password" ? '' : undefined}
-            className="relative group flex flex-col w-full data-new-password:mb-[60px]"
+            data-password={name === "password" ? '' : undefined}
             data-filled={values !== '' ? '' : undefined}
+            className="relative group flex flex-col w-full data-new-password:mb-[60px]"
         >
             <input
-                id={name}
+                id={id}
                 name={name}
-                type={type}
+                type={isPasswordVisible ? "text" : type}
                 autoComplete={autoComplete}
                 placeholder=" "
                 value={values}
                 onChange={ handleChange }
                 onBlur={onBlur}
-                ref={ref}
+                ref={setRefs}
                 onKeyDown={onKeyDown}
                 required
                 className="peer h-10 w-full text-noto text-sm border-none outline-none bg-transparent text-main-black px-1
-                   group-data-filled:pr-[30px]"
+                   group-data-filled:pr-[30px]
+                   group-data-password:pr-[60px]"
             />
 
             <label
-                htmlFor={name}
+                htmlFor={id}
                 className="
                     absolute left-1 font-noto text-sm text-second-text
                     transition-all duration-300 ease-in-out
@@ -71,14 +99,37 @@ export default function AuthInputBox({
 
             <button
                 type="button"
-                className="absolute right-2 top-3 invisible group-data-filled:visible
+                className="absolute right-2 top-[11px] invisible group-data-filled:visible
                    transition duration-300 text-second-text hover:text-main-black"
                 tabIndex={-1}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={ onClick }
             >
-                <CrossIcon className="h-4 w-4 rotate-[-45deg] fill-transparent group-data-filled:rotate-0 group-data-filled:fill-current transition-all duration-300" />
+                <div className="flex items-center justify-center rotate-[-45deg] text-transparent group-data-filled:rotate-0 group-data-filled:text-current transition-all duration-300" >
+                    <Lineicons icon={XmarkOutlined} size={20}/>
+                </div>
+                {/*<CrossIcon className="h-4 w-4 rotate-[-45deg] fill-transparent group-data-filled:rotate-0 group-data-filled:fill-current transition-all duration-300" />*/}
             </button>
+
+            {name === "password" && (
+                <button
+                    type="button"
+                    className="absolute right-8 top-[12px] invisible group-data-filled:visible
+                   transition duration-300 text-second-text hover:text-main-black"
+                    tabIndex={-1}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={ onEyeClick }
+                >
+                    <div className="flex items-center justify-center rotate-[-45deg] text-transparent group-data-filled:rotate-0 group-data-filled:text-current transition-all duration-300" >
+                        {isPasswordVisible && (
+                            <VisibilityIcon sx={{ fontSize: 18 }} />
+                        )}
+                        {!isPasswordVisible && (
+                            <VisibilityOffIcon sx={{ fontSize: 18 }} />
+                        )}
+                    </div>
+                </button>
+            )}
 
             {autoComplete === "new-password" && (
                 <PasswordRules values={values} className="absolute top-10 left-1 list-none text-sm text-second-text opacity-0 invisible
@@ -92,6 +143,7 @@ export default function AuthInputBox({
 }
 
 AuthInputBox.propTypes = {
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name: PropTypes.string.isRequired,
     placeholder: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,

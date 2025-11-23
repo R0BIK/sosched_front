@@ -12,17 +12,22 @@ import Tags from "../pages/AuthorizedLayout/Space/SpaceTabs/Tags.jsx";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
 import TagTypes from "../pages/AuthorizedLayout/Space/SpaceTabs/TagTypes.jsx";
 import Events from "../pages/AuthorizedLayout/Space/SpaceTabs/Events.jsx";
-
-import {AUTH_TYPES} from "../../constants.js";
+import AuthRedirect from "./routes/AuthRedirect.jsx";
 
 export const router = createBrowserRouter([
     {
         path: '/',
         element: <AuthPage />,
         children: [
-            { index: true, element: <AuthPanel type={AUTH_TYPES.LOGIN} /> },
-            { path: 'SignUp', element: <AuthPanel type={AUTH_TYPES.REGISTER} /> },
-            { path: 'SignIn', element: <AuthPanel type={AUTH_TYPES.LOGIN} /> },
+            { path: '', element: <Navigate to="login" replace /> },
+            { path: 'register', element: <AuthPanel /> },
+            { path: 'login', element:
+                    (
+                        <AuthRedirect>
+                            <AuthPanel />
+                        </AuthRedirect>
+                    )
+            },
         ],
     },
     {

@@ -4,7 +4,7 @@ import { Label, Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@h
 import { ChevronUpDownIcon } from '@heroicons/react/16/solid'
 import { CheckIcon } from '@heroicons/react/20/solid'
 import PropTypes from "prop-types";
-import { SPECIAL } from "../../../constants.js";
+import { SPECIAL } from "../../constants/constants.js";
 import {useEffect} from "react";
 
 export default function SelectMenu({

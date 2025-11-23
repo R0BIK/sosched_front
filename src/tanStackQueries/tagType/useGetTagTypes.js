@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getTagTypes } from "../../services/tagTypeApi";
+import { getTagTypes } from "../../services/api/tagTypeApi.js";
 
 export function useGetTagTypes(domain) {
     return useInfiniteQuery({

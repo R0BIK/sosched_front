@@ -15,18 +15,17 @@ const PERIOD_LABELS = {
     Month: "Місяць",
 };
 
-// Зворотна мапа укр → англ
 const LABEL_TO_KEY = Object.entries(PERIOD_LABELS).reduce((acc, [key, label]) => {
     acc[label] = key;
     return acc;
 }, {});
 
-export default function RepeatSelector({ period, count, repeatEnd, onChange }) {
+export default function RepeatSelector({ repeatType, repeatNumber, repeatEnd, onChange }) {
     // Массив объектов для count
     const numbers = useMemo(() => {
-        const max = LIMITS[period];
+        const max = LIMITS[repeatType];
         return Array.from({ length: max }, (_, i) => ({ id: i + 1, name: (i + 1).toString() }));
-    }, [period]);
+    }, [repeatType]);
 
     // Массив объектов для period
     const periodOptions = useMemo(() => {
@@ -36,8 +35,8 @@ export default function RepeatSelector({ period, count, repeatEnd, onChange }) {
     const handlePeriodChange = (id) => {
         const value = id; // id = "Day" | "Week" | "Month"
         const max = LIMITS[value];
-        onChange("period", value);
-        if (count > max) onChange("count", max);
+        onChange("repeatType", value);
+        if (repeatNumber > max) onChange("repeatNumber", max);
     };
 
     const handleRepeatEndChange = (e) => {
@@ -51,20 +50,17 @@ export default function RepeatSelector({ period, count, repeatEnd, onChange }) {
                 <div>
                     <SelectMenu
                         array={numbers}
-                        value={count}
-                        onChange={(val) => onChange("count", Number(val))}
+                        value={repeatNumber}
+                        onChange={(val) => onChange("repeatNumber", Number(val))}
                     />
                 </div>
                 <div className="w-full">
                     <SelectMenu
                         array={periodOptions}
-                        value={period}
+                        value={repeatType}
                         onChange={handlePeriodChange}
                     />
                 </div>
-            </div>
-
-            <div className="flex items-center gap-4">
                 <p className="font-noto pt-1">До</p>
                 <DateBox
                     id="repeatEnd"
@@ -74,13 +70,17 @@ export default function RepeatSelector({ period, count, repeatEnd, onChange }) {
                 />
                 <p className="font-noto pt-1">включно</p>
             </div>
+
+            <div className="flex items-center gap-4">
+
+            </div>
         </div>
     );
 }
 
 RepeatSelector.propTypes = {
-    period: PropTypes.oneOf(["Day", "Week", "Month"]).isRequired,
-    count: PropTypes.number.isRequired,
+    repeatType: PropTypes.oneOf(["Day", "Week", "Month"]).isRequired,
+    repeatNumber: PropTypes.number.isRequired,
     repeatEnd: PropTypes.string,
     onChange: PropTypes.func.isRequired,
 };

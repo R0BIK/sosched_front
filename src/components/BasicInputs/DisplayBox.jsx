@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 export default function DisplayBox({ id, label, value, className }) {
     return (
         <div className={className}>
-            <label htmlFor={id} className="block font-semibold text-gray-900">
+            <label className="block font-semibold text-gray-900">
                 {label}
             </label>
             <div className="mt-1">

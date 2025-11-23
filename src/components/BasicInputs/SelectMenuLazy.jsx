@@ -11,7 +11,7 @@ import { ChevronUpDownIcon } from '@heroicons/react/16/solid';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import PropTypes from 'prop-types';
 import {useMemo, useRef, useCallback, useEffect} from 'react';
-import { SPECIAL } from '../../../constants.js';
+import { SPECIAL } from '../../constants/constants.js';
 
 export default function SelectMenuLazy({
     query,

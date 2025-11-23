@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 export function DateBox({ id, name, label, className, value, onChange }) {
     return (
         <div className={className + " font-noto"}>
-            {label && <label htmlFor={id} className="block font-semibold ml-1 text-gray-900">{label}</label>}
+            {label && <label className="block font-semibold ml-1 text-gray-900">{label}</label>}
             <div className="mt-2">
                 <input
                     id={id}

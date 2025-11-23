@@ -1,28 +1,29 @@
-import { useTranslation } from "react-i18next";
-import DropDownMenu from "../DropDownMenu/DropDownMenu.jsx";
-import { LOCALES_TEXT } from "../../i18n/resources.js";
-import logo from '../../img/1024.png'
+import UnderlinedButton from "../UnderlinedButton.jsx";
+import {useLocation, useNavigate} from "react-router-dom";
 
 export default function UnAuthorizedHeader() {
-    const { i18n, t } = useTranslation();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const changeLanguage = (key) => {
-        i18n.changeLanguage(key)
-    }
+    const isLogin = location.pathname === "/login";
 
     return (
-        <header className="flex items-center h-[100px] w-full px-5">
-            <div className="flex w-full justify-start">
-                <img className="h-[70px]" src={logo} alt="logo" />
+        <header className="fixed top-0 z-50 w-full h-18 items-center content-center grid grid-cols-3 px-9 py-3
+        inset-shadow-current/20 backdrop-blur-sm bg-glass-bg inset-shadow-sm border-b-1 border-b-glass-border">
+            <div className="flex items-center">
+                <p className="font-dancing text-accent text-[40px] select-none">S</p>
+                <p className="font-dancing text-main-black text-[40px] select-none">osched</p>
             </div>
 
-            <div className="flex w-full justify-end pr-5">
-                <DropDownMenu
-                    onChoose={changeLanguage}
-                    options={LOCALES_TEXT}
-                    placeholder={t('global:languages:ChooseLang')}
-                    keyValue={i18n.language}
-                />
+            <div className="flex justify-center items-center whitespace-nowrap">
+                <UnderlinedButton text="Головна" to="/home" />
+                <UnderlinedButton text="Про нас" to="/about" />
+            </div>
+
+            <div className="flex justify-end items-center">
+                <a href={!isLogin ? "/login" : "/register"}>
+                    {!isLogin ? "Увійти" : "Зареєструватись"}
+                </a>
             </div>
         </header>
     )

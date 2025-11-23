@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteTag } from "../../services/tagApi.js";
+import { deleteTag } from "../../services/api/tagApi.js";
 
 export function useDeleteTag(domain) {
     const queryClient = useQueryClient();

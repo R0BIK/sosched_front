@@ -7,11 +7,14 @@ import { useGetEvents } from "../../tanStackQueries/event/useGetEvents.js";
 import CreateEvent from "../../components/Schedule/Drawers/CreateEvent.jsx";
 import Drawer from "../../components/Schedule/Drawers/Drawer.jsx";
 import {useCreateEvent} from "../../tanStackQueries/event/useCreateEvent.js";
-import {DRAWER_MODES} from "../../../constants.js";
+import {DRAWER_MODES} from "../../constants/constants.js";
 import EventInfo from "../../components/Schedule/Drawers/EventInfo.jsx";
+import InfiniteScrollTrigger from "../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
+import {useInfiniteScroll} from "../../components/InfinityScroll/useInfiniteScroll.js";
+import { PlusOutlined } from "@lineiconshq/free-icons";
 
 export default function Schedule() {
-    const { switchSpace, spaces, activeSpace } = useSpace();
+    const { switchSpace, spaces, activeSpace, spaceQuery } = useSpace();
     const domain = activeSpace?.domain;
 
     const { mutate: createEventMutate } = useCreateEvent(domain);
@@ -25,12 +28,10 @@ export default function Schedule() {
 
     const dataForEvents = useMemo(() => ({
         dateFrom: firstWeekDate,
-        dateTo: new Date(new Date(firstWeekDate).setDate(new Date(firstWeekDate).getDate() + 6)).toISOString()
+        dateTo: new Date(new Date(firstWeekDate).setDate(new Date(firstWeekDate).getDate() + 7))
     }), [firstWeekDate]);
 
-    const { data: eventsData } = useGetEvents(dataForEvents, domain);
-
-    const events = eventsData?.items;
+    const { data: events } = useGetEvents(dataForEvents, domain);
 
     // -------------------------------
     // 🧾 Drawer + Form State
@@ -39,7 +40,6 @@ export default function Schedule() {
     const isDrawerOpen = drawerMode !== null;
 
     const [selectedEvent, setSelectedEvent] = useState(null);
-
 
     const [isRepeating, setIsRepeating] = useState(false);
 
@@ -52,8 +52,8 @@ export default function Schedule() {
     });
 
     const [repeatRule, setRepeatRule] = useState({
-        period: "Day",
-        count: 1,
+        repeatType: "Day",
+        repeatNumber: 1,
         repeatEnd: ""
     });
 
@@ -97,8 +97,8 @@ export default function Schedule() {
         let repeatInfo = null;
         if (isRepeating) {
             repeatInfo = {
-                RepeatNumber: repeatRule.count,
-                RepeatType: repeatRule.period, // "Day" | "Week" | "Month"
+                RepeatNumber: repeatRule.repeatNumber,
+                RepeatType: repeatRule.repeatType, // "Day" | "Week" | "Month"
                 RepeatEnd: repeatRule.repeatEnd ? new Date(repeatRule.repeatEnd) : null
             };
         }
@@ -181,11 +181,12 @@ export default function Schedule() {
         });
     }, []);
 
+    const loadMoreRef = useInfiniteScroll(spaceQuery);
+
     return (
         <div className="flex-row flex h-full overflow-hidden">
-            {/* Left Sidebar */}
-            <div className="p-5 flex flex-col justify-between border-r border-gray-200">
-                <div>
+            <div className="p-5 flex flex-col h-full justify-between border-r border-gray-200">
+                <div className="h-full flex flex-col">
                     <div className="flex justify-center">
                         <MonthCalendar
                             selectedDay={selectedDay}
@@ -194,26 +195,31 @@ export default function Schedule() {
                             handleMonthChange={handleMonthChange}
                         />
                     </div>
-                    <div className="font-noto text-xm mt-10 font-extralight">
-                        <p className="text-second-text ml-4 mb-1">Простори</p>
-                        {spaces.map((space) => (
-                            <TabComponent
-                                key={space.id}
-                                text={space.name}
-                                initial={getInitial(space.domain)}
-                                isActive={activeSpace?.domain === space.domain}
-                                onClick={() => switchSpace(space)}
+                    <div className="font-noto text-xm mt-10 h-full flex flex-col overflow-hidden">
+                        <p className="text-second-text ml-4 font-extralight mb-1">Простори</p>
+                        <div className="overflow-auto h-auto flex flex-col no-scrollbar">
+                            {spaces.map((space) => (
+                                <TabComponent
+                                    key={space.id}
+                                    text={space.name}
+                                    initial={getInitial(space.domain)}
+                                    isActive={activeSpace?.domain === space.domain}
+                                    onClick={() => switchSpace(space)}
+                                />
+                            ))}
+                            <InfiniteScrollTrigger
+                                ref={loadMoreRef}
+                                isFetching={spaceQuery.isFetchingNextPage}
                             />
-                        ))}
+                        </div>
+                        <TabComponent
+                            LineIconSize={20}
+                            className="text-second-text font-extralight mt-2"
+                            text="Додати новий"
+                            LineIcon={PlusOutlined}
+                        />
                     </div>
                 </div>
-                <button
-                    type="button"
-                    onClick={() => setDrawerMode(DRAWER_MODES.CREATE)}
-                    className="flex justify-center items-center whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                    Створити подію
-                </button>
             </div>
 
             <div className="flex-1 flex overflow-hidden justify-between">
@@ -224,7 +230,6 @@ export default function Schedule() {
                     handleDayClick={handleDayClick}
                     onChevronClick={handleChevronClick}
                     onEventClick={(event) => {
-                        console.log(event);
                         setSelectedEvent(event);
                         setDrawerMode(DRAWER_MODES.INFO);
                     }}

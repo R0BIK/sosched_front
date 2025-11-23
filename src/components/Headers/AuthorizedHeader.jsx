@@ -34,7 +34,7 @@ export default function AuthorizedHeader() {
                 <button
                     onClick={() => {navigate("/profile")}}
                     className="flex gap-[15px] items-center relative group cursor-pointer">
-                    <div className="flex flex-col">
+                    <div className="flex flex-col text-right">
                         <p className="font-noto text-main-black/90 group-hover:text-main-black">
                             {userData?.lastName} {userData?.firstName} {userData?.patronymic}
                         </p>

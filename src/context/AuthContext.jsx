@@ -1,8 +1,8 @@
 import { createContext, useContext } from "react";
 import PropTypes from "prop-types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { API_ENDPOINTS } from "../../constants.js";
-import { api } from "../api/apiClient.js";
+
+import { checkAuth, login, register, logout } from "../services/api/authApi.js";
 
 const AuthContext = createContext();
 
@@ -15,36 +15,35 @@ export function AuthProvider({ children }) {
         isError,
     } = useQuery({
         queryKey: ["user"],
-        queryFn: async () => {
-            const res = await api.get(API_ENDPOINTS.AUTH.CHECK_AUTH);
-            return res.data;
-        },
+        queryFn: checkAuth, // Используем импортированную функцию
         retry: false,
     });
 
     const loginMutation = useMutation({
-        mutationFn: async (data) => {
-            const res = await api.post(API_ENDPOINTS.AUTH.LOGIN, data);
-            return res.data;
-        },
+        mutationFn: login,
         onSuccess: (data) => {
             queryClient.setQueryData(["user"], data);
         },
+        // onError: (error) => {
+        //     console.error(error);
+        // },
     });
 
     const registerMutation = useMutation({
-        mutationFn: async (data) => {
-            const res = await api.post(API_ENDPOINTS.AUTH.REGISTER, data);
-            return res.data;
+        mutationFn: register, // Используем импортированную функцию
+        // Здесь можно добавить onSuccess, если после регистрации должен быть автоматический вход
+        // onSuccess: (data) => queryClient.setQueryData(["user"], data)
+        onError: (error) => {
+            console.error('Error register:', error);
         },
     });
 
     const logoutMutation = useMutation({
-        mutationFn: async () => {
-            await api.post(API_ENDPOINTS.AUTH.LOGOUT);
-        },
+        mutationFn: logout, // Используем импортированную функцию
         onSuccess: () => {
-            queryClient.removeQueries(["user"]);
+            // После успешного выхода очищаем данные пользователя в кэше
+            queryClient.setQueryData(["user"], null);
+            // queryClient.removeQueries(["user"]); // Альтернатива: удалить ключ
         },
     });
 

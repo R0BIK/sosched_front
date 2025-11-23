@@ -12,8 +12,7 @@ export default function Checkbox({ id, name, label, checked, onChange, className
                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 cursor-pointer"
             />
             {label && (
-                <label
-                    htmlFor={id}
+                <label htmlFor={id}
                     className="text-sm text-gray-900 cursor-pointer select-none"
                 >
                     {label}

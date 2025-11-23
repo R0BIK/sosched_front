@@ -10,7 +10,7 @@ export default function Profile({ isEdit=false, isOwner=false }) {
     const { paramId } = useParams();
 
     const { activeSpace } = useSpace()
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
 
     const domain = activeSpace?.domain;
     let userId = user?.id;
@@ -19,12 +19,20 @@ export default function Profile({ isEdit=false, isOwner=false }) {
         userId = paramId;
     }
 
+    const handleLogout = async () => {
+        await logout();
+    }
+
+    const handleEditProfile = () => {
+
+    }
+
     const { data: userData, isLoading, error } = useUserById(userId, domain);
 
     return (
         <div className="w-full flex justify-center font-noto pt-5 px-5 pb-20">
             {!isEdit && (
-                <ViewProfile user={userData} />
+                <ViewProfile user={userData} isOwner={isOwner} handleLogout={handleLogout} handleEditProfile={handleEditProfile} />
             )}
             {isEdit && isOwner && (
                 <EditProfile user={userData} />

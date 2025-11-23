@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 export default function InputBox({ id, type="text", name, label, placeholder, className, onChange, value  }) {
     return (
         <div className={className}>
-            <label htmlFor={id} className="block font-semibold ml-1 text-main-black">
+            <label className="block font-semibold ml-1 text-main-black">
                 {label}
             </label>
             <div className="mt-2">

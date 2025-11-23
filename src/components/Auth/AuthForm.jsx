@@ -3,12 +3,11 @@ import { useValidateForm } from "../../hooks/SignFormHooks.js";
 import { useKeyDownEnterHandler } from "../../hooks/KeyDownHooks.js";
 import { useRef } from 'react';
 import { useTranslation } from "react-i18next";
-import { useMutation } from "@tanstack/react-query";
 
 import AuthInputBox from './AuthInputBox.jsx';
 import HoverButton from "./HoverButton.jsx";
 
-import {AUTH_TYPES, getSignFormData, SPECIAL} from "../../../constants.js";
+import {AUTH_TYPES, getSignFormData, SPECIAL} from "../../constants/constants.js";
 import PropTypes from "prop-types";
 import {useAuth} from "../../context/AuthContext.jsx";
 import {useSpace} from "../../context/SpaceContext.jsx";
@@ -87,7 +86,7 @@ export default function AuthForm(props = {}) {
                 return (
                     <AuthInputBox
                         key={form.placeholder}
-                        className="InputBox w-full"
+                        className="w-full"
                         placeholder={form.placeholder}
                         type={form.type}
                         autoComplete={form.autoComplete}

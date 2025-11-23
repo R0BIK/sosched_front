@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext.jsx";
-import { API_ENDPOINTS, LOCAL_STORAGE_NAMES } from "../../constants.js";
+import { API_ENDPOINTS, LOCAL_STORAGE_NAMES } from "../constants/constants.js";
 import { api } from "../api/apiClient.js";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {useQuery, useMutation, useQueryClient, useInfiniteQuery} from "@tanstack/react-query";
 
 const SpaceContext = createContext();
 
@@ -13,18 +13,25 @@ export function SpaceProvider({ children }) {
 
     const [activeSpace, setActiveSpace] = useState(null);
 
-    const {
-        data: spaces = [],
-        isLoading,
-        isError,
-    } = useQuery({
+    const infiniteQuery= useInfiniteQuery({
         queryKey: ["spaces", user?.id],
-        queryFn: async () => {
-            const res = await api.get(API_ENDPOINTS.SPACE);
-            return res.data.items || [];
+        queryFn: async ({ pageParam = 1 }) => { // Принимаем pageParam для пагинации
+            const res = await api.get(API_ENDPOINTS.SPACE, {
+                params: {
+                    page: pageParam,
+                    pageSize: 5,
+                }
+            });
+            return res.data;
         },
+        getNextPageParam: (lastPage) =>
+            lastPage.hasNextPage ? lastPage.page + 1 : undefined,
         enabled: !!user,
     });
+
+    const spaces = infiniteQuery?.data?.pages.flatMap(page => page.items) || [];
+    const isLoading = infiniteQuery?.isLoading;
+    const isError = infiniteQuery?.isError;
 
     useEffect(() => {
         if (!spaces.length) return;
@@ -59,6 +66,7 @@ export function SpaceProvider({ children }) {
             value={{
                 spaces,
                 activeSpace,
+                spaceQuery: infiniteQuery,
                 switchSpace,
                 createSpace: createSpaceMutation.mutateAsync,
                 loading: isLoading,

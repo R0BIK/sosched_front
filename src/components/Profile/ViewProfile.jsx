@@ -2,7 +2,7 @@ import Divider from "../DividerTextCenter.jsx";
 import DisplayBox from "../BasicInputs/DisplayBox.jsx";
 import PropTypes from "prop-types";
 
-export default function ViewProfile({user}) {
+export default function ViewProfile({user, isOwner, handleLogout, handleEditProfile}) {
     return (
         <div className="flex flex-col gap-20">
             <div className="flex flex-col gap-6">
@@ -56,6 +56,27 @@ export default function ViewProfile({user}) {
                     </div>
                 </div>
             </div>
+            {isOwner && (
+                <div className="flex gap-6 w-full justify-end">
+                    <div className="flex items-start">
+                        <button
+                            type="button"
+                            className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            Редагувати
+                        </button>
+                    </div>
+                    <div className="flex items-start">
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            Вийти
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
@@ -70,5 +91,8 @@ ViewProfile.propTypes = {
         lastName: PropTypes.string,
         patronymic: PropTypes.string,
         role: PropTypes.string
-    })
+    }),
+    isOwner: PropTypes.bool,
+    handleLogout: PropTypes.func,
+    handleEditProfile: PropTypes.func,
 }

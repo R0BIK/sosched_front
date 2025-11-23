@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateUsers } from "../../services/tagApi.js";
+import { updateTagUsers } from "../../services/api/tagApi.js";
 
 export function useUpdateTagUsers(domain) {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ tagId, data }) => updateUsers(tagId, data, domain),
+        mutationFn: ({ tagId, data }) => updateTagUsers(tagId, data, domain),
 
         onSuccess: (data) => {
             console.log("update success:", data);

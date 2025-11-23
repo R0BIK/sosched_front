@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getSignFormData } from "../../constants.js";
+import { getSignFormData } from "../constants/constants.js";
 import { SIGN_FORM_CHECK } from '../Regex/regexPatterns.js'
 import { useTranslation } from "react-i18next";
 
@@ -47,9 +47,11 @@ export function useValidateForm( props = {} ) {
         let isError = false;
 
         Object.entries(SignFormData.FIELDS).forEach(([key, values]) => {
+            console.log(key);
+
             if (name === values.name && value) {
                 if (!SIGN_FORM_CHECK[key]?.test(value.trim())) {
-                    error = SignFormData.ERRORS[key];
+                    error = SignFormData.ERRORS[key]
                     isError = true;
                 }
             }
@@ -70,7 +72,6 @@ export function useValidateForm( props = {} ) {
 
     const inputOnBlur = useCallback((name, value) => {
         const { error, isError } = validateField(name, value);
-
         activateError(name, isError);
         if (isError) setErrors(prev => ({ ...prev, [name]: error }));
 
@@ -85,7 +86,7 @@ export function useValidateForm( props = {} ) {
             const inputElement = inputRefs.current[index];
             if (inputElement) {
                 if (!inputElement.value.trim()) {
-                    newErrors[inputElement.name] = "Field is empty";
+                    newErrors[inputElement.name] = "Поле не може бути пустим.";
                     activateError(inputElement.name, true);
                 } else {
                     const { error, isError} = validateField(inputElement.name, inputElement.value);
