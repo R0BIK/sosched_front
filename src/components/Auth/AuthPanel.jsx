@@ -1,11 +1,4 @@
-import {Link, useLocation} from "react-router-dom";
-import { useTranslation } from "react-i18next";
-
-import LogoButton from "./LogoButton.jsx";
-import { GitHubLogo, GoogleLogo } from "../../img/svg/Icons.jsx";
-import AuthForm from "./AuthForm.jsx";
-
-import { getSignFormData } from "../../constants/constants.js";
+import {useLocation} from "react-router-dom";
 import PropTypes from "prop-types";
 import LoginForm from "./Login/Login.jsx";
 import RegisterForm from "./Register/Register.jsx";
@@ -13,9 +6,6 @@ import RegisterForm from "./Register/Register.jsx";
 export default function AuthPanel() {
     const location = useLocation();
     const type = location.pathname === "/login" ? "login" : location.pathname === "/register" ? "register" : "login";
-
-    const { t } = useTranslation();
-    const SignFormData = getSignFormData(t);
 
     const title = type === "login" ? "Авторизація" : "Реєстрація";
 

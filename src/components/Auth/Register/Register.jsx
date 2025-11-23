@@ -9,7 +9,11 @@ import HoverButton from "./../HoverButton.jsx";
 import {LOGIN_FIELDS, REGISTER_FIELDS} from "../../../constants/authConstants.js";
 import {useAuth} from "../../../context/AuthContext.jsx";
 import {SPECIAL} from "../../../constants/constants.js";
-import {getFieldKey, getFriendlyErrorMessage} from "../../../services/errorMaping/errorMapping.js";
+import {
+    getFieldKey,
+    getFriendlyErrorMessage,
+    getValidationErrorsMap
+} from "../../../services/errorMaping/errorMapping.js";
 import {useSpace} from "../../../context/SpaceContext.jsx";
 import {login} from "../../../services/api/authApi.js";
 
@@ -53,11 +57,13 @@ export default function RegisterForm() {
                 navigate("/schedule");
                 e.target.reset();
             } catch (error) {
-                const message = getFriendlyErrorMessage(error)
-                const key = getFieldKey(error)
-                const inputRef = getRef(key);
-                await addError(key, message, inputRef);
-                focusFirstErrorField(errors, inputRef);
+                console.log(error.details);
+                console.log(getValidationErrorsMap(error));
+                // const message = getFriendlyErrorMessage(error)
+                // const key = getFieldKey(error)
+                // const inputRef = getRef(key);
+                // await addError(key, message, inputRef);
+                // focusFirstErrorField(errors, inputRef);
             }
         } else {
             focusFirstErrorField(newErrors);
@@ -94,6 +100,7 @@ export default function RegisterForm() {
             className="flex flex-col items-center justify-center gap-[50px] w-full text-left"
         >
             {REGISTER_FIELDS.map((field, index) => {
+                const autoComplete = field.name === "password" ? "new-password" : field.autoComplete;
                 return (
                     <AuthInputBox
                         key={index}
@@ -101,7 +108,7 @@ export default function RegisterForm() {
                         className="w-full"
                         placeholder={field.placeholder}
                         type={field.type}
-                        autoComplete={field.autoComplete}
+                        autoComplete={autoComplete}
                         name={field.name}
                         onBlur={(e) => inputOnBlur(e.target)}
                         errorText={errors[field.key]}

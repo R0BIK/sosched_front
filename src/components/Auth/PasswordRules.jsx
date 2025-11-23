@@ -6,22 +6,26 @@ export default function PasswordRules({ className, values }) {
         {
             id: 1,
             regex: /[A-Z]/,
-            text: "At least one uppercase letter",
+            // text: "At least one uppercase letter",
+            text: "Містить принаймні одну велику літеру",
         },
         {
             id: 2,
             regex: /[a-z]/,
-            text: "At least one lowercase letter",
+            // text: "At least one lowercase letter",
+            text: "Містить принаймні одну малу літеру",
         },
         {
             id: 3,
             regex: /\d/,
-            text: "At least one number",
+            // text: "At least one number",
+            text: "Містить принаймні одну цифру",
         },
         {
             id: 4,
             regex: /.{8,}/,
-            text: "At least 8 characters",
+            // text: "At least 8 characters",
+            text: "Містить принаймні 8 символів",
         },
     ];
 

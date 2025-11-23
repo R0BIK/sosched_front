@@ -44,7 +44,8 @@ export const register = async (data) => {
     const response = await api.post(API_ENDPOINTS.AUTH.REGISTER, data);
 
     if (!response.isSuccess || !response.data) {
-        throw Error("Failed to register: " + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
+        // throw Error("Failed to register: " + response.error);
     }
 
     return response.data;

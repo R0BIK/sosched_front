@@ -2,7 +2,6 @@ import UnderlinedButton from "../UnderlinedButton.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 
 export default function UnAuthorizedHeader() {
-    const navigate = useNavigate();
     const location = useLocation();
 
     const isLogin = location.pathname === "/login";

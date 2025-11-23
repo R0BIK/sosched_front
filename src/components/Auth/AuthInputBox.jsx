@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useSessionStorage } from "../../hooks/SignFormHooks.js";
+import { useSessionStorage } from "../../hooks/authHooks.js";
 import PasswordRules from "./PasswordRules.jsx";
 import {Lineicons} from "@lineiconshq/react-lineicons";
 import { XmarkOutlined } from "@lineiconshq/free-icons";

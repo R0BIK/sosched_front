@@ -6,8 +6,8 @@ const FRIENDLY_ERROR_MESSAGES = {
 
     PASSWORD_CONTAINS_INVALID_CHARACTERS: "Не правильний формат паролю.",
 
-    USER_NOT_FOUND: "Користувача з таким Email не знайдено.",
-    USER_ALREADY_EXISTS: "Користувач з таким Email вже існує.",
+    EMAIL_ALREADY_EXISTS: "Користувач з таким Email вже існує.",
+    INVALID_NAME: "Не правильний формат.",
 
     // Общие или сетевые ошибки (если API их возвращает)
     NO_INTERNET: "Відсутнє з'єднання з мережею.",
@@ -18,15 +18,17 @@ const FRIENDLY_ERROR_MESSAGES = {
 };
 
 const API_ERROR_FIELD_MAP = {
-    // Если учетные данные неверны, логично сфокусироваться на поле пароля
     INVALID_PASSWORD: 'PASSWORD',
-
-    // Если пользователь не найден (хотя API может вернуть INVALID_CREDENTIALS)
     INVALID_EMAIL: 'EMAIL',
-
-    // Если ошибка сетевая или не связана с конкретным полем
     DEFAULT: null,
 };
+
+const API_FIELD_KEYS = {
+    FirstName: 'FIRST_NAME',
+    LastName: 'LAST_NAME',
+    Email: 'EMAIL',
+    Password: 'PASSWORD',
+}
 
 /**
  * Извлекает код ошибки (например, INVALID_CREDENTIALS) из строки сообщения.
@@ -75,7 +77,6 @@ export const getFriendlyErrorMessage = (error) => {
 export const getFieldKey = (error) => {
     let errorCode = error?.code;
 
-    // 2. Если .code отсутствует, пытаемся извлечь его из строки error.message
     if (!errorCode && error?.message) {
         errorCode = extractErrorCode(error.message);
     }
@@ -94,3 +95,53 @@ export const getFieldKey = (error) => {
 
     return API_ERROR_FIELD_MAP[finalCode] || API_ERROR_FIELD_MAP.DEFAULT;
 }
+
+/**
+ * Обрабатывает объект ошибки от API, возвращая словарь ошибок.
+ * Если это HTTP 400 Problem Details, возвращает { fieldName: message }.
+ * Если это бизнес-ошибка, возвращает { api: message } для вывода под формой.
+ * * @param {object} error - Структурированный объект ошибки { code, details, message }.
+ * @returns {{ [key: string]: string }} Словарь ошибок, где ключ — имя поля.
+ */
+export const getValidationErrorsMap = (error) => {
+    const errorsMap = {};
+
+    const statusCode = error?.code;
+    const details = error?.details;
+
+    // --- 1. Обработка ошибок валидации (HTTP 400 Problem Details) ---
+    if (statusCode === 400 && details?.errors) {
+
+        // Перебираем ошибки, привязанные к полям
+        Object.entries(details.errors).forEach(([fieldKey, messages]) => {
+            if (messages && messages.length > 0) {
+                const fieldName = API_FIELD_KEYS[fieldKey];
+
+                // Проверяем, существует ли сообщение с кодом ошибки в нашем словаре.
+                // NOTE: errors[field][0] может быть либо кодом ошибки, либо просто сообщением.
+                const rawErrorMessage = messages[0];
+
+                // Если сообщение соответствует ключу в FRIENDLY_ERROR_MESSAGES, используем его.
+                errorsMap[fieldName] = FRIENDLY_ERROR_MESSAGES[rawErrorMessage] || rawErrorMessage;
+            }
+        });
+
+        // Если Problem Details был, но ошибок полей не нашли (редкий случай),
+        // возвращаем общую ошибку.
+        if (Object.keys(errorsMap).length > 0) {
+            return errorsMap;
+        }
+    }
+
+    // --- 2. Обработка БИЗНЕС-ошибок (не 400) ---
+
+    let errorCode = error?.code;
+    if (!errorCode && error?.message) {
+        errorCode = extractErrorCode(error.message);
+    }
+    const finalCode = errorCode || 'DEFAULT';
+
+    // 2c. Для вывода под формой используем ключ 'api'
+    errorsMap.api = FRIENDLY_ERROR_MESSAGES[finalCode] || FRIENDLY_ERROR_MESSAGES.DEFAULT;
+    return errorsMap;
+};
