@@ -16,7 +16,7 @@ import { useInfiniteScroll } from "../InfinityScroll/useInfiniteScroll.js";
 import InfiniteScrollTrigger from "../InfinityScroll/InfiniteScrollTrigger.jsx";
 import {DateBox} from "../BasicInputs/DateBox.jsx";
 import {TimeBox} from "../BasicInputs/TimeBox.jsx";
-import {createDate, getDateAndTime} from "../../../DateConverter/DateConverter.js";
+import {createDate, getDateAndTime} from "../../../utils/dateConverter.js";
 import Checkbox from "../BasicInputs/CheckBox.jsx";
 import RepeatSelector from "../Schedule/RepeatSelector.jsx";
 

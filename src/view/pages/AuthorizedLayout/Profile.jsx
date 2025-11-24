@@ -5,6 +5,7 @@ import {Navigate, useParams} from "react-router-dom";
 import {useAuth} from "../../../context/AuthContext.jsx";
 import {useSpace} from "../../../context/SpaceContext.jsx";
 import {useUserById} from "../../../tanStackQueries/user/useUserById.js";
+import {LoadingIndicator} from "../../components/LoadingIndicator.js";
 
 export default function Profile({ isEdit=false }) {
     const { id: id } = useParams();
@@ -19,8 +20,6 @@ export default function Profile({ isEdit=false }) {
 
     if (!userId) return <Navigate to={`/profile/${user.id}`} replace />;
 
-    // if (isLoading || !userData) return <LoadingSpinner />;
-
     if (isError) {
         return (
             <div className="flex h-full justify-center items-center text-3xl">
@@ -28,6 +27,9 @@ export default function Profile({ isEdit=false }) {
             </div>
         )
     }
+
+    if (isLoading || !userData) return <LoadingIndicator type="line-simple" size="md" label="Loading..." />;
+
 
     const isOwner = user?.id === userId;
 
