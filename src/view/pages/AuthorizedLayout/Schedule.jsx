@@ -11,6 +11,7 @@ import InfiniteScrollTrigger from "../../components/InfinityScroll/InfiniteScrol
 import {useInfiniteScroll} from "../../components/InfinityScroll/useInfiniteScroll.js";
 import { PlusOutlined } from "@lineiconshq/free-icons";
 import AddSpaceModal from "../../components/Modals/AddSpaceModal.jsx";
+import {useLockBodyScroll} from "../../../hooks/useLockBodyScroll.js";
 
 export default function Schedule() {
     const { switchSpace, spaces, activeSpace, spaceQuery } = useSpace();
@@ -72,6 +73,8 @@ export default function Schedule() {
     }, []);
 
     const loadMoreRef = useInfiniteScroll(spaceQuery);
+    useLockBodyScroll(!!addSpaceModalOpen);
+
 
     return (
         <div className="flex-row flex h-full overflow-hidden">

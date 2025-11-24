@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-export default function InputBox({ id, type="text", name, label, placeholder, className, onChange, value  }) {
+export default function InputBox({ id, type="text", name, label, placeholder, className, inputClassName, onChange, value  }) {
     return (
         <div className={className}>
             <label className="block font-semibold ml-1 text-main-black">
@@ -14,7 +14,7 @@ export default function InputBox({ id, type="text", name, label, placeholder, cl
                     value={value}
                     onChange={onChange}
                     placeholder={placeholder}
-                    className="block w-full rounded-md bg-main-white px-3 py-1.5 text-main-black outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-accent-on-hover text-sm/6"
+                    className={"block w-full rounded-md bg-main-white px-3 py-1.5 text-main-black outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-accent-on-hover text-sm/6" + " " + inputClassName }
                 />
             </div>
         </div>
@@ -27,6 +27,7 @@ InputBox.propTypes = {
     type: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
     className: PropTypes.string,
+    inputClassName: PropTypes.string,
     label: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     onChange: PropTypes.func,
