@@ -77,6 +77,18 @@ export default function ViewProfile({user, isOwner, handleLogout, handleEditProf
                     </div>
                 </div>
             )}
+            {!isOwner && (
+                <div className="flex gap-6 w-full justify-end">
+                    <div className="flex items-start">
+                        <button
+                            type="button"
+                            className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            Календар
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

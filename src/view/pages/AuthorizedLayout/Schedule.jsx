@@ -4,21 +4,17 @@ import MonthCalendar from "../../components/Schedule/MonthCalendar.jsx";
 import TabComponent from "../../components/TabComponent.jsx";
 import { useSpace } from "../../../context/SpaceContext.jsx";
 import { useGetEvents } from "../../../tanStackQueries/event/useGetEvents.js";
-import CreateEvent from "../../components/Schedule/Drawers/CreateEvent.jsx";
 import Drawer from "../../components/Schedule/Drawers/Drawer.jsx";
-import {useCreateEvent} from "../../../tanStackQueries/event/useCreateEvent.js";
 import {DRAWER_MODES} from "../../../constants/constants.js";
 import EventInfo from "../../components/Schedule/Drawers/EventInfo.jsx";
 import InfiniteScrollTrigger from "../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
 import {useInfiniteScroll} from "../../components/InfinityScroll/useInfiniteScroll.js";
 import { PlusOutlined } from "@lineiconshq/free-icons";
+import AddSpaceModal from "../../components/Modals/AddSpaceModal.jsx";
 
 export default function Schedule() {
     const { switchSpace, spaces, activeSpace, spaceQuery } = useSpace();
     const domain = activeSpace?.domain;
-
-    const { mutate: createEventMutate } = useCreateEvent(domain);
-
     // -------------------------------
     // 📅 Calendar State
     // -------------------------------
@@ -38,6 +34,12 @@ export default function Schedule() {
     // -------------------------------
     const [drawerMode, setDrawerMode] = useState(null);
     const isDrawerOpen = drawerMode !== null;
+
+    const [addSpaceModalOpen, setAddSpaceModalOpen] = useState(false);
+
+    const handelCloseModal = () => {
+        setAddSpaceModalOpen(false);
+    }
 
     const [selectedEvent, setSelectedEvent] = useState(null);
 
@@ -104,6 +106,7 @@ export default function Schedule() {
                             LineIconSize={20}
                             className="text-second-text font-extralight mt-2"
                             text="Додати новий"
+                            onClick={() => setAddSpaceModalOpen(true)}
                             LineIcon={PlusOutlined}
                         />
                     </div>
@@ -124,18 +127,6 @@ export default function Schedule() {
                 />
 
                 <Drawer isOpen={isDrawerOpen} onClose={() => setDrawerMode(null)}>
-                    {drawerMode === DRAWER_MODES.CREATE && (
-                        <CreateEvent
-                            eventForm={eventForm}
-                            repeatRule={repeatRule}
-                            isRepeating={isRepeating}
-                            handleInputChange={handleInputChange}
-                            handleRepeatChange={handleRepeatChange}
-                            handleRepeatToggle={handleRepeatToggle}
-                            handleSubmit={handleSubmit}
-                            handleCancel={handleCancel}
-                        />
-                    )}
                     {drawerMode === DRAWER_MODES.INFO && (
                         <EventInfo
                             eventForm={selectedEvent}
@@ -143,6 +134,10 @@ export default function Schedule() {
                     )}
                 </Drawer>
             </div>
+
+            {addSpaceModalOpen && (
+                <AddSpaceModal handleClose={handelCloseModal}/>
+            )}
         </div>
     );
 }

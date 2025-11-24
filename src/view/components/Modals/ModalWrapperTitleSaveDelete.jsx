@@ -4,7 +4,7 @@ import ModalWrapper from "./ModalWrapper.jsx";
 export default function ModalWrapperTitleSaveDelete({ title, children, onClose, onSave, onDelete }) {
     return (
         <ModalWrapper onClose={onClose}>
-            <div className="flex flex-col w-full h-full p-4">
+            <div className="flex flex-col w-full p-4">
                 <h1 className="text-3xl font-bold text-gray-900 p-4">
                     {title}
                 </h1>

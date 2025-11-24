@@ -1,23 +1,35 @@
 import EditProfile from "../../components/Profile/EditProfile.jsx";
 import PropTypes from "prop-types";
 import ViewProfile from "../../components/Profile/ViewProfile.jsx";
-import {useParams} from "react-router-dom";
+import {Navigate, useParams} from "react-router-dom";
 import {useAuth} from "../../../context/AuthContext.jsx";
 import {useSpace} from "../../../context/SpaceContext.jsx";
 import {useUserById} from "../../../tanStackQueries/user/useUserById.js";
 
-export default function Profile({ isEdit=false, isOwner=false }) {
-    const { paramId } = useParams();
+export default function Profile({ isEdit=false }) {
+    const { id: id } = useParams();
 
     const { activeSpace } = useSpace()
     const { user, logout } = useAuth();
 
     const domain = activeSpace?.domain;
-    let userId = user?.id;
+    const userId = Number(id);
 
-    if (!isOwner && paramId) {
-        userId = paramId;
+    const { data: userData, isLoading, isError } = useUserById(userId, domain);
+
+    if (!userId) return <Navigate to={`/profile/${user.id}`} replace />;
+
+    // if (isLoading || !userData) return <LoadingSpinner />;
+
+    if (isError) {
+        return (
+            <div className="flex h-full justify-center items-center text-3xl">
+                Користувача не знайдено
+            </div>
+        )
     }
+
+    const isOwner = user?.id === userId;
 
     const handleLogout = async () => {
         await logout();
@@ -27,7 +39,6 @@ export default function Profile({ isEdit=false, isOwner=false }) {
 
     }
 
-    const { data: userData, isLoading, error } = useUserById(userId, domain);
 
     return (
         <div className="w-full flex justify-center font-noto pt-5 px-5 pb-20">
@@ -43,5 +54,4 @@ export default function Profile({ isEdit=false, isOwner=false }) {
 
 Profile.propTypes = {
     isEdit: PropTypes.bool,
-    isOwner: PropTypes.bool,
 }

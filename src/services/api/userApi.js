@@ -6,7 +6,7 @@ export const getUserById = async (userId, domain) => {
     const response = await api.get(`${domain}${API_ENDPOINTS.USER}/${userId}`);
 
     if (!response.isSuccess || !response.data) {
-        throw Error("Failed to get user by id:" + response.error);
+        throw Error(response.error);
     }
 
     return response.data;

@@ -50,9 +50,9 @@ export const router = createBrowserRouter([
                     { path: '/mySpace/events', element: <Events /> },
                 ],
             },
-            { path: '/profile', element: <Profile isEdit={false} isOwner={true} /> },
-            { path: '/profile/edit', element: <Profile isEdit={true} isOwner={true} /> },
-            { path: '/users/:id', element: <Profile isEdit={false} isOwner={false} /> },
+            { path: '/profile', element: <Profile isEdit={false} /> },
+            { path: '/profile/edit', element: <Profile isEdit={true} /> },
+            { path: '/profile/:id', element: <Profile isEdit={false} /> },
         ],
     }
 ]);

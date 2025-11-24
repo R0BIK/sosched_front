@@ -31,7 +31,7 @@ export default function TabComponent({ text, Icon, LineIcon, LineIconShape, init
             <div className="flex justify-center">
                 {initial ? <InitialBadge text={initial} /> :
                     Icon ? <Icon className="size-4 fill-black/80  group-data-active:fill-accent" /> :
-                    LineIcon ? <Lineicons icon={autoIcon} size={LineIconSize? LineIconSize : 24}  /> :
+                    LineIcon ? <Lineicons icon={autoIcon} size={LineIconSize ? LineIconSize : 24}  /> :
                     null}
             </div>
 

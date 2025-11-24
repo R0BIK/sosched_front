@@ -8,9 +8,13 @@ import Badge from "../../../../components/Badges/Badge.jsx";
 
 import SearchIcon from '@mui/icons-material/Search';
 import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
+import {Lineicons} from "@lineiconshq/react-lineicons";
+import { ShiftRightOutlined } from "@lineiconshq/free-icons";
+import {useNavigate} from "react-router-dom";
 
 export default function Members() {
     const [search, setSearch] = useState("");
+    const navigate = useNavigate();
 
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
@@ -23,6 +27,10 @@ export default function Members() {
     const loadMoreRef = useInfiniteScroll(userQuery);
 
     const handleClear = () => setSearch("");
+
+    const onVisitClick = (id) => {
+        navigate(`/profile/${id}`);
+    }
 
     return (
         <div className="pt-5 px-9 w-full h-full flex flex-col overflow-auto">
@@ -64,10 +72,8 @@ export default function Members() {
             </div>
 
             <div className="mt-2 w-full flex flex-col min-h-0">
-
-                {/* Шапка таблицы (фиксированная) */}
-                <div className="flex w-full border-b border-gray-300 py-3.5 text-sm font-semibold text-main-black shrink-0 z-10">
-                    <div className="w-9/20 text-left pl-3">
+                <div className="flex w-full border-b border-gray-300 py-3.5 text-sm font-semibold text-main-black z-10">
+                    <div className="w-9/20 text-left">
                         Учасники – {totalCount}
                     </div>
                     <div className="w-1/4 text-center">
@@ -77,7 +83,7 @@ export default function Members() {
                         Теги
                     </div>
                     <div className="w-1/20">
-                        <span className="sr-only">Edit</span>
+                        <span className="sr-only">visit</span>
                     </div>
                 </div>
 
@@ -85,7 +91,7 @@ export default function Members() {
                     <div className="flex flex-col divide-y divide-gray-200">
                         {users?.map((user) => (
                             <div key={user.id} className="flex w-full items-center py-3">
-                                <div className="w-9/20 text-sm break-all text-main-black pl-3">
+                                <div className="w-9/20 text-sm break-all text-main-black">
                                     <div className="flex justify-start items-center gap-4">
                                         <div className="shrink-0 min-h-10 min-w-10 rounded-full bg-red-400" />
                                         <div className="flex flex-col justify-center">
@@ -115,8 +121,14 @@ export default function Members() {
                                     </div>
                                 </div>
 
-                                <div className="w-1/20 text-right pr-2">
-                                    {/* Кнопки действий */}
+                                <div className="w-1/20 text-right">
+                                    <button
+                                        onClick={() => onVisitClick(user.id)}
+                                        title="Перейти"
+                                        className="p-1 inline-block text-second-text hover:text-accent"
+                                    >
+                                        <Lineicons icon={ShiftRightOutlined} size={24} />
+                                    </button>
                                 </div>
                             </div>
                         ))}

@@ -1,11 +1,20 @@
 import UnderlinedButton from "../UnderlinedButton.jsx";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../../../context/AuthContext.jsx";
 import {useUserById} from "../../../tanStackQueries/user/useUserById.js";
 import {useSpace} from "../../../context/SpaceContext.jsx";
 
 export default function AuthorizedHeader() {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const getIsActive = (path) => {
+        return location.pathname === path || location.pathname.startsWith(path + "/");
+    };
+
+    const handleNavigationClick = (path) => () => {
+        navigate(path);
+    };
 
     const { user } = useAuth();
 
@@ -25,14 +34,14 @@ export default function AuthorizedHeader() {
             </div>
 
             <div className="flex justify-center items-center whitespace-nowrap">
-                <UnderlinedButton text="Головна" to="/home" />
-                <UnderlinedButton text="Календар" to="/schedule" />
-                <UnderlinedButton text="Мій простір" to="/mySpace" />
+                <UnderlinedButton text="Головна" onClick={handleNavigationClick("/home")} isActive={getIsActive("/home")} />
+                <UnderlinedButton text="Календар" onClick={handleNavigationClick("/schedule")} isActive={getIsActive("/schedule")} />
+                <UnderlinedButton text="Мій простір" onClick={handleNavigationClick("/mySpace")} isActive={getIsActive("/mySpace")} />
             </div>
 
             <div className="flex justify-end items-center">
                 <button
-                    onClick={() => {navigate("/profile")}}
+                    onClick={() => {navigate(`/profile/${userId}`)}}
                     className="flex gap-[15px] items-center relative group cursor-pointer">
                     <div className="flex flex-col text-right">
                         <p className="font-noto text-main-black/90 group-hover:text-main-black">

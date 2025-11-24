@@ -68,7 +68,7 @@ function createApi(): TypedApi {
                 const response = await instance.get(url, config);
                 return handleSuccess(response);
             } catch (error) {
-                console.error("API GET Error:", error);
+                // console.error("API GET Error:", error);
                 return handleError(error as AxiosError);
             }
         },

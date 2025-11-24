@@ -1,8 +1,17 @@
 import UnderlinedButton from "../UnderlinedButton.jsx";
-import {useLocation, Link} from "react-router-dom";
+import {useLocation, Link, useNavigate} from "react-router-dom";
 
 export default function UnAuthorizedHeader() {
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const getIsActive = (path) => {
+        return location.pathname === path || location.pathname.startsWith(path + "/");
+    };
+
+    const handleNavigationClick = (path) => () => {
+        navigate(path);
+    };
 
     const isLogin = location.pathname === "/login";
 
@@ -15,8 +24,8 @@ export default function UnAuthorizedHeader() {
             </div>
 
             <div className="flex justify-center items-center whitespace-nowrap">
-                <UnderlinedButton text="Головна" to="/home" />
-                <UnderlinedButton text="Про нас" to="/about" />
+                <UnderlinedButton text="Головна" onClick={handleNavigationClick("/home")} isActive={getIsActive("/home")} />
+                <UnderlinedButton text="Про нас" onClick={handleNavigationClick("/about")} isActive={getIsActive("/about")} />
             </div>
 
             <div className="flex justify-end items-center">
