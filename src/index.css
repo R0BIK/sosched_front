@@ -38,6 +38,37 @@
   }
 }
 
+@keyframes toast-shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0;
+  }
+}
+
+@keyframes toast-slide-in {
+  from {
+    transform: translate(-50%, 100px); /* Начинаем ниже экрана */
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0); /* Заканчиваем в финальной позиции */
+    opacity: 1;
+  }
+}
+
+@keyframes toast-slide-in {
+  from {
+    transform: translate(-50%, 100px); /* Начинаем ниже экрана */
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0); /* Заканчиваем в нормальной позиции */
+    opacity: 1;
+  }
+}
+
 
 /*:root {*/
 /*  font-family: "SF Compact Display", sans-serif;*/

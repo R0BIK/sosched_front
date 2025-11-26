@@ -8,17 +8,20 @@ import "./i18n/i18n.js";
 import './index.css'
 import {AuthProvider} from "./context/AuthContext.jsx";
 import {SpaceProvider} from "./context/SpaceContext.jsx";
+import {ToastProvider} from "./context/ToastContext.jsx";
 
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
       <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-              <SpaceProvider>
-                  <RouterProvider router={router} />
-              </SpaceProvider>
-          </AuthProvider>
+          <ToastProvider>
+              <AuthProvider>
+                  <SpaceProvider>
+                      <RouterProvider router={router} />
+                  </SpaceProvider>
+              </AuthProvider>
+          </ToastProvider>
       </QueryClientProvider>
   </StrictMode>,
 )

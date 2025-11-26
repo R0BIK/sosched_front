@@ -4,9 +4,11 @@ import InputBox from "../BasicInputs/InputBox.jsx";
 import ToggleWithDescription from "../BasicInputs/ToggleWithDescription.jsx";
 import {useCallback, useState} from "react";
 import {useSpace} from "../../../context/SpaceContext.jsx";
+import {useToast} from "../../../context/useToast.js";
 
 export default function EditSpaceModal({ handleClose }) {
     const { updateSpace, activeSpace } = useSpace();
+    const { showToast } = useToast();
 
     const [form, setForm] = useState({...activeSpace});
 
@@ -17,8 +19,16 @@ export default function EditSpaceModal({ handleClose }) {
 
     const handleSave = async () => {
         const {id, ...data} = form
-        await updateSpace({id, data});
-        handleClose();
+
+        try {
+            await updateSpace({id, data});
+
+            showToast("Успішно!", 'Простір оновлено.');
+
+            handleClose();
+        } catch (error) {
+            console.error("Error updating space:", error);
+        }
     }
 
     return (
