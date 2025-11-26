@@ -8,7 +8,6 @@ import { api } from "../../api/apiClient.ts";
 export const checkAuth = async () => {
     try {
         const response = await api.get(API_ENDPOINTS.AUTH.CHECK_AUTH);
-
         // Если запрос успешен (HTTP 200) и вернул данные, возвращаем пользователя.
         // Если, например, api.get возвращает { isSuccess: false, status: 401 } при отсутствии сессии,
         // мы возвращаем null, чтобы useQuery корректно установил user: null.

@@ -78,7 +78,6 @@ export function useValidateForm( props = {} ) {
                 activateError(inputElement, true);
             } else {
                 const { error, isError} = validateField(inputElement.id, inputElement.value);
-                console.log(error)
                 newErrors[inputElement.id] = error;
                 activateError(inputElement, isError);
             }

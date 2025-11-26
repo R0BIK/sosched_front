@@ -15,14 +15,15 @@ export function AuthProvider({ children }) {
         isError,
     } = useQuery({
         queryKey: ["user"],
-        queryFn: checkAuth, // Используем импортированную функцию
+        queryFn: checkAuth,
         retry: false,
     });
 
     const loginMutation = useMutation({
         mutationFn: login,
         onSuccess: (data) => {
-            queryClient.setQueryData(["user"], data);
+            // queryClient.setQueryData(["user"], data);
+            void queryClient.invalidateQueries({ queryKey: ["user"] })
         },
         // onError: (error) => {
         //     console.error(error);
@@ -32,7 +33,9 @@ export function AuthProvider({ children }) {
     const registerMutation = useMutation({
         mutationFn: register, // Используем импортированную функцию
         // Здесь можно добавить onSuccess, если после регистрации должен быть автоматический вход
-        // onSuccess: (data) => queryClient.setQueryData(["user"], data)
+        // onSuccess: (data) => queryClient.setQueryData(["user"], data),
+        onSuccess: (data) => queryClient.invalidateQueries({ queryKey: ["user"] }),
+
         onError: (error) => {
             console.error('Error register:', error);
         },

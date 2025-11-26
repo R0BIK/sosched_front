@@ -4,7 +4,7 @@ import ViewProfile from "../../components/Profile/ViewProfile.jsx";
 import {Navigate, useParams} from "react-router-dom";
 import {useAuth} from "../../../context/AuthContext.jsx";
 import {useSpace} from "../../../context/SpaceContext.jsx";
-import {useUserById} from "../../../tanStackQueries/user/useUserById.js";
+import {useGetUserById} from "../../../tanStackQueries/user/useGetUserById.js";
 import {LoadingIndicator} from "../../components/LoadingIndicator.js";
 
 export default function Profile({ isEdit=false }) {
@@ -16,7 +16,7 @@ export default function Profile({ isEdit=false }) {
     const domain = activeSpace?.domain;
     const userId = Number(id);
 
-    const { data: userData, isLoading, isError } = useUserById(userId, domain);
+    const { data: userData, isLoading, isError } = useGetUserById(userId, domain);
 
     if (!userId) return <Navigate to={`/profile/${user.id}`} replace />;
 

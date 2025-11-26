@@ -1,7 +1,7 @@
 import UnderlinedButton from "../UnderlinedButton.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../../../context/AuthContext.jsx";
-import {useUserById} from "../../../tanStackQueries/user/useUserById.js";
+import {useGetUserById} from "../../../tanStackQueries/user/useGetUserById.js";
 import {useSpace} from "../../../context/SpaceContext.jsx";
 
 export default function AuthorizedHeader() {
@@ -23,7 +23,7 @@ export default function AuthorizedHeader() {
     const domain = activeSpace?.domain;
     const userId = user?.id;
 
-    const { data: userData, isLoading, error } = useUserById(userId, domain);
+    const { data: userData, isLoading, error } = useGetUserById(userId, domain);
 
     return (
         <header className="fixed top-0 z-50 w-full h-18 items-center content-center grid grid-cols-3 px-9 py-3

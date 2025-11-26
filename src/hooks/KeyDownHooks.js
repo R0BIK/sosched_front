@@ -28,8 +28,6 @@ export const useKeyDownEnterHandler = () => {
         if (e.key === SPECIAL.KEYBOARD_KEYS.Enter.name) {
             e.preventDefault();
 
-            console.log(formFields)
-
             if (index < formFields.length - 1) {
                 inputRefs.current[index + 1].focus();
             } else {

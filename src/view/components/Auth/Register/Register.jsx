@@ -20,7 +20,7 @@ export default function RegisterForm() {
     const { errors, inputOnBlur, handleSubmit, addError } = useValidateForm({inputRefs});
     const { handleEnterAsTab } = useKeyDownEnterHandler();
 
-    const { register } = useAuth();
+    const { register, user } = useAuth();
     const { createSpace } = useSpace();
 
     const getDomain = (email) => {
@@ -43,18 +43,18 @@ export default function RegisterForm() {
 
                 if (userId) {
                     await createSpace({
-                        name: "MySpace",
+                        name: "Мій простір",
                         domain: getDomain(formData.email),
+                        isPublic: false,
                     });
-
-                    await login(formData);
                 }
+
+                console.log(user);
 
                 navigate("/schedule");
                 e.target.reset();
             } catch (error) {
                 const errors = getValidationErrorsMap(error);
-                console.log(errors);
                 for (const [key, value] of Object.entries(errors)) {
                     const inputRef = getRef(key);
                     await addError(key, value, inputRef);

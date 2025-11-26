@@ -1,11 +1,15 @@
 import PropTypes from "prop-types";
-import { createContext, useContext, useEffect, useState } from "react";
+import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import { useAuth } from "./AuthContext.jsx";
-import { API_ENDPOINTS, LOCAL_STORAGE_NAMES } from "../constants/constants.js";
-import { api } from "../api/apiClient.js";
-import {useQuery, useMutation, useQueryClient, useInfiniteQuery} from "@tanstack/react-query";
+import { LOCAL_STORAGE_NAMES } from "../constants/constants.js";
+import { getSpaces, createSpace } from "../services/api/spaceApi.js";
+import {useMutation, useInfiniteQuery, useQueryClient} from "@tanstack/react-query";
 
 const SpaceContext = createContext();
+
+const getSpaceStorageKey = (userId) => {
+    return `${LOCAL_STORAGE_NAMES.ACTIVE_SPACE}_${userId}`;
+};
 
 export function SpaceProvider({ children }) {
     const { user } = useAuth();
@@ -13,34 +17,43 @@ export function SpaceProvider({ children }) {
 
     const [activeSpace, setActiveSpace] = useState(null);
 
-    const infiniteQuery= useInfiniteQuery({
+    const infiniteQuery = useInfiniteQuery({
         queryKey: ["spaces", user?.id],
-        queryFn: async ({ pageParam = 1 }) => { // Принимаем pageParam для пагинации
-            const res = await api.get(API_ENDPOINTS.SPACE, {
-                params: {
-                    page: pageParam,
-                    pageSize: 5,
-                }
-            });
-            return res.data;
+        queryFn: async ({ pageParam = 1 }) => {
+            return await getSpaces({ page: pageParam, pageSize: 5 });
         },
         getNextPageParam: (lastPage) =>
             lastPage.hasNextPage ? lastPage.page + 1 : undefined,
         enabled: !!user,
     });
 
-    const spaces = infiniteQuery?.data?.pages.flatMap(page => page.items) || [];
+    const spaces = useMemo(() => {
+        return infiniteQuery?.data?.pages.flatMap(page => page.items) || [];
+    }, [infiniteQuery?.data]);
+
     const isLoading = infiniteQuery?.isLoading;
     const isError = infiniteQuery?.isError;
 
     useEffect(() => {
+        const userId = user?.id;
+
+        if (!userId) {
+            setActiveSpace(null);
+            return;
+        }
+
         if (!spaces.length) return;
 
-        const savedDomain = localStorage.getItem(LOCAL_STORAGE_NAMES.ACTIVE_SPACE);
+        const storageKey = getSpaceStorageKey(userId);
+
+        // Чтение домена, привязанного к текущему пользователю
+        const savedDomain = localStorage.getItem(storageKey);
+
+        // Находим сохраненный Space или берем первый в списке
         const defaultSpace = spaces.find(s => s.domain === savedDomain) || spaces[0];
 
         setActiveSpace(defaultSpace);
-    }, [spaces]);
+    }, [spaces, user]);
 
     const switchSpace = (space) => {
         setActiveSpace(space);
@@ -48,12 +61,9 @@ export function SpaceProvider({ children }) {
     };
 
     const createSpaceMutation = useMutation({
-        mutationFn: async (data) => {
-            const res = await api.post(API_ENDPOINTS.SPACE, data);
-            return res.data;
-        },
+        mutationFn: createSpace,
         onSuccess: (newSpace) => {
-            queryClient.setQueryData(["spaces", user?.id], (old = []) => [...old, newSpace]);
+            void queryClient.invalidateQueries({ queryKey: ["spaces", user?.id] });
             switchSpace(newSpace);
         },
         onError: (err) => {
