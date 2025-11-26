@@ -14,6 +14,7 @@ import {useState} from "react";
 import ModalWrapperTitleSaveDelete from "../../../components/Modals/ModalWrapperTitleSaveDelete.jsx";
 import InputBox from "../../../components/BasicInputs/InputBox.jsx";
 import {useLockBodyScroll} from "../../../../hooks/useLockBodyScroll.js";
+import EditSpaceModal from "../../../components/Modals/EditSpaceModal.jsx";
 
 export default function Space() {
     const [isModalVisible, setModalVisible] = useState(false);
@@ -49,48 +50,7 @@ export default function Space() {
             </div>
 
             {isModalVisible && (
-                <ModalWrapperTitleSaveDelete title={"Редагування простору"} onClose={handleClose}>
-                    <div className="flex flex-col h-full gap-10">
-                        <div className="flex gap-20 w-full items-center justify-center">
-                            <InputBox
-                                id="Name"
-                                name="name"
-                                label="Назва"
-                                placeholder="Робочий простір"
-                                // value={}
-                                className="w-full"
-                                // onChange={(e) => handleChange("name", e.target.value)}
-                            />
-                            <InputBox
-                                id="Domen"
-                                name="domen"
-                                label="Домен"
-                                placeholder="sosched.work"
-                                // value={}
-                                className="w-full"
-                                // onChange={(e) => handleChange("name", e.target.value)}
-                            />
-                        </div>
-                        <div className="relative flex">
-                            <InputBox
-                                id="Key"
-                                name="key"
-                                label="Ключ для приєднання"
-                                placeholder="sosched.work"
-                                // value={}
-                                inputClassName="pr-8"
-                                className="w-full"
-                                // onChange={(e) => handleChange("name", e.target.value)}
-                            />
-                            <button className="absolute bottom-1 right-1 text-second-text flex items-center justify-center p-1 hover:text-main-black"
-                            onClick={async () => await copyToClipboard("Test")}>
-                                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
-                                    content_copy
-                                </span>
-                            </button>
-                        </div>
-                    </div>
-                </ModalWrapperTitleSaveDelete>
+                <EditSpaceModal handleClose={handleClose} />
             )}
         </div>
     );

@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import {createContext, useContext, useEffect, useMemo, useState} from "react";
+import {createContext, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import { useAuth } from "./AuthContext.jsx";
 import { LOCAL_STORAGE_NAMES } from "../constants/constants.js";
-import { getSpaces, createSpace } from "../services/api/spaceApi.js";
+import {getSpaces, createSpace, updateSpace} from "../services/api/spaceApi.js";
 import {useMutation, useInfiniteQuery, useQueryClient} from "@tanstack/react-query";
 
 const SpaceContext = createContext();
@@ -34,6 +34,11 @@ export function SpaceProvider({ children }) {
     const isLoading = infiniteQuery?.isLoading;
     const isError = infiniteQuery?.isError;
 
+    const switchSpace = useCallback((space) => {
+        setActiveSpace(space);
+        localStorage.setItem(getSpaceStorageKey(user?.id), space.domain);
+    }, [user?.id]);
+
     useEffect(() => {
         const userId = user?.id;
 
@@ -49,16 +54,14 @@ export function SpaceProvider({ children }) {
         // Чтение домена, привязанного к текущему пользователю
         const savedDomain = localStorage.getItem(storageKey);
 
+
         // Находим сохраненный Space или берем первый в списке
         const defaultSpace = spaces.find(s => s.domain === savedDomain) || spaces[0];
+        console.log(defaultSpace);
 
-        setActiveSpace(defaultSpace);
-    }, [spaces, user]);
+        switchSpace(defaultSpace);
+    }, [spaces, user, switchSpace]);
 
-    const switchSpace = (space) => {
-        setActiveSpace(space);
-        localStorage.setItem(LOCAL_STORAGE_NAMES.ACTIVE_SPACE, space.domain);
-    };
 
     const createSpaceMutation = useMutation({
         mutationFn: createSpace,
@@ -71,6 +74,16 @@ export function SpaceProvider({ children }) {
         },
     });
 
+    const updateSpaceMutation = useMutation({
+        mutationFn: ({id, data}) => updateSpace(id, data),
+        onSuccess: (newSpace) => {
+            void queryClient.invalidateQueries({queryKey: ["spaces", user?.id] });
+        },
+        onError: (err) => {
+            console.error("Error editing space:", err);
+        },
+    })
+
     return (
         <SpaceContext.Provider
             value={{
@@ -79,6 +92,7 @@ export function SpaceProvider({ children }) {
                 spaceQuery: infiniteQuery,
                 switchSpace,
                 createSpace: createSpaceMutation.mutateAsync,
+                updateSpace: updateSpaceMutation.mutateAsync,
                 loading: isLoading,
                 isError,
             }}

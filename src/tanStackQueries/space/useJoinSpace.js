@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 
 export function useJoinSpace() {
     const queryClient = useQueryClient();
-    const { user } = useAuth(); // Нужен для инвалидации ключа ["spaces", user?.id]
+    const { user } = useAuth();
 
     return useMutation({
         /**

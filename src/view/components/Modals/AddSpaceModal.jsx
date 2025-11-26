@@ -5,6 +5,7 @@ import {useCallback, useState} from "react";
 import InputBox from "../BasicInputs/InputBox.jsx";
 import ToggleWithDescription from "../BasicInputs/ToggleWithDescription.jsx";
 import {useJoinSpace} from "../../../tanStackQueries/space/useJoinSpace.js";
+import {useSpace} from "../../../context/SpaceContext.jsx";
 
 const TABS = {
     ADD: "addSpace",
@@ -14,16 +15,23 @@ const TABS = {
 export default function AddSpaceModal({handleClose}) {
     const [active, setActive] = useState(TABS.ADD);
     const [addForm, setAddForm] = useState({domain: "", password: ""});
-    const [createForm, setCreateForm] = useState({name: "", domain: "", isPublic: "false", password: ""});
+    const [createForm, setCreateForm] = useState({name: "", domain: "", isPublic: false, password: ""});
 
     const handleChange = useCallback((key, value, func) => {
         func((prev) => ({ ...prev, [key]: value }));
     }, []);
 
     const { mutateAsync: joinSpace } = useJoinSpace();
+    const { createSpace } = useSpace();
 
     const handleJoin = async () => {
         await joinSpace(addForm);
+        handleClose();
+    }
+
+    const handleCreate = async () => {
+        await createSpace(createForm);
+        handleClose();
     }
 
     return (
@@ -74,45 +82,41 @@ export default function AddSpaceModal({handleClose}) {
                                     name="name"
                                     label="Назва"
                                     placeholder="Робочий простір"
-                                    // value={}
+                                    value={createForm.name}
                                     className="w-full"
-                                    // onChange={(e) => handleChange("name", e.target.value)}
+                                    onChange={(e) => handleChange("name", e.target.value, setCreateForm)}
                                 />
                                 <InputBox
                                     id="Domain"
                                     name="domain"
                                     label="Домен"
                                     placeholder="sosched.work"
-                                    // value={}
+                                    value={createForm.domain}
                                     className="w-full"
-                                    // onChange={(e) => handleChange("name", e.target.value)}
+                                    onChange={(e) => handleChange("domain", e.target.value, setCreateForm)}
                                 />
                             </div>
                             <div className="flex gap-20 w-full items-center justify-center">
-                                <ToggleWithDescription title="Зробити публічним" description="Дозволяє користувачам приєднуватись до вашого простору"/>
+                                <ToggleWithDescription
+                                    title="Зробити публічним"
+                                    description="Дозволяє користувачам приєднуватись до вашого простору"
+                                    value={createForm.isPublic}
+                                    onChange={(e) => handleChange("isPublic", e.target.checked, setCreateForm)} />
                                 <InputBox
                                     id="Password"
                                     name="password"
-                                    disabled={true}
+                                    disabled={!createForm.isPublic}
                                     label="Пароль"
                                     placeholder=""
-                                    // value={}
+                                    value={createForm.password}
                                     className="w-full"
-                                    // onChange={(e) => handleChange("name", e.target.value)}
+                                    onChange={(e) => handleChange("password", e.target.value, setCreateForm)}
                                 />
-                                {/*<InputBox*/}
-                                {/*    id="key"*/}
-                                {/*    name="key"*/}
-                                {/*    label="Домен"*/}
-                                {/*    placeholder="sosched.work"*/}
-                                {/*    // value={}*/}
-                                {/*    className="w-full"*/}
-                                {/*    // onChange={(e) => handleChange("name", e.target.value)}*/}
-                                {/*/>*/}
                             </div>
                             <div className="flex justify-end w-full">
                                 <button
                                     type="button"
+                                    onClick={handleCreate}
                                     className="flex mt-8 whitespace-nowrap rounded-md bg-accent px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-accent-on-hover focus-visible:outline-2 focus-visible:outline-offset-2"
                                 >
                                     Створити

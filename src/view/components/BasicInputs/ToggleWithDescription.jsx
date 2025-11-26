@@ -1,13 +1,11 @@
 import PropTypes from "prop-types";
 import {useState} from "react";
 
-export default function ToggleWithDescription({title, description, onChange}) {
-    const [checked, setChecked] = useState(false);
-
-    const handleChange = (e) => {
-        setChecked(e.target.checked);
-        onChange?.(e.target.checked); // передаём значение наверх
-    };
+export default function ToggleWithDescription({title, description, value, onChange}) {
+    // const handleChange = (e) => {
+    //     setChecked(e.target.checked);
+    //     onChange?.(e.target.checked); // передаём значение наверх
+    // };
 
     return (
         <div className="flex items-center justify-between my-4 gap-10 w-full">
@@ -25,8 +23,8 @@ export default function ToggleWithDescription({title, description, onChange}) {
                     id={title}
                     name={title}
                     type="checkbox"
-                    checked={checked}
-                    onChange={handleChange}
+                    checked={value}
+                    onChange={onChange}
                     aria-labelledby={title + "-label"}
                     aria-describedby={title + "-description"}
                     className="absolute inset-0 appearance-none focus:outline-hidden"
@@ -40,4 +38,5 @@ ToggleWithDescription.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string,
     onChange: PropTypes.func,
+    value: PropTypes.bool
 }

@@ -58,4 +58,17 @@ export const joinSpace = async (data) => {
     return response.data;
 }
 
-// export const updateSpace = async (data) => {}
+export const updateSpace = async (id, data) => {
+    console.log(id, data);
+    const response = await api.patch(`${API_ENDPOINTS.SPACE}/${id}`, data);
+
+    if (!response.isSuccess || !response.data) {
+        throw {
+            message: response.error?.message || "Failed to edit space",
+            code: response.error?.code,
+            details: response.error?.details
+        };
+    }
+
+    return response.data;
+}
