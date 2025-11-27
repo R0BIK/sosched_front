@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
     TAG: "/tags",
     TAG_TYPE: "/tagTypes",
     SEARCH: "/search",
+    ROLE: "/roles",
 }
 
 export const LOCAL_STORAGE_NAMES = {

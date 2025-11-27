@@ -33,10 +33,14 @@ export default function ViewProfile({user, isOwner, handleLogout, handleEditProf
                                 className="w-80"
                             />
                             <DisplayBox
-                                id="birthdate"
+                                id="birthday"
                                 label="Дата народження"
                                 className="w-80"
-                                value={user?.birthDate}
+                                value={new Date(user?.birthday).toLocaleDateString('uk-UA', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit'
+                                })}
                             />
                         </div>
                         <div className="flex gap-10">
@@ -61,6 +65,7 @@ export default function ViewProfile({user, isOwner, handleLogout, handleEditProf
                     <div className="flex items-start">
                         <button
                             type="button"
+                            onClick={handleEditProfile}
                             className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
                             Редагувати
@@ -95,7 +100,7 @@ export default function ViewProfile({user, isOwner, handleLogout, handleEditProf
 
 ViewProfile.propTypes = {
     user: PropTypes.shape({
-        birthDate: PropTypes.string,
+        birthday: PropTypes.string,
         email: PropTypes.string,
         firstName: PropTypes.string,
         iconPath: PropTypes.string,

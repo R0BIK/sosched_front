@@ -1,24 +1,33 @@
 import EditProfile from "../../components/Profile/EditProfile.jsx";
 import PropTypes from "prop-types";
 import ViewProfile from "../../components/Profile/ViewProfile.jsx";
-import {Navigate, useParams} from "react-router-dom";
+import {Navigate, useNavigate, useParams} from "react-router-dom";
 import {useAuth} from "../../../context/AuthContext.jsx";
 import {useSpace} from "../../../context/SpaceContext.jsx";
 import {useGetUserById} from "../../../tanStackQueries/user/useGetUserById.js";
 import {LoadingIndicator} from "../../components/LoadingIndicator.js";
 
 export default function Profile({ isEdit=false }) {
-    const { id: id } = useParams();
+    const { id: paramId } = useParams();
+    const navigate = useNavigate();
 
     const { activeSpace } = useSpace()
     const { user, logout } = useAuth();
 
     const domain = activeSpace?.domain;
-    const userId = Number(id);
+
+    const routeUserId = Number(paramId);
+    const currentUserId = user?.id;
+
+    const userId = paramId ? routeUserId : currentUserId;
 
     const { data: userData, isLoading, isError } = useGetUserById(userId, domain);
 
-    if (!userId) return <Navigate to={`/profile/${user.id}`} replace />;
+    if (routeUserId === currentUserId) {
+        return <Navigate to="/profile" replace />;
+    }
+
+    const isOwner = currentUserId === userId;
 
     if (isError) {
         return (
@@ -30,15 +39,12 @@ export default function Profile({ isEdit=false }) {
 
     if (isLoading || !userData) return <LoadingIndicator type="line-simple" size="md" label="Loading..." />;
 
-
-    const isOwner = user?.id === userId;
-
     const handleLogout = async () => {
         await logout();
     }
 
     const handleEditProfile = () => {
-
+        navigate("/profile/edit");
     }
 
 

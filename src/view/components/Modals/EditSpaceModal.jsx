@@ -4,7 +4,8 @@ import InputBox from "../BasicInputs/InputBox.jsx";
 import ToggleWithDescription from "../BasicInputs/ToggleWithDescription.jsx";
 import {useCallback, useState} from "react";
 import {useSpace} from "../../../context/SpaceContext.jsx";
-import {useToast} from "../../../context/useToast.js";
+import {useToast} from "../../../context/Toast/useToast.js";
+import {getChangedFields} from "../../../utils/getChangedFields.js";
 
 export default function EditSpaceModal({ handleClose }) {
     const { updateSpace, activeSpace } = useSpace();
@@ -18,7 +19,14 @@ export default function EditSpaceModal({ handleClose }) {
 
 
     const handleSave = async () => {
-        const {id, ...data} = form
+        const {id, ...request} = form
+
+        const {data, isChanged} = getChangedFields(activeSpace, request)
+
+        if (!isChanged) {
+            handleClose();
+            return;
+        }
 
         try {
             await updateSpace({id, data});

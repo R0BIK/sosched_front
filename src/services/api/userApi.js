@@ -35,3 +35,17 @@ export const getUsers = async (domain, paging, filterObj, search) => {
 
     return response.data;
 };
+
+export const updateUser = async (data, domain) => {
+    const response = await api.patch(
+        `${domain}${API_ENDPOINTS.USER}`,
+        data
+    );
+
+    if (!response.isSuccess) {
+        // Выбрасываем структурированную ошибку, если запрос не удался
+        throw Error(response.error);
+    }
+
+    return response.data;
+};

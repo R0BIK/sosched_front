@@ -57,7 +57,6 @@ export function SpaceProvider({ children }) {
 
         // Находим сохраненный Space или берем первый в списке
         const defaultSpace = spaces.find(s => s.domain === savedDomain) || spaces[0];
-        console.log(defaultSpace);
 
         switchSpace(defaultSpace);
     }, [spaces, user, switchSpace]);

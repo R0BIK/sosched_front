@@ -2,8 +2,43 @@ import Divider from "../DividerTextCenter.jsx";
 import InputBox from "../BasicInputs/InputBox.jsx";
 import {DateBox} from "../BasicInputs/DateBox.jsx";
 import PropTypes from "prop-types";
+import {useState} from "react";
+import {useUpdateUser} from "../../../tanStackQueries/user/useUpdateUser.js";
+import {getChangedFields} from "../../../utils/getChangedFields.js";
+import {useToast} from "../../../context/Toast/useToast.js";
+import {useSpace} from "../../../context/SpaceContext.jsx";
 
 export default function EditProfile({user}) {
+    const [formData, setFormData] = useState({...user});
+    const { activeSpace } = useSpace();
+    const { showToast } = useToast();
+
+    const domain = activeSpace?.domain;
+
+    const { mutateAsync: updateUser } = useUpdateUser(domain);
+
+    const handleChange = (e) => {
+        setFormData({...formData, [e.target.name]: e.target.value});
+    }
+
+    const handleSave = async () => {
+        const { data, isChanged } = getChangedFields(user, formData);
+
+        if (!isChanged) {
+            return;
+        }
+
+        try {
+            await updateUser(data);
+
+            showToast("Успішно!", 'Дані профілю оновлено.');
+
+        } catch (error) {
+            console.error("Error updating space:", error);
+        }
+    }
+
+
     return (
         <div className="flex flex-col gap-20">
             <div className="flex flex-col gap-6">
@@ -13,41 +48,41 @@ export default function EditProfile({user}) {
                     <div className="flex flex-col gap-6">
                         <div className="flex gap-10">
                             <InputBox
-                                id="lastName"
+                                id="LastName"
                                 name="lastName"
                                 label="Прізвище"
                                 placeholder="Коваленко"
-                                // value={}
+                                value={formData.lastName}
                                 className="w-80"
-                                // onChange={(e) => handleChange("name", e.target.value)}
+                                onChange={(e) => handleChange(e)}
                             />
                             <InputBox
-                                id="firstName"
+                                id="FirstName"
                                 name="firstName"
                                 label="Імʼя"
                                 placeholder="Василь"
-                                // value={}
+                                value={formData.firstName}
                                 className="w-80"
-                                // onChange={(e) => handleChange("name", e.target.value)}
+                                onChange={(e) => handleChange(e)}
                             />
                         </div>
                         <div className="flex gap-10">
                             <InputBox
-                                id="patronymic"
+                                id="Patronymic"
                                 name="patronymic"
                                 label="По-батькові"
                                 placeholder="Ігорович"
-                                // value={}
+                                value={formData.patronymic || ""}
                                 className="w-80"
-                                // onChange={(e) => handleChange("name", e.target.value)}
+                                onChange={(e) => handleChange(e)}
                             />
                             <DateBox
-                                id="birthdate"
-                                name="birthdate"
+                                id="Birthday"
+                                name="birthday"
                                 label="Дата народження"
                                 className="w-80"
-                                // value={eventForm.date}
-                                // onChange={handleInputChange}
+                                value={formData.birthday || ""}
+                                onChange={(e) => handleChange(e)}
                             />
                         </div>
                         <InputBox
@@ -55,16 +90,16 @@ export default function EditProfile({user}) {
                             name="email"
                             label="Пошта"
                             placeholder="example@mail.ua"
-                            // value={}
+                            value={formData.email}
                             className="w-full"
-                            // onChange={(e) => handleChange("name", e.target.value)}
+                            onChange={(e) => handleChange(e)}
                         />
                     </div>
                 </div>
                 <div className="flex gap-6 justify-end mt-6 px-4">
                     <button
                         type="button"
-                        // onClick={handleCreate}
+                        onClick={handleSave}
                         className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                         Зберегти
