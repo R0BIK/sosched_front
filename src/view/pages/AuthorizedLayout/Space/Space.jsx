@@ -27,8 +27,6 @@ export default function Space() {
         setModalVisible(false);
     }
 
-
-
     useLockBodyScroll(isModalVisible);
 
     return (

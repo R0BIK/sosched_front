@@ -13,7 +13,7 @@ export const getRoles = async (domain, params) => {
 
 export const updateRoleUsers = async (roleId, data, domain) => {
     const response = await api.patch(
-        `${domain}${API_ENDPOINTS.TAG}/${roleId}/users`,
+        `${domain}${API_ENDPOINTS.ROLE}/${roleId}/users`,
         data
     );
 

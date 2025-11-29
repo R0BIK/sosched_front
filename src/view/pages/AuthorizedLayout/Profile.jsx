@@ -47,11 +47,14 @@ export default function Profile({ isEdit=false }) {
         navigate("/profile/edit");
     }
 
+    const handleViewCalendar = () => {
+        navigate(`/schedule/${userId}`);
+    }
 
     return (
         <div className="w-full flex justify-center font-noto pt-5 px-5 pb-20">
             {!isEdit && (
-                <ViewProfile user={userData} isOwner={isOwner} handleLogout={handleLogout} handleEditProfile={handleEditProfile} />
+                <ViewProfile user={userData} isOwner={isOwner} handleLogout={handleLogout} handleEditProfile={handleEditProfile} handleViewCalendar={handleViewCalendar}/>
             )}
             {isEdit && isOwner && (
                 <EditProfile user={userData} />

@@ -23,7 +23,7 @@ export default function AuthorizedHeader() {
     const domain = activeSpace?.domain;
     const userId = user?.id;
 
-    const { data: userData, isLoading, error } = useGetUserById(userId, domain);
+    const { data: userData  } = useGetUserById(userId, domain);
 
     return (
         <header className="fixed top-0 z-50 w-full h-18 items-center content-center grid grid-cols-3 px-9 py-3

@@ -13,7 +13,7 @@ export function useGetPagedEvents(data, domain) {
                 pageSize: 10,
             };
 
-            const response = await getEvents(data, domain, true, pagination);
+            const response = await getEvents(data, domain, null, pagination);
 
             return {
                 ...response

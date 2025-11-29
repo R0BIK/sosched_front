@@ -3,9 +3,14 @@ import PropTypes from "prop-types";
 import EventView from "./EventView.jsx";
 import { ChevronLeftIcon, ChevronRightIcon } from "../../../img/svg/Icons.jsx";
 
-export default function WeekCalendar({firstWeekDate, selectedDay, events, onEventClick, handleDayClick, onChevronClick}) {
+import {InformationCircleIcon, ArrowRightStartOnRectangleIcon} from "@heroicons/react/24/solid/index.js";
+import {useNavigate} from "react-router-dom";
+
+export default function WeekCalendar({firstWeekDate, selectedDay, otherUser, events, onEventClick, handleDayClick, onChevronClick}) {
     const weekDate = new Date(firstWeekDate);
     const startHour = 7;
+
+    const navigate = useNavigate();
 
     const [now, setNow] = useState(new Date());
 
@@ -15,7 +20,7 @@ export default function WeekCalendar({firstWeekDate, selectedDay, events, onEven
     }, []);
 
     return (
-        <div className="relative w-full no-scrollbar overflow-x-auto max-w-[1130px] pt-[15px]">
+        <div className="relative w-full no-scrollbar overflow-x-auto max-w-[1130px] pt-[15px] mr-4">
             <div className="flex gap-[40px] items-center h-max">
                 <button onClick={() => {onChevronClick(false)}}
                     className="justify-start ml-[80px] p-[8px] cursor-pointer">
@@ -34,6 +39,21 @@ export default function WeekCalendar({firstWeekDate, selectedDay, events, onEven
                     className="p-[8px] cursor-pointer">
                     <ChevronRightIcon className="h-[24px] w-[24px] fill-second-text hover:fill-main-black" />
                 </button>
+
+                {otherUser && (
+                    <div className="flex items-center gap-4">
+                        <InformationCircleIcon className="size-6 text-yellow-500"/>
+                        <p className="font-bold text-lg">
+                            Календар користувача { otherUser }
+                        </p>
+                        <button
+                            className="p-1 group cursor-pointer"
+                            onClick={() => {navigate("/schedule")}}
+                        >
+                            <ArrowRightStartOnRectangleIcon className="size-6 group-hover:text-accent"/>
+                        </button>
+                    </div>
+                )}
 
             </div>
             <div className="grid" style={{gridTemplateColumns: "80px repeat(7, 150px)"}}>
@@ -199,6 +219,7 @@ function isEventInCurrentWeek(eventStart, eventEnd, firstWeekDate) {
 WeekCalendar.propTypes = {
     firstWeekDate: PropTypes.string.isRequired,
     selectedDay: PropTypes.string.isRequired,
+    otherUser: PropTypes.string,
     events: PropTypes.array.isRequired,
     onEventClick: PropTypes.func,
     handleDayClick: PropTypes.func.isRequired,

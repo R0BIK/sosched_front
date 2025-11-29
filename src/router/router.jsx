@@ -37,6 +37,7 @@ export const router = createBrowserRouter([
             </PrivateRoute>),
         children: [
             { path: '/schedule', element: <Schedule /> },
+            { path: '/schedule/:userId', element: <Schedule /> },
             { path: '/home', element: <Schedule /> },
             {
                 path: '/mySpace',

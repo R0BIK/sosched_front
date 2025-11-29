@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import {useState, useMemo, useCallback, useEffect} from "react";
+import {useState, useMemo, useCallback} from "react";
 
 import InputBox from "../BasicInputs/InputBox.jsx";
 import SelectMenu from "../BasicInputs/SelectMenu.jsx";
@@ -535,5 +535,5 @@ EditEventModal.propTypes = {
 };
 
 function getFullName(user) {
-    return `${user.lastName} ${user.firstName} ${user.patronymic ? user.patronymic : ""}`.trim();
+    return `${user?.lastName} ${user?.firstName} ${user?.patronymic ? user?.patronymic : ""}`.trim();
 }

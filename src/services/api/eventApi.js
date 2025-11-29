@@ -1,15 +1,15 @@
 import { API_ENDPOINTS } from "../../constants/constants.js";
 import {api} from "../../api/apiClient.ts";
 
-export const getEvents = async (data, domain, isPaged, pagination) => {
+export const getEvents = async (data, domain, userId, pagination) => {
 
     const params = {
         DateFrom: data?.dateFrom,
         DateTo: data?.dateTo,
 
-        IsPaged: isPaged,
+        UserId: userId,
 
-        ...(isPaged && {
+        ...(!userId && {
             Page: pagination?.page,
             PageSize: pagination?.pageSize,
         })

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-export default function Drawer({ children, isOpen, onClose, width = "400px" }) {
+export default function Drawer({ children, isOpen, onClose, width = "380px" }) {
     if (!isOpen) return null;
 
     return (
@@ -14,7 +14,7 @@ export default function Drawer({ children, isOpen, onClose, width = "400px" }) {
             >
                 ✕
             </button>
-            <div className="p-5 w-full">{children}</div>
+            <div className="w-full">{children}</div>
         </div>
     );
 }

@@ -2,7 +2,7 @@ import Divider from "../DividerTextCenter.jsx";
 import DisplayBox from "../BasicInputs/DisplayBox.jsx";
 import PropTypes from "prop-types";
 
-export default function ViewProfile({user, isOwner, handleLogout, handleEditProfile}) {
+export default function ViewProfile({user, isOwner, handleLogout, handleEditProfile, handleViewCalendar}) {
     return (
         <div className="flex flex-col gap-20">
             <div className="flex flex-col gap-6">
@@ -87,6 +87,7 @@ export default function ViewProfile({user, isOwner, handleLogout, handleEditProf
                     <div className="flex items-start">
                         <button
                             type="button"
+                            onClick={handleViewCalendar}
                             className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
                             Календар

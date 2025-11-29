@@ -1,55 +1,62 @@
-import {useEffect, useState, useCallback} from "react";
+import {useState, useCallback} from "react";
 import {EditIcon} from "../../../../../img/svg/Icons.jsx";
-import EditRoleModal from "../../../../components/Modals/EditRoleModal.jsx";
 import {useLockBodyScroll} from "../../../../../hooks/useLockBodyScroll.js";
-import DeleteIcon from "@mui/icons-material/Delete";
-import PropTypes from "prop-types"; // Добавляем PropTypes
+import {useSpace} from "../../../../../context/SpaceContext.jsx";
+import {useInfiniteScroll} from "../../../../components/InfinityScroll/useInfiniteScroll.js";
+import {useGetRoles} from "../../../../../tanStackQueries/role/useGetRoles.js";
+import EditRoleModal from "../../../../components/Modals/EditRoleModal.jsx";
+import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
+import {useUpdateRoleUsers} from "../../../../../tanStackQueries/role/useUpdateRoleUsers.js";
 
 export default function Roles() {
-    // ВАЖНО: Инициализируем roles пустым массивом для маппинга
-    const [roles, setRoles] = useState([]);
     const [selectedRole, setSelectedRole] = useState(null);
     useLockBodyScroll(!!selectedRole);
 
-    // Временная инициализация данных (для демонстрации)
-    useEffect(() => {
-        setRoles([
-            { id: 1, name: "Адміністратор", members: 5, permissions: [{ isGranted: "true" }, { isGranted: "false" }, { isGranted: "true" }] },
-            { id: 2, name: "Координатор", members: 12, permissions: [{ isGranted: "false" }, { isGranted: "true" }, { isGranted: "false" }] },
-        ]);
-    }, []);
+    const { activeSpace } = useSpace();
+    const domain = activeSpace?.domain;
+
+    const roleQuery = useGetRoles(domain);
+
+    const roles = roleQuery.data?.pages.flatMap((p) => p.items) ?? [];
+    const totalCount = roleQuery.data?.pages?.[0]?.totalCount ?? 0;
+
+    const { mutate: updateUsersMutate } = useUpdateRoleUsers(domain);
+
+    const loadMoreRef = useInfiniteScroll(roleQuery);
 
     const handleEdit = (role) => setSelectedRole(role);
     const handleClose = () => setSelectedRole(null);
 
-    const handleCreate = () => {
-        setSelectedRole({
-            id: null,
-            name: "",
-            members: "0",
-            permissions: null
-        });
-    };
+    // const handleCreate = () => {
+    //     setSelectedRole({
+    //         id: null,
+    //         name: "",
+    //         members: "0",
+    //     });
+    // };
 
     // const handleDeleteRole = useCallback((id) => {
     //     setRoles((prevRoles) => prevRoles.filter((t) => t.id !== id));
     //     setSelectedRole(null);
     // }, []);
     //
-    // const handleSaveRole = useCallback((updatedRole) => {
-    //     setRoles((prevRoles) => {
-    //         if (updatedRole.id) {
-    //             return prevRoles.map((t) => (t.id === updatedRole.id ? updatedRole : t));
-    //         } else {
-    //             const newRole = {
-    //                 ...updatedRole,
-    //                 id: Date.now().toString(), // уникальный ID
-    //             };
-    //             return [...prevRoles, newRole];
-    //         }
-    //     });
-    //     setSelectedRole(null);
-    // }, []);
+    const handleSaveRole = useCallback((updatedRole, updatedUsers) => {
+        if (isUpdateDataEmpty(updatedUsers)) return;
+
+        updateUsersMutate({
+            tagId: updatedRole.id,
+            data: updatedUsers
+        });
+        setSelectedRole(null);
+    }, [updateUsersMutate]);
+
+    const isUpdateDataEmpty = (updateData) => {
+        return (
+            (!updateData.add || updateData.add.length === 0) &&
+            (!updateData.remove || updateData.remove.length === 0) &&
+            (!updateData.addFromTags || updateData.addFromTags.length === 0)
+        );
+    };
 
     return (
         <div className="py-5 px-9 w-full overflow-auto">
@@ -60,18 +67,17 @@ export default function Roles() {
                         A list of all the users in your account including their name, title, email and role.
                     </p>
                 </div>
-                <div className="flex items-start">
-                    <button
-                        type="button"
-                        onClick={handleCreate}
-                        className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        Створити роль
-                    </button>
-                </div>
+                {/*<div className="flex items-start">*/}
+                {/*    <button*/}
+                {/*        type="button"*/}
+                {/*        onClick={handleCreate}*/}
+                {/*        className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"*/}
+                {/*    >*/}
+                {/*        Створити роль*/}
+                {/*    </button>*/}
+                {/*</div>*/}
             </div>
 
-            {/* --- БЛОК ТАБЛИЦЫ FLEXBOX --- */}
             <div className="mt-8 w-full flex flex-col font-noto">
 
                 {/* Шапка (Header) */}
@@ -91,44 +97,50 @@ export default function Roles() {
                 </div>
 
                 {/* Тело (Body) со скроллом и разделителями */}
-                <div className="flex flex-col divide-y divide-gray-200 w-full overflow-y-auto">
-                    {roles?.map((role) => (
-                        <div key={role.id} className="flex w-full items-center py-3">
+                <div className="w-full overflow-y-auto h-full min-h-40 no-scrollbar">
+                    <div className="flex flex-col divide-y divide-gray-200">
+                        {roles?.map((role) => (
+                            <div key={role.id} className="flex w-full items-center py-3">
 
-                            {/* Колонка 1: Роль */}
-                            <div className="w-9/20 text-sm break-all text-main-black">
-                                {role.name}
-                            </div>
+                                {/* Колонка 1: Роль */}
+                                <div className="w-9/20 text-sm break-all text-main-black">
+                                    {role.name}
+                                </div>
 
-                            {/* Колонка 2: Участники */}
-                            <div className="w-1/4 text-sm break-all text-second-text text-center">
-                                {role.members}
-                            </div>
+                                {/* Колонка 2: Участники */}
+                                <div className="w-1/4 text-sm break-all text-second-text text-center">
+                                    {role.usersCount}
+                                </div>
 
-                            {/* Колонка 3: Разрешения */}
-                            <div className="w-1/4 text-sm break-all text-second-text text-center">
-                                {role.permissions.filter(p => p.isGranted === "true").length}
-                            </div>
+                                {/* Колонка 3: Разрешения */}
+                                <div className="w-1/4 text-sm break-all text-second-text text-center">
+                                    {role.name === "Admin" ? "Всі" : "Базові"}
+                                    {/*{role.permissions.filter(p => p.isGranted === "true").length}*/}
+                                </div>
 
-                            {/* Колонка 4: Edit */}
-                            <div className="w-1/20 text-right min-w-8">
-                                <button
-                                    onClick={() => handleEdit(role)}
-                                    title="Редагувати"
-                                    className="p-1 inline-block group relative"
-                                >
-                                    <EditIcon className="fill-second-text size-6 group-hover:fill-main-black"/>
-                                </button>
+                                {/* Колонка 4: Edit */}
+                                <div className="w-1/20 text-right min-w-8">
+                                    <button
+                                        onClick={() => handleEdit(role)}
+                                        title="Редагувати"
+                                        className="p-1 inline-block group relative"
+                                    >
+                                        <EditIcon className="fill-second-text size-6 group-hover:fill-main-black"/>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                    <InfiniteScrollTrigger
+                        ref={loadMoreRef}
+                        isFetching={roleQuery.isFetchingNextPage}
+                    />
                 </div>
             </div>
-            {/* --- КОНЕЦ БЛОКА FLEXBOX --- */}
 
-            {/*{selectedRole && (*/}
-            {/*    <EditRoleModal handleClose={handleClose} role={selectedRole} handleSaveRole={handleSaveRole} handleDeleteRole={handleDeleteRole}/>*/}
-            {/*)}*/}
+            {selectedRole && (
+                <EditRoleModal handleClose={handleClose} role={selectedRole} handleSaveRole={handleSaveRole}/>
+            )}
         </div>
     );
 }

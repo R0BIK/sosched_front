@@ -12,8 +12,20 @@ import {useInfiniteScroll} from "../../components/InfinityScroll/useInfiniteScro
 import { PlusOutlined } from "@lineiconshq/free-icons";
 import AddSpaceModal from "../../components/Modals/AddSpaceModal.jsx";
 import {useLockBodyScroll} from "../../../hooks/useLockBodyScroll.js";
+import {Navigate, useParams} from "react-router-dom";
+import {useAuth} from "../../../context/AuthContext.jsx";
+import {useGetUserById} from "../../../tanStackQueries/user/useGetUserById.js";
 
 export default function Schedule() {
+
+    const { userId: paramId } = useParams();
+    const { user } = useAuth();
+
+    const routeUserId = Number(paramId);
+    const currentUserId = user?.id;
+
+    const userId = paramId ? routeUserId : currentUserId;
+
     const { switchSpace, spaces, activeSpace, spaceQuery } = useSpace();
     const domain = activeSpace?.domain;
     // -------------------------------
@@ -28,7 +40,10 @@ export default function Schedule() {
         dateTo: new Date(new Date(firstWeekDate).setDate(new Date(firstWeekDate).getDate() + 7))
     }), [firstWeekDate]);
 
-    const { data: events } = useGetEvents(dataForEvents, domain);
+    const { data: events } = useGetEvents(dataForEvents, userId, domain);
+    const { data: userData } = useGetUserById(userId, domain);
+
+    console.log(userData)
 
     // -------------------------------
     // 🧾 Drawer + Form State
@@ -37,6 +52,9 @@ export default function Schedule() {
     const isDrawerOpen = drawerMode !== null;
 
     const [addSpaceModalOpen, setAddSpaceModalOpen] = useState(false);
+
+    const loadMoreRef = useInfiniteScroll(spaceQuery);
+    useLockBodyScroll(!!addSpaceModalOpen);
 
     const handelCloseModal = () => {
         setAddSpaceModalOpen(false);
@@ -72,9 +90,9 @@ export default function Schedule() {
         });
     }, []);
 
-    const loadMoreRef = useInfiniteScroll(spaceQuery);
-    useLockBodyScroll(!!addSpaceModalOpen);
-
+    if (routeUserId === currentUserId) {
+        return <Navigate to="/schedule" replace />;
+    }
 
     return (
         <div className="flex-row flex h-full overflow-hidden">
@@ -121,6 +139,7 @@ export default function Schedule() {
                     events={events}
                     firstWeekDate={firstWeekDate}
                     selectedDay={selectedDay}
+                    otherUser={routeUserId ? getFullName(userData) : ""}
                     handleDayClick={handleDayClick}
                     onChevronClick={handleChevronClick}
                     onEventClick={(event) => {
@@ -143,6 +162,10 @@ export default function Schedule() {
             )}
         </div>
     );
+}
+
+function getFullName(user) {
+    return `${user?.lastName} ${user?.firstName} ${user?.patronymic ? user?.patronymic : ""}`.trim();
 }
 
 function getInitial(name) {
