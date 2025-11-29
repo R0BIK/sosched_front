@@ -15,10 +15,17 @@ import { useInfiniteScroll } from "../../../../components/InfinityScroll/useInfi
 import { useCreateTagType } from "../../../../../tanStackQueries/tagType/useCreateTagType.js";
 import { useGetTagTypes } from "../../../../../tanStackQueries/tagType/useGetTagTypes.js";
 import { useDeleteTagType } from "../../../../../tanStackQueries/tagType/useDeleteTagType.js";
+import {useValidate} from "../../../../../hooks/useValidate.js";
+
+const FORM_CONFIG = {
+    Name: true
+}
 
 export default function TagTypes() {
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
+
+    const { errors, validateField, addExternalError, clearError } = useValidate(FORM_CONFIG)
 
     // --- Queries ---
     const tagTypesQuery = useGetTagTypes(domain);
