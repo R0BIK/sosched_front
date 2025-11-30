@@ -14,12 +14,18 @@ export default function EditTagTypeModal({ handleClose, selected, handleSaveTagT
     };
 
     const handleSubmit = () => {
-        handleSaveTagType(formData);
+        handleSaveTagType(formData, selected.type);
     };
 
     const onBlur = (key, value) => {
         validateField(key, value);
     }
+
+    const onDelete = () => {
+        handleDeleteTagType(selected.tagType.id)
+    }
+
+    const isEdit = selected.type === "edit";
 
     const title = selected.type === "edit" ? "Редагування типу тегу" : "Створення типу тегу"
 
@@ -28,7 +34,7 @@ export default function EditTagTypeModal({ handleClose, selected, handleSaveTagT
             title={title}
             onClose={handleClose}
             onSave={handleSubmit}
-            onDelete={() => handleDeleteTagType(tagType.id)}
+            onDelete={isEdit ? onDelete : null}
         >
             <div className="flex w-full mt-5 gap-20">
                 <InputBox

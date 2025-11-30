@@ -1,15 +1,17 @@
 import {useEffect} from "react";
-import {CheckCircleIcon} from "@heroicons/react/24/solid/index.js";
+import {CheckCircleIcon, XCircleIcon} from "@heroicons/react/24/solid/index.js";
 import {XMarkIcon} from "@heroicons/react/20/solid/index.js";
 import PropTypes from "prop-types";
 
 export const ToastNotification = ({ id, message, description, type, duration, handleRemove }) => {
 
     const finalDuration = duration || 3000;
+    const color = type === "success" ? "var(--color-green-true)" : type === "error" ? "var(--color-red-false)" : "yellow";
 
     // Запускаем CSS анимацию с указанной длительностью
     const animationStyle = {
-        animation: `toast-shrink ${finalDuration}ms linear forwards`
+        animation: `toast-shrink ${finalDuration}ms linear forwards`,
+        background: color
     };
 
     // Эффект, который запускает таймер на удаление
@@ -29,7 +31,12 @@ export const ToastNotification = ({ id, message, description, type, duration, ha
             <div className="p-4 font-noto bg-white border border-gray-200 rounded-lg">
                 <div className="flex items-start">
                     <div className="shrink-0 mt-1">
-                        <CheckCircleIcon aria-hidden="true" className="size-6 text-green-true" />
+                        {type === "success" && (
+                            <CheckCircleIcon aria-hidden="true" className="size-6 text-green-true" />
+                        )}
+                        {type === "error" && (
+                            <XCircleIcon aria-hidden="true" className="size-6 text-red-false" />
+                        )}
                     </div>
                     <div className="ml-3 w-0 flex-1 pt-0.5">
                         <p className="text-sm font-medium text-gray-900">{message}</p>
@@ -50,7 +57,7 @@ export const ToastNotification = ({ id, message, description, type, duration, ha
 
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-200">
                 <div
-                    className={`h-full bg-green-true`}
+                    className={`h-full`}
                     style={animationStyle}
                 />
             </div>

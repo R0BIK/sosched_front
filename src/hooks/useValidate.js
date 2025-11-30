@@ -61,7 +61,6 @@ const initializeErrors = (formConfig) => {
         defaultErrors[key] = "";
     });
 
-    // Объединяем с любыми внешними ошибками (если они были переданы)
     return { ...defaultErrors };
 };
 
@@ -80,6 +79,8 @@ export const useValidate = (formConfig) => {
 
         setErrors((prev) => ({ ...prev, [key]: error }));
 
+        return error;
+
     }, [])
 
     const addExternalError = useCallback((key, error) => {
@@ -90,25 +91,31 @@ export const useValidate = (formConfig) => {
         setErrors(prev => ({ ...prev, [key]: "" }));
     }, [])
 
-    const isValidForm = useCallback(() => {
-        return (Object.values(errors).every(error => error === SPECIAL.STRING.EMPTY))
-    }, [errors])
+    const resetErrors = useCallback(() => {
+        setErrors(initializeErrors(formConfig));
+    }, [formConfig])
+
+    // const isValidForm = useCallback(() => {
+    //     return (Object.values(errors).every(error => error === SPECIAL.STRING.EMPTY))
+    // }, [errors])
 
     const validateForm = useCallback((formData) => {
-        // console.log(formData);
+        let isValid = true;
+
         for (const [key, value] of Object.entries(formData)) {
 
 
             if (!formConfig || formConfig[key] === undefined || formConfig[key] === null) {
-                continue; // Пропускаем поле, которое не должно валидироваться
+                continue;
             }
 
-            console.log(key, value);
-
-            validateField(key, value, formConfig[key]);
+            const error = validateField(key, value, formConfig[key]);
+            if (!error.trim() === "") isValid = false;
         }
+
+        return isValid;
 
     }, [validateField, formConfig]);
 
-    return { errors, validateField, validateForm, addExternalError, clearError, isValidForm };
+    return { errors, validateField, validateForm, addExternalError, clearError, resetErrors };
 }

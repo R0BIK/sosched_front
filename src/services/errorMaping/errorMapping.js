@@ -73,7 +73,7 @@ export const getValidationErrorsMap = (error) => {
                 const rawErrorMessage = messages[0];
 
                 // Если сообщение соответствует ключу в FRIENDLY_ERROR_MESSAGES, используем его.
-                errorsMap[fieldName] = FRIENDLY_ERROR_MESSAGES[rawErrorMessage].MESSAGE || rawErrorMessage;
+                errorsMap[fieldName] = FRIENDLY_ERROR_MESSAGES[rawErrorMessage]?.MESSAGE || rawErrorMessage;
             }
         });
 

@@ -19,6 +19,7 @@ import {useValidate} from "../../../../../hooks/useValidate.js";
 import {getChangedFields} from "../../../../../utils/getChangedFields.js";
 import {getValidationErrorsMap} from "../../../../../services/errorMaping/errorMapping.js";
 import {useToast} from "../../../../../context/Toast/useToast.js";
+import {useUpdateTagType} from "../../../../../tanStackQueries/tagType/useUpdateTagType.js";
 
 const FORM_CONFIG = {
     name: true
@@ -31,7 +32,7 @@ export default function TagTypes() {
     const validation = useValidate(FORM_CONFIG);
     const { showToast } = useToast();
 
-    const {  validateForm, addExternalError, isValidForm } = validation;
+    const { validateForm, addExternalError, resetErrors } = validation;
 
     // --- Queries ---
     const tagTypesQuery = useGetTagTypes(domain);
@@ -44,7 +45,8 @@ export default function TagTypes() {
 
     // --- Mutations ---
     const { mutateAsync: createTagTypeMutate } = useCreateTagType(domain);
-    const { mutate: deleteTagTypeMutate } = useDeleteTagType(domain);
+    const { mutateAsync: updateTagTypeMutate } = useUpdateTagType(domain);
+    const { mutateAsync: deleteTagTypeMutate } = useDeleteTagType(domain);
 
     // --- State ---
     const [selectedTagType, setSelectedTagType] = useState(null);
@@ -57,7 +59,10 @@ export default function TagTypes() {
             type: "edit",
         });
     }
-    const handleClose = () => setSelectedTagType(null);
+    const handleClose = () => {
+        setSelectedTagType(null);
+        resetErrors();
+    }
 
     const handleCreate = () => {
         setSelectedTagType({
@@ -69,20 +74,29 @@ export default function TagTypes() {
         });
     };
 
-    const handleDeleteTagType = useCallback((id) => {
-        deleteTagTypeMutate(id);
-    }, [deleteTagTypeMutate]);
+    const handleDeleteTagType = useCallback(async (id) => {
+        try {
+            await deleteTagTypeMutate(id);
+            showToast("Успішно!", "Ви видалили тип тегу.")
+        } catch (error) {
+            const errors = getValidationErrorsMap(error)
+            for (const value of Object.values(errors)) {
+                showToast("Помилка!", value, "error");
+            }
+        }
+
+    }, [deleteTagTypeMutate, showToast]);
 
     const handleSaveTagType = useCallback(async (updatedTagType, type) => {
-        validateForm(updatedTagType);
-        if (!isValidForm()) return;
+        const isValid = validateForm(updatedTagType);
+        if (!isValid) return;
 
         try {
             if (type === "edit") {
                 const changedData = getChangedFields(selectedTagType?.tagType, updatedTagType);
 
                 if (changedData.length > 0) {
-                    await createTagTypeMutate({
+                    await updateTagTypeMutate({
                         id: updatedTagType.id,
                         data: changedData
                     });
@@ -104,7 +118,7 @@ export default function TagTypes() {
             }
         }
 
-    }, [addExternalError, createTagTypeMutate, isValidForm, selectedTagType?.tagType, showToast, validateForm]);
+    }, [addExternalError, createTagTypeMutate, selectedTagType?.tagType, showToast, updateTagTypeMutate, validateForm]);
 
     return (
         <div className="pt-5 px-9 w-full h-full flex flex-col overflow-auto">
