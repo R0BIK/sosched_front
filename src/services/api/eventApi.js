@@ -20,7 +20,7 @@ export const getEvents = async (data, domain, userId, pagination) => {
     });
 
     if (!response.isSuccess || !response.data) {
-        throw Error("Failed to get events:" + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;
@@ -30,7 +30,7 @@ export const createEvent = async (data, domain) => {
     const response = await api.post(`${domain}${API_ENDPOINTS.EVENT}`, data);
 
     if (!response.isSuccess || !response.data) {
-        throw Error("Failed to create event:" + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;
@@ -40,7 +40,7 @@ export const deleteEvent = async (id, domain) => {
     const response = await api.delete(`${domain}${API_ENDPOINTS.EVENT}/${id}`);
 
     if (!response.isSuccess) {
-        throw Error("Failed to delete event: " + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;
@@ -53,7 +53,7 @@ export const updateEvent = async (id, domain, eventData) => {
     );
 
     if (!response.isSuccess) {
-        throw Error("Failed to update event: " + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;
@@ -66,7 +66,7 @@ export const updateEventUsers = async (eventId, data, domain) => {
     );
 
     if (!response.isSuccess || !response.data) {
-        throw Error("Failed to update event users: " + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;

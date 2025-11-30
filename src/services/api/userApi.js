@@ -6,8 +6,7 @@ export const getUserById = async (userId, domain) => {
     const response = await api.get(`${domain}${API_ENDPOINTS.USER}/${userId}`);
 
     if (!response.isSuccess || !response.data) {
-        console.error(response.error);
-        throw Error(response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;
@@ -29,8 +28,7 @@ export const getUsers = async (domain, paging, filterObj, search) => {
     );
 
     if (!response.isSuccess || !response.data) {
-        console.error(response.error);
-        throw Error("Failed to get users: " + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;
@@ -43,8 +41,7 @@ export const updateUser = async (data, domain) => {
     );
 
     if (!response.isSuccess) {
-        // Выбрасываем структурированную ошибку, если запрос не удался
-        throw Error(response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;

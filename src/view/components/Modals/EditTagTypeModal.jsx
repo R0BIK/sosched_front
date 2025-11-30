@@ -4,21 +4,28 @@ import { useState } from "react";
 import InputBox from "../BasicInputs/InputBox.jsx";
 import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx";
 
-export default function EditTagTypeModal({ handleClose, tagType, handleSaveTagType, handleDeleteTagType }) {
-    const [formData, setFormData] = useState({ ...tagType });
+export default function EditTagTypeModal({ handleClose, selected, handleSaveTagType, handleDeleteTagType, validation }) {
+    const [formData, setFormData] = useState({ ...selected.tagType });
+    const { errors, validateField, clearError } = validation;
 
     const handleChange = (key, value) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
+        clearError(key);
     };
 
     const handleSubmit = () => {
         handleSaveTagType(formData);
-        handleClose();
     };
+
+    const onBlur = (key, value) => {
+        validateField(key, value);
+    }
+
+    const title = selected.type === "edit" ? "Редагування типу тегу" : "Створення типу тегу"
 
     return (
         <ModalWrapperTitleSaveDelete
-            title="Редагування тегу"
+            title={title}
             onClose={handleClose}
             onSave={handleSubmit}
             onDelete={() => handleDeleteTagType(tagType.id)}
@@ -30,7 +37,9 @@ export default function EditTagTypeModal({ handleClose, tagType, handleSaveTagTy
                     label="Назва типу тегу"
                     placeholder="Група"
                     value={formData.name}
+                    error={errors["name"] || ""}
                     className="w-full"
+                    onBlur={(e) => onBlur(e.target.id, e.target.value)}
                     onChange={(e) => handleChange("name", e.target.value)}
                 />
             </div>
@@ -42,10 +51,12 @@ EditTagTypeModal.propTypes = {
     handleClose: PropTypes.func.isRequired,
     handleSaveTagType: PropTypes.func.isRequired,
     handleDeleteTagType: PropTypes.func.isRequired,
-    tagType: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        members: PropTypes.string.isRequired,
-        tags: PropTypes.string.isRequired,
+    selected: PropTypes.shape({
+        tagType: PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired
+        }),
+        type: PropTypes.string.isRequired,
     }).isRequired,
+    validation: PropTypes.object
 };

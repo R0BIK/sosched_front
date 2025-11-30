@@ -13,7 +13,7 @@ export const getUsersAndTags = async (domain, limit, search) => {
     );
 
     if (!response.isSuccess || !response.data) {
-        throw Error("Failed to search users/tags: " + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;

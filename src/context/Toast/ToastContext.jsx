@@ -161,7 +161,7 @@ export function ToastProvider({ children }) {
             {portalRoot && createPortal(
                 <div ref={containerRef}
                     className="fixed bottom-0 left-1/2 -translate-x-1/2 w-100
-                                flex flex-col items-center p-4 space-y-4">
+                                flex flex-col items-center p-4 space-y-4 z-[9999]">
                     {toasts.map((toast) => (
                         <ToastNotification
                             key={toast.id}

@@ -6,7 +6,7 @@ export const getTagTypes = async (domain, params) => {
         { params });
 
     if (!response.isSuccess || !response.data) {
-        throw Error("Failed to get event types:" + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;
@@ -16,7 +16,7 @@ export const createTagType = async (data, domain) => {
     const response = await api.post(`${domain}${API_ENDPOINTS.TAG_TYPE}`, data);
 
     if (!response.isSuccess || !response.data) {
-        throw Error("Failed to create tag type:" + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;
@@ -26,8 +26,21 @@ export const deleteTagType = async (id, domain) => {
     const response = await api.delete(`${domain}${API_ENDPOINTS.TAG_TYPE}/${id}`);
 
     if (!response.isSuccess) {
-        throw Error("Failed to delete tag type: " + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data
 };
+
+export const updateTagType = async (id, domain, data) => {
+    const response = await api.patch(
+        `${domain}${API_ENDPOINTS.TAG_TYPE}/${id}`,
+        data
+    );
+
+    if (!response.isSuccess) {
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
+    }
+
+    return response.data;
+}

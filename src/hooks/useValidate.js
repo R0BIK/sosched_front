@@ -1,11 +1,12 @@
 import {useCallback, useState} from "react";
+import {SPECIAL} from "../constants/constants.js";
 
 const REGEX_PATTERNS = {
     // Название/Заголовок: Буквы, цифры, пробелы и пунктуация: -.,_&()
-    Title: /^[\p{L}\p{N}\s\-.,_&()]+$/u, // \p{L}, \p{N} требуют флага 'u' в JS
+    name: /^[\p{L}\p{N}\s\-.,_&()]+$/u, // \p{L}, \p{N} требуют флага 'u' в JS
 
     // Имя/Фамилия: Только буквы, апострофы, дефисы и пробелы.
-    Name: /^\p{L}+(?:[\s'-]\p{L}+)*$/u,
+    firstName: /^\p{L}+(?:[\s'-]\p{L}+)*$/u,
 
     // Адрес: Буквы, цифры, пробелы, '.,#/-()
     Address: /^[\p{L}\p{N}\s'.,#/()\-\s]+$/u,
@@ -14,10 +15,10 @@ const REGEX_PATTERNS = {
     PhoneE164: /^\+[1-9]\d{6,14}$/,
 
     // Домен: Поддомены, дефисы, и окончание на 2+ буквы
-    Domain: /^(?:[\p{L}0-9-]{1,63}\.)+[A-Za-z]{2,}$/u,
+    domain: /^(?:[\p{L}0-9-]{1,63}\.)+[A-Za-z]{2,}$/u,
 
     // Описание: Буквы, цифры, пробелы, .,!?'
-    Description: /^[\p{L}\p{N}\s.,!?'-]*$/u,
+    description: /^[\p{L}\p{N}\s.,!?'-]*$/u,
 };
 
 const ERRORS = {
@@ -27,10 +28,10 @@ const ERRORS = {
     // --- Ошибки, соответствующие REGEX_PATTERNS ---
 
     // Title: /^[\p{L}\p{N}\s\-.,_&()]+$/u
-    Title: "Дозволені лише літери, цифри та символи: -.,_&().",
+    name: "Дозволені лише літери, цифри та символи: -.,_&().",
 
     // Name: /^\p{L}+(?:[\s'-]\p{L}+)*$/u
-    Name: "Некоректний формат імені. Використовуйте лише літери, пробіл, апостроф або дефіс.",
+    firstName: "Некоректний формат імені. Використовуйте лише літери, пробіл, апостроф або дефіс.",
 
     // Address: /^[\p{L}\p{N}\s'.,#/()\-\s]+$/u
     Address: "Адреса містить недозволені символи.",
@@ -45,28 +46,39 @@ const ERRORS = {
     PhoneE164: "Введіть номер у форматі E.164 (+380...), без пробілів.",
 
     // Domain: /^(?:[\p{L}0-9-]{1,63}\.)+[A-Za-z]{2,}$/u
-    Domain: "Введіть коректний домен (наприклад, test.com або sub.test.com).",
+    domain: "Введіть коректний домен (наприклад, test.com або sub.test.com).",
 
     // Description: /^[\p{L}\p{N}\s.,!?'-]*$/u
-    Description: "Опис містить недозволені символи."
+    description: "Опис містить недозволені символи."
 };
 
-export const useValidate = ({initialErrors = {}, formConfig}) => {
-    const [errors, setErrors] = useState(initialErrors);
+const initializeErrors = (formConfig) => {
+    const defaultErrors = {};
 
-    const validateField = useCallback((id, value, required) => {
+    if (!formConfig) { return {} }
+
+    Object.keys(formConfig).forEach(key => {
+        defaultErrors[key] = "";
+    });
+
+    // Объединяем с любыми внешними ошибками (если они были переданы)
+    return { ...defaultErrors };
+};
+
+export const useValidate = (formConfig) => {
+    const [errors, setErrors] = useState(initializeErrors(formConfig));
+
+    const validateField = useCallback((key, value, required) => {
         let error = "";
         let valueTrim = value ? value.trim() : '';
 
-        if (!valueTrim && required) {
-            error[id] = ERRORS.EMPTY;
-        }
+        if (!valueTrim && required)
+            error = ERRORS.EMPTY;
 
-        if (valueTrim && !REGEX_PATTERNS[id]?.test(valueTrim)) {
-            error = ERRORS[id];
-        }
+        else if (valueTrim && !REGEX_PATTERNS[key]?.test(valueTrim))
+            error = ERRORS[key];
 
-        setErrors((prev) => ({ ...prev, [id]: error }));
+        setErrors((prev) => ({ ...prev, [key]: error }));
 
     }, [])
 
@@ -78,14 +90,25 @@ export const useValidate = ({initialErrors = {}, formConfig}) => {
         setErrors(prev => ({ ...prev, [key]: "" }));
     }, [])
 
+    const isValidForm = useCallback(() => {
+        return (Object.values(errors).every(error => error === SPECIAL.STRING.EMPTY))
+    }, [errors])
+
     const validateForm = useCallback((formData) => {
-        for (const {key, value} of formData) {
-            if (formConfig[key]) {
-                validateField(key, value, formConfig[key]);
+        // console.log(formData);
+        for (const [key, value] of Object.entries(formData)) {
+
+
+            if (!formConfig || formConfig[key] === undefined || formConfig[key] === null) {
+                continue; // Пропускаем поле, которое не должно валидироваться
             }
+
+            console.log(key, value);
+
+            validateField(key, value, formConfig[key]);
         }
 
     }, [validateField, formConfig]);
 
-    return { errors, validateField, validateForm, addExternalError, clearError };
+    return { errors, validateField, validateForm, addExternalError, clearError, isValidForm };
 }

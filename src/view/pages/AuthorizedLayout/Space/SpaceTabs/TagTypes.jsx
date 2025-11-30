@@ -16,16 +16,22 @@ import { useCreateTagType } from "../../../../../tanStackQueries/tagType/useCrea
 import { useGetTagTypes } from "../../../../../tanStackQueries/tagType/useGetTagTypes.js";
 import { useDeleteTagType } from "../../../../../tanStackQueries/tagType/useDeleteTagType.js";
 import {useValidate} from "../../../../../hooks/useValidate.js";
+import {getChangedFields} from "../../../../../utils/getChangedFields.js";
+import {getValidationErrorsMap} from "../../../../../services/errorMaping/errorMapping.js";
+import {useToast} from "../../../../../context/Toast/useToast.js";
 
 const FORM_CONFIG = {
-    Name: true
+    name: true
 }
 
 export default function TagTypes() {
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
 
-    const { errors, validateField, addExternalError, clearError } = useValidate(FORM_CONFIG)
+    const validation = useValidate(FORM_CONFIG);
+    const { showToast } = useToast();
+
+    const {  validateForm, addExternalError, isValidForm } = validation;
 
     // --- Queries ---
     const tagTypesQuery = useGetTagTypes(domain);
@@ -37,7 +43,7 @@ export default function TagTypes() {
     const loadMoreRef = useInfiniteScroll(tagTypesQuery);
 
     // --- Mutations ---
-    const { mutate: createTagTypeMutate } = useCreateTagType(domain);
+    const { mutateAsync: createTagTypeMutate } = useCreateTagType(domain);
     const { mutate: deleteTagTypeMutate } = useDeleteTagType(domain);
 
     // --- State ---
@@ -45,13 +51,21 @@ export default function TagTypes() {
     useLockBodyScroll(!!selectedTagType);
 
     // --- Handlers ---
-    const handleEdit = (tagType) => setSelectedTagType(tagType);
+    const handleEdit = (tagType) => {
+        setSelectedTagType({
+            tagType: tagType,
+            type: "edit",
+        });
+    }
     const handleClose = () => setSelectedTagType(null);
 
     const handleCreate = () => {
         setSelectedTagType({
-            id: null,
-            name: ""
+            tagType: {
+                id: null,
+                name: ""
+            },
+            type: "create"
         });
     };
 
@@ -59,11 +73,38 @@ export default function TagTypes() {
         deleteTagTypeMutate(id);
     }, [deleteTagTypeMutate]);
 
-    const handleSaveTagType = useCallback((updatedTagType) => {
-        if (!updatedTagType.name.trim()) return;
+    const handleSaveTagType = useCallback(async (updatedTagType, type) => {
+        validateForm(updatedTagType);
+        if (!isValidForm()) return;
 
-        createTagTypeMutate(updatedTagType);
-    }, [createTagTypeMutate]);
+        try {
+            if (type === "edit") {
+                const changedData = getChangedFields(selectedTagType?.tagType, updatedTagType);
+
+                if (changedData.length > 0) {
+                    await createTagTypeMutate({
+                        id: updatedTagType.id,
+                        data: changedData
+                    });
+                    showToast("Успішно!", "Ви змінили тип тегу.")
+                }
+            } else {
+                await createTagTypeMutate(updatedTagType);
+                showToast("Успішно!", "Ви створили тип тегу.")
+            }
+            handleClose();
+        } catch (error) {
+            const errors = getValidationErrorsMap(error);
+            for (const [key, value] of Object.entries(errors)) {
+                if (key === "default") {
+                    showToast("Помилка!", "Сталась невідома помилка, спробуйте пізніше.", "error")
+                    continue;
+                }
+                addExternalError(key, value);
+            }
+        }
+
+    }, [addExternalError, createTagTypeMutate, isValidForm, selectedTagType?.tagType, showToast, validateForm]);
 
     return (
         <div className="pt-5 px-9 w-full h-full flex flex-col overflow-auto">
@@ -149,9 +190,10 @@ export default function TagTypes() {
             {selectedTagType && (
                 <EditTagTypeModal
                     handleClose={handleClose}
-                    tagType={selectedTagType}
+                    selected={selectedTagType}
                     handleSaveTagType={handleSaveTagType}
                     handleDeleteTagType={handleDeleteTagType}
+                    validation={validation}
                 />
             )}
         </div>

@@ -1,5 +1,5 @@
 const Email = {
-    id: "Email",
+    id: "email",
     name: 'email',
     placeholder: "Email",
     type: 'email',
@@ -8,7 +8,7 @@ const Email = {
 }
 
 const Password = {
-    id: "Password",
+    id: "password",
     name: 'password',
     placeholder: "Пароль",
     type: 'password',
@@ -17,7 +17,7 @@ const Password = {
 }
 
 const FirstName = {
-    id: "FirstName",
+    id: "firstName",
     name: 'firstName',
     placeholder: 'Імʼя',
     type: 'text',
@@ -26,7 +26,7 @@ const FirstName = {
 }
 
 const LastName = {
-    id: "LastName",
+    id: "lastName",
     name: 'lastName',
     placeholder: 'Прізвище',
     type: 'text',
@@ -35,10 +35,10 @@ const LastName = {
 }
 
 export const ERRORS = {
-    FirstName: "Не правильний формат імʼя.",
-    LastName: "Не правильний формат прізвища.",
-    Email: "Не правильний формат E-mail.",
-    Password: "Не правильний формат паролю.",
+    firstName: "Не правильний формат імʼя.",
+    lastName: "Не правильний формат прізвища.",
+    email: "Не правильний формат E-mail.",
+    password: "Пароль не правильний.",
 }
 
 export const LOGIN_FIELDS = [Email, Password];

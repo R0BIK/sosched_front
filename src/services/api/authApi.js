@@ -57,7 +57,7 @@ export const logout = async () => {
     const response = await api.post(API_ENDPOINTS.AUTH.LOGOUT);
 
     if (!response.isSuccess) {
-        throw Error("Failed to log out: " + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;

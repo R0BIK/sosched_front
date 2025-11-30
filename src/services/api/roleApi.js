@@ -5,7 +5,7 @@ export const getRoles = async (domain, params) => {
     const response = await api.get(`${domain}${API_ENDPOINTS.ROLE}`, { params });
 
     if (!response.isSuccess || !response.data) {
-        throw Error("Failed to get roles: " + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;
@@ -18,7 +18,7 @@ export const updateRoleUsers = async (roleId, data, domain) => {
     );
 
     if (!response.isSuccess || !response.data) {
-        throw Error("Failed to update tag users: " + response.error);
+        throw {message: response.error.message, code: response.error.code, details: response.error.details}
     }
 
     return response.data;

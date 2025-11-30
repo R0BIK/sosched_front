@@ -3,20 +3,20 @@ const FRIENDLY_ERROR_MESSAGES = {
     // Коды для авторизации/пользователей
     INVALID_LOGIN: {
         MESSAGE: "Користувача з таким Email не існує.",
-        FIELD_KEY: "Email"
+        FIELD_KEY: "email"
     },
     EMAIL_ALREADY_EXISTS: {
         MESSAGE: "Користувач з таким Email вже існує.",
-        FIELD_KEY: "Email"
+        FIELD_KEY: "email"
     },
     INVALID_PASSWORD:
     {
         MESSAGE: "Пароль не правильний.",
-        FIELD_KEY: "Password"
+        FIELD_KEY: "password"
     },
     PASSWORD_CONTAINS_INVALID_CHARACTERS: {
         MESSAGE: "Не правильний формат паролю.",
-        FIELD_KEY: "Password"
+        FIELD_KEY: "password"
     },
     INVALID_NAME: {
         MESSAGE: "Не правильний формат.",
@@ -28,7 +28,8 @@ const FRIENDLY_ERROR_MESSAGES = {
     UNAUTHORIZED: "Ви не авторизовані. Будь ласка, увійдіть.",
 
     DEFAULT: {
-        MESSAGE: "Невідома помилка. Будь ласка, спробуйте пізніше."
+        MESSAGE: "Невідома помилка. Будь ласка, спробуйте пізніше.",
+        FIELD_KEY: "default"
     },
 };
 
@@ -65,14 +66,14 @@ export const getValidationErrorsMap = (error) => {
         // Перебираем ошибки, привязанные к полям
         Object.entries(details.errors).forEach(([fieldKey, messages]) => {
             if (messages && messages.length > 0) {
-                // const fieldName = API_FIELD_KEYS[fieldKey];
+                const fieldName = fieldKey.toLowerCase();
 
                 // Проверяем, существует ли сообщение с кодом ошибки в нашем словаре.
                 // NOTE: errors[field][0] может быть либо кодом ошибки, либо просто сообщением.
                 const rawErrorMessage = messages[0];
 
                 // Если сообщение соответствует ключу в FRIENDLY_ERROR_MESSAGES, используем его.
-                errorsMap[fieldKey] = FRIENDLY_ERROR_MESSAGES[rawErrorMessage].MESSAGE || rawErrorMessage;
+                errorsMap[fieldName] = FRIENDLY_ERROR_MESSAGES[rawErrorMessage].MESSAGE || rawErrorMessage;
             }
         });
 
