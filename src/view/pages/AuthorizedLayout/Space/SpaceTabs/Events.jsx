@@ -189,7 +189,7 @@ export default function Events() {
                                         day: '2-digit'
                                     })}
                                 </div>
-                                <div className="w-1/5 text-center text-sm whitespace-nowrap text-second-text flex justify-center">
+                                <div className="w-1/5 text-center text-sm text-second-text flex justify-center">
                                     {event.creator.fullName}
                                 </div>
                                 <div className="w-1/40 text-right flex justify-end min-w-8">

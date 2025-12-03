@@ -22,6 +22,11 @@ const FRIENDLY_ERROR_MESSAGES = {
         MESSAGE: "Не правильний формат.",
     },
 
+    SPACE_IS_PRIVATE : {
+        MESSAGE: "Простір не знайдено",
+        FIELD_KEY: "domain"
+    },
+
     NO_INTERNET: {
         MESSAGE: "Відсутнє з'єднання з мережею."
     },
@@ -88,8 +93,10 @@ export const getValidationErrorsMap = (error) => {
     if (!errorCode && error?.message) {
         errorCode = extractErrorCode(error.message);
     }
-    const finalCode = errorCode || 'DEFAULT';
 
-    errorsMap[FRIENDLY_ERROR_MESSAGES[finalCode].FIELD_KEY] = FRIENDLY_ERROR_MESSAGES[finalCode].MESSAGE || FRIENDLY_ERROR_MESSAGES.DEFAULT.MESSAGE;
+    const finalCode = errorCode || 'DEFAULT';
+    const errorFieldKey = FRIENDLY_ERROR_MESSAGES[finalCode]?.FIELD_KEY || FRIENDLY_ERROR_MESSAGES.DEFAULT.FIELD_KEY;
+
+    errorsMap[errorFieldKey] = FRIENDLY_ERROR_MESSAGES[finalCode]?.MESSAGE || FRIENDLY_ERROR_MESSAGES.DEFAULT.MESSAGE;
     return errorsMap;
 };

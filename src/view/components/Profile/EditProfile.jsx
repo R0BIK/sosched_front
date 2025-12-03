@@ -7,11 +7,13 @@ import {useUpdateUser} from "../../../tanStackQueries/user/useUpdateUser.js";
 import {getChangedFields} from "../../../utils/getChangedFields.js";
 import {useToast} from "../../../context/Toast/useToast.js";
 import {useSpace} from "../../../context/SpaceContext.jsx";
+import {useNavigate} from "react-router-dom";
 
 export default function EditProfile({user}) {
     const [formData, setFormData] = useState({...user});
     const { activeSpace } = useSpace();
     const { showToast } = useToast();
+    const navigate = useNavigate();
 
     const domain = activeSpace?.domain;
 
@@ -32,6 +34,7 @@ export default function EditProfile({user}) {
             await updateUser(data);
 
             showToast("Успішно!", 'Дані профілю оновлено.');
+            navigate("/profile")
 
         } catch (error) {
             console.error("Error updating space:", error);

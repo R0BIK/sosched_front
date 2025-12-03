@@ -10,6 +10,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
 import {Lineicons} from "@lineiconshq/react-lineicons";
 import { ShiftRightOutlined } from "@lineiconshq/free-icons";
+import { UserMinusIcon, ArrowRightEndOnRectangleIcon } from "@heroicons/react/24/outline/index.js";
+
 import {useNavigate} from "react-router-dom";
 
 export default function Members() {
@@ -82,7 +84,10 @@ export default function Members() {
                     <div className="w-1/4 text-center">
                         Теги
                     </div>
-                    <div className="w-1/20">
+                    <div className="w-1/40">
+                        <span className="sr-only">visit</span>
+                    </div>
+                    <div className="w-1/40">
                         <span className="sr-only">visit</span>
                     </div>
                 </div>
@@ -121,13 +126,22 @@ export default function Members() {
                                     </div>
                                 </div>
 
-                                <div className="w-1/20 text-right">
+                                <div className="w-1/40 text-right shrink-0 min-w-6">
+                                    <button
+                                        onClick={() => onVisitClick(user.id)}
+                                        title="Видалити"
+                                        className="p-1 inline-block text-second-text hover:text-accent"
+                                    >
+                                        <UserMinusIcon className="size-5" />
+                                    </button>
+                                </div>
+                                <div className="w-1/40 text-right shrink-0 min-w-6">
                                     <button
                                         onClick={() => onVisitClick(user.id)}
                                         title="Перейти"
                                         className="p-1 inline-block text-second-text hover:text-accent"
                                     >
-                                        <Lineicons icon={ShiftRightOutlined} size={24} />
+                                        <ArrowRightEndOnRectangleIcon className="size-5" />
                                     </button>
                                 </div>
                             </div>

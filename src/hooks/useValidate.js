@@ -55,7 +55,7 @@ const ERRORS = {
 const initializeErrors = (formConfig) => {
     const defaultErrors = {};
 
-    if (!formConfig) { return {} }
+    if (!formConfig) { return defaultErrors }
 
     Object.keys(formConfig).forEach(key => {
         defaultErrors[key] = "";

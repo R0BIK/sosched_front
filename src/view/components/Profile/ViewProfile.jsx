@@ -3,6 +3,12 @@ import DisplayBox from "../BasicInputs/DisplayBox.jsx";
 import PropTypes from "prop-types";
 
 export default function ViewProfile({user, isOwner, handleLogout, handleEditProfile, handleViewCalendar}) {
+    const birthday = user?.birthday ? new Date(user?.birthday).toLocaleDateString('uk-UA', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    }) : "–";
+
     return (
         <div className="flex flex-col gap-20">
             <div className="flex flex-col gap-6">
@@ -36,11 +42,7 @@ export default function ViewProfile({user, isOwner, handleLogout, handleEditProf
                                 id="birthday"
                                 label="Дата народження"
                                 className="w-80"
-                                value={new Date(user?.birthday).toLocaleDateString('uk-UA', {
-                                    year: 'numeric',
-                                    month: '2-digit',
-                                    day: '2-digit'
-                                })}
+                                value={birthday}
                             />
                         </div>
                         <div className="flex gap-10">
@@ -113,4 +115,5 @@ ViewProfile.propTypes = {
     isOwner: PropTypes.bool,
     handleLogout: PropTypes.func,
     handleEditProfile: PropTypes.func,
+    handleViewCalendar: PropTypes.func,
 }

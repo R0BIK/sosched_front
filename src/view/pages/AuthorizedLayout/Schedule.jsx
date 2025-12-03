@@ -43,8 +43,6 @@ export default function Schedule() {
     const { data: events } = useGetEvents(dataForEvents, userId, domain);
     const { data: userData } = useGetUserById(userId, domain);
 
-    console.log(userData)
-
     // -------------------------------
     // 🧾 Drawer + Form State
     // -------------------------------

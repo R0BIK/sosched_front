@@ -118,7 +118,7 @@ export default function TagTypes() {
             }
         }
 
-    }, [addExternalError, createTagTypeMutate, selectedTagType?.tagType, showToast, updateTagTypeMutate, validateForm]);
+    }, [addExternalError, createTagTypeMutate, handleClose, selectedTagType?.tagType, showToast, updateTagTypeMutate, validateForm]);
 
     return (
         <div className="pt-5 px-9 w-full h-full flex flex-col overflow-auto">

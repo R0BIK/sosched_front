@@ -6,6 +6,9 @@ import InputBox from "../BasicInputs/InputBox.jsx";
 import ToggleWithDescription from "../BasicInputs/ToggleWithDescription.jsx";
 import {useJoinSpace} from "../../../tanStackQueries/space/useJoinSpace.js";
 import {useSpace} from "../../../context/SpaceContext.jsx";
+import {useValidate} from "../../../hooks/useValidate.js";
+import {useToast} from "../../../context/Toast/useToast.js";
+import {getValidationErrorsMap} from "../../../services/errorMaping/errorMapping.js";
 
 const TABS = {
     ADD: "addSpace",
@@ -13,6 +16,11 @@ const TABS = {
 }
 
 export default function AddSpaceModal({handleClose}) {
+    const validation = useValidate();
+    const { showToast } = useToast();
+
+    const { errors, validateForm, addExternalError, resetErrors } = validation;
+
     const [active, setActive] = useState(TABS.ADD);
     const [addForm, setAddForm] = useState({domain: "", password: ""});
     const [createForm, setCreateForm] = useState({name: "", domain: "", isPublic: false, password: ""});
@@ -25,8 +33,26 @@ export default function AddSpaceModal({handleClose}) {
     const { createSpace } = useSpace();
 
     const handleJoin = async () => {
-        await joinSpace(addForm);
-        handleClose();
+        const isValid = validateForm(addForm);
+        if (!isValid) return;
+
+        try {
+            await joinSpace(addForm);
+            showToast("Успішно!", "Ви приєдналися до простору.")
+            handleClose();
+        } catch (error) {
+            const errors = getValidationErrorsMap(error);
+            for (const [key, value] of Object.entries(errors)) {
+                if (key === "default") {
+                    showToast("Помилка!", "Сталась невідома помилка, спробуйте пізніше.", "error")
+                    continue;
+                }
+                addExternalError(key, value);
+            }
+        }
+
+        // await joinSpace(addForm);
+        // handleClose();
     }
 
     const handleCreate = async () => {
@@ -48,19 +74,21 @@ export default function AddSpaceModal({handleClose}) {
                     {active === TABS.ADD && (
                         <div className="flex w-full items-center justify-center gap-10 h-full">
                             <InputBox
-                                id="Domain"
+                                id="domain"
                                 name="domain"
                                 label="Домен"
+                                error={errors["domain"] || ""}
                                 placeholder="example.com"
                                 value={addForm.domain}
                                 className="w-full"
                                 onChange={(e) => handleChange("domain", e.target.value, setAddForm)}
                             />
                             <InputBox
-                                id="Password"
+                                id="password"
                                 name="password"
                                 label="Пароль"
                                 placeholder=""
+                                error={errors["password"] || ""}
                                 value={addForm.password}
                                 className="w-full"
                                 onChange={(e) => handleChange("password", e.target.value, setAddForm)}
