@@ -3,10 +3,15 @@ export function generateFilterString(filterObj) {
 
     return Object.entries(filterObj)
         .map(([key, values]) => {
-            if (!values || values.length === 0) return null;
+            if (values === null || values === undefined) return null;
 
-            // Строка: key=value1,value2,value3
-            return `${key}=${values.join(",")}`;
+            if (Array.isArray(values)) {
+                if (values.length === 0) return null; // Пустой массив пропускаем
+                return `${key}=${values.join(",")}`;
+            }
+
+            if (values === "") return null; // Пустую строку тоже можно пропустить
+            return `${key}=${values}`;
         })
         .filter(Boolean)
         .join(";");

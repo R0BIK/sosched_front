@@ -1,8 +1,18 @@
 import { api } from "../../api/apiClient.ts";
 import { API_ENDPOINTS } from "../../constants/constants.js";
+import {generateFilterString} from "../filterStringGenerator/generateFilterString.js";
 
-export const getTags = async (domain, params) => {
-    const response = await api.get(`${domain}${API_ENDPOINTS.TAG}`, { params });
+export const getTags = async (domain, params, filterObj) => {
+    const filterString = generateFilterString(filterObj);
+
+    const response = await api.get(`${domain}${API_ENDPOINTS.TAG}`,
+        {
+            params: {
+                ...params,
+                filter: filterString || undefined,
+            }
+        }
+    );
 
     if (!response.isSuccess || !response.data) {
         throw {message: response.error.message, code: response.error.code, details: response.error.details}

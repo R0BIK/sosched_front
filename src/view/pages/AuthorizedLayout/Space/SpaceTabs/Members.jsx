@@ -12,6 +12,7 @@ import { UserMinusIcon, ArrowRightEndOnRectangleIcon } from "@heroicons/react/24
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import {useNavigate} from "react-router-dom";
+import UserFilter from "../../../../components/UserFilter.jsx";
 
 export default function Members() {
     const [search, setSearch] = useState("");
@@ -20,7 +21,11 @@ export default function Members() {
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
 
-    const userQuery = useGetUsers(domain, null, search);
+    const [filterObj, setFilterObj] = useState({});
+
+    // console.log("filterObj", filterObj);
+
+    const userQuery = useGetUsers(domain, filterObj, search);
 
     const users = userQuery.data?.pages.flatMap((p) => p.items) ?? [];
     const totalCount = userQuery.data?.pages?.[0]?.totalCount ?? 0;
@@ -31,6 +36,10 @@ export default function Members() {
 
     const onVisitClick = (id) => {
         navigate(`/profile/${id}`);
+    }
+
+    const handleFilterChange = (obj) => {
+        setFilterObj(prev => ({ ...prev, ...obj }));
     }
 
     return (
@@ -80,86 +89,94 @@ export default function Members() {
                 </form>
             </div>
 
-            <div className="mt-2 w-full flex flex-col min-h-0">
-                <div className="flex w-full border-b border-gray-300 py-3.5 text-sm font-semibold text-main-black z-10">
-                    <div className="w-9/20 text-left">
-                        Учасники – {totalCount}
+            <div className="flex flex-1 h-full">
+                <div className="mt-2 w-full flex flex-col min-h-0">
+                    <div className="flex w-full border-b border-gray-300 py-3.5 text-sm font-semibold text-main-black z-10">
+                        <div className="w-9/20 text-left">
+                            Учасники – {totalCount}
+                        </div>
+                        <div className="w-1/4 text-center">
+                            Роль
+                        </div>
+                        <div className="w-1/4 text-center">
+                            Теги
+                        </div>
+                        <div className="w-1/40">
+                            <span className="sr-only">visit</span>
+                        </div>
+                        <div className="w-1/40">
+                            <span className="sr-only">visit</span>
+                        </div>
                     </div>
-                    <div className="w-1/4 text-center">
-                        Роль
-                    </div>
-                    <div className="w-1/4 text-center">
-                        Теги
-                    </div>
-                    <div className="w-1/40">
-                        <span className="sr-only">visit</span>
-                    </div>
-                    <div className="w-1/40">
-                        <span className="sr-only">visit</span>
-                    </div>
-                </div>
 
-                <div className="w-full overflow-y-auto h-full min-h-40 no-scrollbar">
-                    <div className="flex flex-col divide-y divide-gray-200">
-                        {users?.map((user) => (
-                            <div key={user.id} className="flex w-full items-center py-3">
-                                <div className="w-9/20 text-sm break-all text-main-black">
-                                    <div className="flex justify-start items-center gap-4">
-                                        <div className="shrink-0 min-h-10 min-w-10 rounded-full bg-red-400" />
-                                        <div className="flex flex-col justify-center">
-                                            <p className="text-main-black text-lg leading-tight">
-                                                {user.lastName} {user.firstName} {user.patronymic}
-                                            </p>
-                                            <a href={`mailto:${user.email}`} className="hover:underline text-second-text text-xs mt-0.5">
-                                                {user.email}
-                                            </a>
+                    <div className="w-full overflow-y-auto h-full min-h-40 no-scrollbar">
+                        <div className="flex flex-col divide-y divide-gray-200">
+                            {users?.map((user) => (
+                                <div key={user.id} className="flex w-full items-center py-3">
+                                    <div className="w-9/20 text-sm break-all text-main-black">
+                                        <div className="flex justify-start items-center gap-4">
+                                            <div className="shrink-0 min-h-10 min-w-10 rounded-full bg-red-400" />
+                                            <div className="flex flex-col justify-center">
+                                                <p className="text-main-black text-lg leading-tight">
+                                                    {user.lastName} {user.firstName} {user.patronymic}
+                                                </p>
+                                                <a href={`mailto:${user.email}`} className="hover:underline text-second-text text-xs mt-0.5">
+                                                    {user.email}
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="w-1/4 text-sm break-all text-second-text text-center px-2">
-                                    {user.role}
-                                </div>
+                                    <div className="w-1/4 text-sm break-all text-second-text text-center px-2">
+                                        {user.role}
+                                    </div>
 
-                                <div className="w-1/4 text-center text-sm px-2">
-                                    <div className="flex gap-2 justify-center flex-wrap">
-                                        {Array.isArray(user.userTags) && user.userTags.length > 0 ? (
-                                            user.userTags.map((tag) => (
-                                                <Badge key={tag.id} text={tag.shortName} color={tag.color} />
-                                            ))
-                                        ) : (
-                                            <span className="text-gray-400">—</span>
-                                        )}
+                                    <div className="w-1/4 text-center text-sm px-2">
+                                        <div className="flex gap-2 justify-center flex-wrap">
+                                            {Array.isArray(user.userTags) && user.userTags.length > 0 ? (
+                                                user.userTags.map((tag) => (
+                                                    <Badge key={tag.id} text={tag.shortName} color={tag.color} />
+                                                ))
+                                            ) : (
+                                                <span className="text-gray-400">—</span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="w-1/40 text-right shrink-0 min-w-6">
+                                        <button
+                                            onClick={() => onVisitClick(user.id)}
+                                            title="Видалити"
+                                            className="p-1 inline-block text-second-text hover:text-accent"
+                                        >
+                                            <UserMinusIcon className="size-5" />
+                                        </button>
+                                    </div>
+                                    <div className="w-1/40 text-right shrink-0 min-w-6">
+                                        <button
+                                            onClick={() => onVisitClick(user.id)}
+                                            title="Перейти"
+                                            className="p-1 inline-block text-second-text hover:text-accent"
+                                        >
+                                            <ArrowRightEndOnRectangleIcon className="size-5" />
+                                        </button>
                                     </div>
                                 </div>
+                            ))}
+                        </div>
 
-                                <div className="w-1/40 text-right shrink-0 min-w-6">
-                                    <button
-                                        onClick={() => onVisitClick(user.id)}
-                                        title="Видалити"
-                                        className="p-1 inline-block text-second-text hover:text-accent"
-                                    >
-                                        <UserMinusIcon className="size-5" />
-                                    </button>
-                                </div>
-                                <div className="w-1/40 text-right shrink-0 min-w-6">
-                                    <button
-                                        onClick={() => onVisitClick(user.id)}
-                                        title="Перейти"
-                                        className="p-1 inline-block text-second-text hover:text-accent"
-                                    >
-                                        <ArrowRightEndOnRectangleIcon className="size-5" />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                        {/* 4. Невидимый элемент-триггер в самом низу списка */}
+                        <InfiniteScrollTrigger
+                            ref={loadMoreRef}
+                            isFetching={userQuery.isFetchingNextPage}
+                        />
                     </div>
-
-                    {/* 4. Невидимый элемент-триггер в самом низу списка */}
-                    <InfiniteScrollTrigger
-                        ref={loadMoreRef}
-                        isFetching={userQuery.isFetchingNextPage}
-                    />
+                </div>
+                <div className="flex flex-col h-full w-60 pt-13 pl-4 shrink-0">
+                    <div className="w-full border rounded-md border-gray-200 overflow-hidden">
+                        <UserFilter onChange={handleFilterChange} />
+                    </div>
+                    <div className="h-4" />
                 </div>
             </div>
         </div>

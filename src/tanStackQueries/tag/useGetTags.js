@@ -1,18 +1,22 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getTags } from "../../services/api/tagApi.js";
 
-export function useGetTags(domain) {
+export function useGetTags(domain, filterObj) {
     return useInfiniteQuery({
-        queryKey: ["tags", domain],
+        queryKey: ["tags", domain, filterObj],
 
         queryFn: async ({ pageParam = 1 }) => {
-            const response = await getTags(domain, {
-                page: pageParam,
-                pageSize: 10, // можно подстроить под нужный размер страницы
-            });
+            const response = await getTags(
+                domain,
+                {
+                    page: pageParam,
+                    pageSize: 10, // можно подстроить под нужный размер страницы
+                },
+                filterObj
+            );
 
             return {
-                ...response // ожидается: items, page, pageSize, totalPages, hasNextPage
+                ...response
             };
         },
 
