@@ -3,7 +3,11 @@ import {SPECIAL} from "../constants/constants.js";
 
 const REGEX_PATTERNS = {
     // Название/Заголовок: Буквы, цифры, пробелы и пунктуация: -.,_&()
-    name: /^[\p{L}\p{N}\s\-.,_&()]+$/u, // \p{L}, \p{N} требуют флага 'u' в JS
+    name: /^[\p{L}\p{N}\s\-.,_&()]+$/u,
+
+    shortName: /^[\p{L}\p{N}\s\-.,_&()]+$/u,
+
+    location: /^[\p{L}\p{N}\s.,!?'-]*$/u,
 
     // Имя/Фамилия: Только буквы, апострофы, дефисы и пробелы.
     firstName: /^\p{L}+(?:[\s'-]\p{L}+)*$/u,
@@ -19,6 +23,8 @@ const REGEX_PATTERNS = {
 
     // Описание: Буквы, цифры, пробелы, .,!?'
     description: /^[\p{L}\p{N}\s.,!?'-]*$/u,
+
+    DEFAULT: /^[\p{L}\p{N}\s.,!?'-]*$/u,
 };
 
 const ERRORS = {
@@ -29,6 +35,8 @@ const ERRORS = {
 
     // Title: /^[\p{L}\p{N}\s\-.,_&()]+$/u
     name: "Дозволені лише літери, цифри та символи: -.,_&().",
+
+    shortName: "Дозволені лише літери, цифри та символи: -.,_&().",
 
     // Name: /^\p{L}+(?:[\s'-]\p{L}+)*$/u
     firstName: "Некоректний формат імені. Використовуйте лише літери, пробіл, апостроф або дефіс.",
@@ -58,7 +66,7 @@ const initializeErrors = (formConfig) => {
     if (!formConfig) { return defaultErrors }
 
     Object.keys(formConfig).forEach(key => {
-        defaultErrors[key] = "";
+        defaultErrors[key] = SPECIAL.STRING.EMPTY;
     });
 
     return { ...defaultErrors };
@@ -68,14 +76,15 @@ export const useValidate = (formConfig) => {
     const [errors, setErrors] = useState(initializeErrors(formConfig));
 
     const validateField = useCallback((key, value, required) => {
-        let error = "";
-        let valueTrim = value ? value.trim() : '';
+        let error = SPECIAL.STRING.EMPTY;
+        let valueTrim = value ? value.trim() : SPECIAL.STRING.EMPTY;
+        const regexPattern = REGEX_PATTERNS[key] || REGEX_PATTERNS.DEFAULT;
 
         if (!valueTrim && required)
             error = ERRORS.EMPTY;
 
-        else if (valueTrim && !REGEX_PATTERNS[key]?.test(valueTrim))
-            error = ERRORS[key];
+        else if (valueTrim && !regexPattern.test(valueTrim))
+            error = ERRORS[key] || SPECIAL.STRING.EMPTY;
 
         setErrors((prev) => ({ ...prev, [key]: error }));
 
@@ -110,7 +119,7 @@ export const useValidate = (formConfig) => {
             }
 
             const error = validateField(key, value, formConfig[key]);
-            if (!error.trim() === "") isValid = false;
+            if (error.trim() !== "") isValid = false;
         }
 
         return isValid;

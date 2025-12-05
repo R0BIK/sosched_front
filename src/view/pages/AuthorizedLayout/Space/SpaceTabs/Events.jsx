@@ -15,10 +15,28 @@ import {useUpdateEventUsers} from "../../../../../tanStackQueries/event/useUpdat
 import {useUpdateEvent} from "../../../../../tanStackQueries/event/useUpdateEvent.js";
 import {useDeleteEvent} from "../../../../../tanStackQueries/event/useDeleteEvent.js";
 import {useCreateEvent} from "../../../../../tanStackQueries/event/useCreateEvent.js";
+import {useValidate} from "../../../../../hooks/useValidate.js";
+import {useToast} from "../../../../../context/Toast/useToast.js";
+import {getValidationErrorsMap} from "../../../../../services/errorMaping/errorMapping.js";
+
+const FORM_CONFIG = {
+    name: true,
+    location: false,
+    description: false,
+    coordinatorId: false,
+    dateStart: true,
+    dateEnd: true,
+    color: true,
+}
 
 export default function Events() {
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
+
+    const validation = useValidate(FORM_CONFIG);
+    const { showToast } = useToast();
+
+    const { validateForm, addExternalError, resetErrors } = validation;
 
     // --- Queries ---
     const eventQuery = useGetPagedEvents(null, domain);
@@ -39,7 +57,10 @@ export default function Events() {
 
     // --- Handlers ---
     const handleEdit = (event) => setSelectedEvent({ event: event, type: "edit" });
-    const handleClose = () => setSelectedEvent(null);
+    const handleClose = useCallback(() => {
+        setSelectedEvent(null);
+        resetErrors();
+    }, [resetErrors])
     //
     const handleCreate = () => {
         setSelectedEvent({
@@ -69,11 +90,8 @@ export default function Events() {
     };
 
     const handleSaveEvent = useCallback(async (updatedEvent, usersToAdd, type, repeatRule, isRepeating) => {
-        if (!updatedEvent.name.trim() ||
-            !updatedEvent.color.trim() ||
-            !updatedEvent.dateStart ||
-            !updatedEvent.dateEnd
-        ) return;
+        const isValid = validateForm(updatedEvent);
+        if (!isValid) return;
 
         const request = {
             name: updatedEvent.name,
@@ -85,48 +103,65 @@ export default function Events() {
             color: updatedEvent.color,
         }
 
-        if (type === "edit") {
-            const currentEvent = selectedEvent.event;
+        try {
+            if (type === "edit") {
+                const currentEvent = selectedEvent.event;
 
-            const currentObj = {
-                name: currentEvent.name,
-                location: currentEvent.location,
-                description: currentEvent.description,
-                coordinatorId: currentEvent.coordinator?.id,
-                dateStart: currentEvent.dateStart,
-                dateEnd: currentEvent.dateEnd,
-                color: currentEvent.color,
-            }
+                const currentObj = {
+                    name: currentEvent.name,
+                    location: currentEvent.location,
+                    description: currentEvent.description,
+                    coordinatorId: currentEvent.coordinator?.id,
+                    dateStart: currentEvent.dateStart,
+                    dateEnd: currentEvent.dateEnd,
+                    color: currentEvent.color,
+                }
 
-            const changedData = getChangedFields(currentObj, request);
+                const changedData = getChangedFields(currentObj, request);
 
-            if (changedData) {
-                await updateEventMutate({
-                    id: updatedEvent.id,
-                    data: changedData
+                if (changedData) {
+                    await updateEventMutate({
+                        id: updatedEvent.id,
+                        data: changedData
+                    });
+
+                    showToast("Успішно!", "Ви оновили подію.")
+                }
+
+                updateEventUsersMutate({
+                    eventId: updatedEvent.id,
+                    data: usersToAdd
                 });
+            } else {
+                if (!isRepeating) repeatRule = null;
+
+                const created = await createEventMutate({...request, repeatInfo: repeatRule, confirmed: true});
+
+                showToast("Успішно!", "Ви створили подію.")
+
+                if (isUpdateDataEmpty(usersToAdd)){
+                    const data = {...usersToAdd, eventIds: created.eventIds};
+
+                    updateEventUsersMutate({
+                        eventId: created.id,
+                        data: data
+                    });
+                }
             }
 
-            updateEventUsersMutate({
-                eventId: updatedEvent.id,
-                data: usersToAdd
-            });
-        } else {
-            if (!isRepeating) repeatRule = null;
-
-            const created = await createEventMutate({...request, repeatInfo: repeatRule, confirmed: true});
-
-            if (isUpdateDataEmpty(usersToAdd)) return;
-
-            const data = {...usersToAdd, eventIds: created.eventIds};
-
-            updateEventUsersMutate({
-                eventId: created.id,
-                data: data
-            });
+            handleClose();
+        } catch (error) {
+            const errors = getValidationErrorsMap(error);
+            for (const [key, value] of Object.entries(errors)) {
+                if (key === "default") {
+                    showToast("Помилка!", "Сталась невідома помилка, спробуйте пізніше.", "error")
+                    continue;
+                }
+                addExternalError(key, value);
+            }
         }
 
-    }, [createEventMutate, updateEventUsersMutate, updateEventMutate, selectedEvent?.event]);
+    }, [validateForm, handleClose, selectedEvent?.event, updateEventUsersMutate, updateEventMutate, showToast, createEventMutate, addExternalError]);
 
     // console.log(events);
 
@@ -227,6 +262,7 @@ export default function Events() {
                     selected={selectedEvent}
                     handleSaveEvent={handleSaveEvent}
                     handleDeleteEvent={handleDeleteEvent}
+                    validation={validation}
                 />
             )}
         </div>

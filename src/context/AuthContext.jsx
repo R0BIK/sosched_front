@@ -31,8 +31,7 @@ export function AuthProvider({ children }) {
     });
 
     const registerMutation = useMutation({
-        mutationFn: register, // Используем импортированную функцию
-        // Здесь можно добавить onSuccess, если после регистрации должен быть автоматический вход
+        mutationFn: register,
         // onSuccess: (data) => queryClient.setQueryData(["user"], data),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ["user"] }),
 
@@ -42,11 +41,10 @@ export function AuthProvider({ children }) {
     });
 
     const logoutMutation = useMutation({
-        mutationFn: logout, // Используем импортированную функцию
+        mutationFn: logout,
         onSuccess: () => {
-            // После успешного выхода очищаем данные пользователя в кэше
             queryClient.setQueryData(["user"], null);
-            // queryClient.removeQueries(["user"]); // Альтернатива: удалить ключ
+            // queryClient.removeQueries(["user"]);
         },
     });
 

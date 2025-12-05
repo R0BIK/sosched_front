@@ -59,10 +59,10 @@ export default function TagTypes() {
             type: "edit",
         });
     }
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setSelectedTagType(null);
         resetErrors();
-    }
+    }, [resetErrors])
 
     const handleCreate = () => {
         setSelectedTagType({
@@ -94,11 +94,10 @@ export default function TagTypes() {
         try {
             if (type === "edit") {
                 const changedData = getChangedFields(selectedTagType?.tagType, updatedTagType);
-
-                if (changedData.length > 0) {
+                if (changedData.isChanged) {
                     await updateTagTypeMutate({
                         id: updatedTagType.id,
-                        data: changedData
+                        data: changedData.data
                     });
                     showToast("Успішно!", "Ви змінили тип тегу.")
                 }

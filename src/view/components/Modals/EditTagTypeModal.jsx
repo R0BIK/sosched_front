@@ -23,6 +23,7 @@ export default function EditTagTypeModal({ handleClose, selected, handleSaveTagT
 
     const onDelete = () => {
         handleDeleteTagType(selected.tagType.id)
+        handleClose();
     }
 
     const isEdit = selected.type === "edit";
@@ -43,7 +44,7 @@ export default function EditTagTypeModal({ handleClose, selected, handleSaveTagT
                     label="Назва типу тегу"
                     placeholder="Група"
                     value={formData.name}
-                    error={errors["name"] || ""}
+                    error={errors?.name || ""}
                     className="w-full"
                     onBlur={(e) => onBlur(e.target.id, e.target.value)}
                     onChange={(e) => handleChange("name", e.target.value)}

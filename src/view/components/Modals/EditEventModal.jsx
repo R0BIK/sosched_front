@@ -20,7 +20,7 @@ import {createDate, getDateAndTime} from "../../../utils/dateConverter.js";
 import Checkbox from "../BasicInputs/CheckBox.jsx";
 import RepeatSelector from "../Schedule/RepeatSelector.jsx";
 
-export default function EditEventModal({ handleClose, selected, handleSaveEvent, handleDeleteTag }) {
+export default function EditEventModal({ handleClose, selected, handleSaveEvent, handleDeleteTag, validation }) {
     const [formData, setFormData] = useState(() => {
         const initialEvent = selected?.event;
 
@@ -59,6 +59,7 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
             dateEnd: dateEndObject,
         };
     });
+    const { errors, validateField, clearError } = validation;
     const [search, setSearch] = useState("");
     const [coordinator, setCoordinator] = useState(formData.coordinator ? formData.coordinator.fullName : "");
     const [entityToChange, setEntityToChange] = useState([]);
@@ -150,6 +151,10 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
         });
     };
 
+    const onBlur = (key, value) => {
+        validateField(key, value);
+    }
+
     const handleMarkForRemoval = (userId) => {
         setEntityToChange((prev) => {
             if (prev.some(e => e.id === userId && e.type === "remove")) return prev;
@@ -159,7 +164,6 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
     };
 
     const handleChange = useCallback((key, value) => {
-        // Используем функциональный setState
         setFormData((prev) => {
             // 1. Создаем промежуточное состояние с обновленным ключом (например, date: "2025-11-21")
             const newState = { ...prev, [key]: value };
@@ -189,7 +193,8 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
             // Если изменено не-временное поле ('name', 'color'), просто возвращаем newState
             return newState;
         });
-    }, []);
+        clearError(key);
+    }, [clearError]);
 
     const buildUpdateUsersData = () => {
         const usersToAdd = entityToChange
@@ -215,7 +220,6 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
         const updateUsersData = buildUpdateUsersData();
 
         await handleSaveEvent(formData, updateUsersData, selected.type, repeatRule, isRepeating);
-        handleClose();
     };
 
     const handleRemove = (id, type) => {
@@ -247,9 +251,11 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                         name="name"
                         label="Назва"
                         placeholder="Зустріч"
+                        error={errors?.name || ""}
                         value={formData.name}
                         className="w-full"
                         onChange={(e) => handleChange("name", e.target.value)}
+                        onBlur={(e) => onBlur(e.target.id, e.target.value)}
                     />
                     <DateBox
                         className="w-full"
@@ -258,6 +264,7 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                         label="Дата"
                         value={getDateAndTime(formData.dateStart).date}
                         onChange={(e) => handleChange("date", e.target.value)}
+                        onBlur={(e) => onBlur(e.target.id, e.target.value)}
                     />
                     <TimeBox
                         className="w-full"
@@ -266,6 +273,7 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                         label="Початок"
                         value={getDateAndTime(formData.dateStart).time}
                         onChange={(e) => handleChange("timeStart", e.target.value)}
+                        onBlur={(e) => onBlur(e.target.id, e.target.value)}
                     />
                     <TimeBox
                         className="w-full"
@@ -274,6 +282,7 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                         label="Кінець"
                         value={getDateAndTime(formData.dateEnd).time}
                         onChange={(e) => handleChange("timeEnd", e.target.value)}
+                        onBlur={(e) => onBlur(e.target.id, e.target.value)}
                     />
                 </div>
 
@@ -335,6 +344,8 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                                 </div>
                             )}
                         </div>
+                        <p className="block text-xs ml-1 text-red-false h-4">
+                        </p>
                     </div>
                     <InputBox
                         id="location"
@@ -342,8 +353,10 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                         label="Місце проведення"
                         placeholder="Парк"
                         value={formData.location}
+                        error={errors?.location || ""}
                         className="w-full"
                         onChange={(e) => handleChange("location", e.target.value)}
+                        onBlur={(e) => onBlur(e.target.id, e.target.value)}
                     />
                     <InputBox
                         id="description"
@@ -351,8 +364,10 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                         label="Опис"
                         placeholder="Візьміть з собою їжу"
                         value={formData.description}
+                        error={errors?.description || ""}
                         className="w-full"
                         onChange={(e) => handleChange("description", e.target.value)}
+                        onBlur={(e) => onBlur(e.target.id, e.target.value)}
                     />
                 </div>
             </div>
@@ -532,6 +547,7 @@ EditEventModal.propTypes = {
         }),
         type: PropTypes.string.isRequired,
     }).isRequired,
+    validation: PropTypes.object.isRequired
 };
 
 function getFullName(user) {

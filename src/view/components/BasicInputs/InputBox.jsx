@@ -22,7 +22,7 @@ export default function InputBox({ id, type="text", name, label, placeholder, cl
                     className={"disabled:cursor-not-allowed disabled:bg-gray-200 block w-full rounded-md bg-main-white px-3 py-1.5 text-main-black outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-accent-on-hover text-sm/6" + " " + inputClassName }
                 />
             </div>
-            <p className="block text-xs ml-1 text-red-false">
+            <p className="block text-xs ml-1 text-red-false h-4">
                 {error}
             </p>
         </div>

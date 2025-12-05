@@ -113,6 +113,8 @@ export default function SelectMenuLazy({
                     {/*)}*/}
                 </ListboxOptions>
             </div>
+            <p className="mt-2 block text-xs ml-1 text-red-false h-4">
+            </p>
         </Listbox>
     );
 }

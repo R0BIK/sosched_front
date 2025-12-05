@@ -21,10 +21,26 @@ import { useUpdateTagUsers } from "../../../../../tanStackQueries/tag/useUpdateT
 import { useUpdateTag } from "../../../../../tanStackQueries/tag/useUpdateTag.js";
 
 import { SPECIAL } from "../../../../../constants/constants.js";
+import {useValidate} from "../../../../../hooks/useValidate.js";
+import {useToast} from "../../../../../context/Toast/useToast.js";
+import {getChangedFields} from "../../../../../utils/getChangedFields.js";
+import {getValidationErrorsMap} from "../../../../../services/errorMaping/errorMapping.js";
+
+const FORM_CONFIG = {
+    name: true,
+    shortName: true,
+    tagType: true,
+    color: true,
+}
 
 export default function Tags() {
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
+
+    const validation = useValidate(FORM_CONFIG);
+    const { showToast } = useToast();
+
+    const { validateForm, addExternalError, resetErrors } = validation;
 
     // --- Queries ---
     const tagTypesQuery = useGetTagTypes(domain);
@@ -47,7 +63,10 @@ export default function Tags() {
 
     // --- Handlers ---
     const handleEdit = (tag) => setSelectedTag({ tag: tag, type: "edit" });
-    const handleClose = () => setSelectedTag(null);
+    const handleClose = useCallback(() => {
+        setSelectedTag(null);
+        resetErrors();
+    }, [resetErrors])
 
     const handleCreate = () => {
         setSelectedTag({
@@ -74,36 +93,48 @@ export default function Tags() {
     };
 
     const handleSaveTag = useCallback(async (updatedTag, updatedUsers, type) => {
-        if (!updatedTag.name.trim() || !updatedTag.shortName.trim()) return;
+        const isValid = validateForm(updatedTag);
+        if (!isValid) return;
 
-        if (type === "edit") {
-            const changedData = getChangedFields(selectedTag.tag, updatedTag);
+        try {
+            if (type === "edit") {
+                const changedData = getChangedFields(selectedTag?.tag, updatedTag);
 
-            if (changedData.length > 0) {
-                await updateTagMutate({
-                    id: updatedTag.id, // Исправил ключ на tagId (как в хуке)
-                    data: changedData  // Исправил ключ на tagData (как в хуке)
-                });
+                if (changedData.isChanged) {
+                    await updateTagMutate({
+                        id: updatedTag.id,
+                        data: changedData.data
+                    });
+
+                    showToast("Успішно!", "Ви змінили тег.")
+                }
+
+
+            } else {
+                const created = await createTagMutate(updatedTag);
+                showToast("Успішно!", "Ви створили тег.")
+
+                if (!isUpdateDataEmpty(updatedUsers)) {
+                    updateUsersMutate({
+                        tagId: created.id,
+                        data: updatedUsers
+                    });
+                }
             }
-
-            if (isUpdateDataEmpty(updatedUsers)) return;
-
-            updateUsersMutate({
-                tagId: updatedTag.id,
-                data: updatedUsers
-            });
-        } else {
-            const created = await createTagMutate(updatedTag);
-
-            if (isUpdateDataEmpty(updatedUsers)) return;
-
-            updateUsersMutate({
-                tagId: created.id,
-                data: updatedUsers
-            });
+            handleClose();
+        } catch (error) {
+            const errors = getValidationErrorsMap(error);
+            for (const [key, value] of Object.entries(errors)) {
+                if (key === "default") {
+                    showToast("Помилка!", "Сталась невідома помилка, спробуйте пізніше.", "error")
+                    continue;
+                }
+                addExternalError(key, value);
+            }
         }
 
-    }, [createTagMutate, updateUsersMutate, updateTagMutate, selectedTag?.tag]);
+
+    }, [validateForm, handleClose, selectedTag?.tag, updateUsersMutate, updateTagMutate, showToast, createTagMutate, addExternalError]);
 
     return (
         <div className="pt-5 px-9 w-full h-full flex flex-col overflow-auto">
@@ -199,20 +230,9 @@ export default function Tags() {
                     handleSaveTag={handleSaveTag}
                     handleDeleteTag={handleDeleteTag}
                     tagTypesQuery={tagTypesQuery}
+                    validation={validation}
                 />
             )}
         </div>
     );
-}
-
-function getChangedFields(original, updated) {
-    const changed = {};
-
-    Object.keys(updated).forEach(key => {
-        if (updated[key] !== original[key]) {
-            changed[key] = updated[key];
-        }
-    });
-
-    return changed;
 }

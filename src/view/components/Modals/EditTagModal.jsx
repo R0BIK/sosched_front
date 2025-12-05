@@ -16,12 +16,13 @@ import {useGetUsers} from "../../../tanStackQueries/user/useGetUsers.js";
 import { useInfiniteScroll } from "../InfinityScroll/useInfiniteScroll.js";
 import InfiniteScrollTrigger from "../InfinityScroll/InfiniteScrollTrigger.jsx";
 
-export default function EditTagModal({ handleClose, selected, handleSaveTag, handleDeleteTag, tagTypesQuery }) {
+export default function EditTagModal({ handleClose, selected, handleSaveTag, handleDeleteTag, tagTypesQuery, validation }) {
     const [formData, setFormData] = useState({ ...selected?.tag });
     const [search, setSearch] = useState("");
     const [entityToChange, setEntityToChange] = useState([]);
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const filterObj = { tag: [selected.tag.shortName] }
+    const { errors, validateField, clearError } = validation;
 
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
@@ -65,7 +66,8 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
 
     const handleChange = useCallback((key, value) => {
         setFormData((prev) => ({ ...prev, [key]: value }));
-    }, [setFormData]);
+        clearError(key);
+    }, [clearError]);
 
     const buildUpdateUsersData = () => {
         const usersToAdd = entityToChange
@@ -91,7 +93,6 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
         const updateUsersData = buildUpdateUsersData();
 
         await handleSaveTag(formData, updateUsersData, selected.type);
-        handleClose();
     };
 
     const handleRemove = (id, type) => {
@@ -100,6 +101,15 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
         ));
     };
 
+    const onBlur = (key, value) => {
+        validateField(key, value);
+    }
+
+    const onDelete = () => {
+        handleDeleteTag(selected.tag.id);
+        handleClose();
+    }
+
     const tagColorOptions = useMemo(() => {
         return Object.entries(SPECIAL.TAG_COLORS).map(([key, value]) => ({
             id: key,
@@ -107,6 +117,7 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
         }));
     }, []);
 
+    const isEdit = selected.type === "edit";
     const title = selected.type === "edit" ? "Редагування тегу" : "Створення тегу"
 
     return (
@@ -114,7 +125,7 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
             title={title}
             onClose={handleClose}
             onSave={handleSubmit}
-            onDelete={() => { handleDeleteTag(selected.tag.id); handleClose() }}
+            onDelete={isEdit ? onDelete : null}
         >
             <div className="flex w-full mt-5 gap-20">
                 <InputBox
@@ -122,17 +133,21 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
                     name="name"
                     label="Назва тегу"
                     placeholder="Студент"
+                    error={errors?.name || ""}
                     value={formData.name}
                     className="w-full"
+                    onBlur={(e) => onBlur(e.target.id, e.target.value)}
                     onChange={(e) => handleChange("name", e.target.value)}
                 />
                 <InputBox
                     id="shortName"
                     name="shortName"
+                    error={errors?.shortName || ""}
                     label="Назва бейджу"
                     placeholder="Студент"
                     value={formData.shortName}
                     className="w-full"
+                    onBlur={(e) => onBlur(e.target.id, e.target.value)}
                     onChange={(e) => handleChange("shortName", e.target.value)}
                 />
             </div>
@@ -303,4 +318,5 @@ EditTagModal.propTypes = {
         type: PropTypes.string.isRequired,
     }).isRequired,
     tagTypesQuery: PropTypes.object.isRequired,
+    validation: PropTypes.object.isRequired,
 };

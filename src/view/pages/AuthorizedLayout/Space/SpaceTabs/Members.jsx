@@ -8,9 +8,8 @@ import Badge from "../../../../components/Badges/Badge.jsx";
 
 import SearchIcon from '@mui/icons-material/Search';
 import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
-import {Lineicons} from "@lineiconshq/react-lineicons";
-import { ShiftRightOutlined } from "@lineiconshq/free-icons";
 import { UserMinusIcon, ArrowRightEndOnRectangleIcon } from "@heroicons/react/24/outline/index.js";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import {useNavigate} from "react-router-dom";
 
@@ -54,17 +53,25 @@ export default function Members() {
                         <input
                             name="search"
                             type="search"
+                            autoComplete="off"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Пошук" required
-                            className="no-browser-clear block w-full p-3 pl-10 pr-8 bg-main-white border border-gray-200 text-sm rounded-xl focus:border-second-text shadow-xs placeholder:text-body outline-none"
+                            className="no-browser-clear block w-full p-3 pl-10 pr-13 bg-main-white border border-gray-200 text-sm rounded-xl focus:border-second-text shadow-xs placeholder:text-body outline-none"
                         />
+                        <button
+                            type="button"
+                            onClick={handleClear}
+                            className="absolute inset-y-0 end-0 flex pt-[1px] items-center pe-2 text-second-text hover:text-main-black"
+                        >
+                            <FilterAltIcon />
+                        </button>
 
                         {search && (
                             <button
                                 type="button"
                                 onClick={handleClear}
-                                className="absolute inset-y-0 end-0 flex pt-[1px] items-center pe-3 text-second-text hover:text-accent"
+                                className="absolute inset-y-0 end-0 flex pt-[1px] items-center me-9 text-second-text hover:text-main-black"
                             >
                                 ✕
                             </button>
