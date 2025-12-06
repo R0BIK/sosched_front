@@ -9,7 +9,7 @@ import HoverButton from "../HoverButton.jsx";
 import {REGISTER_FIELDS} from "../../../../constants/authConstants.js";
 import {useAuth} from "../../../../context/AuthContext.jsx";
 import {SPECIAL} from "../../../../constants/constants.js";
-import { getValidationErrorsMap } from "../../../../services/errorMaping/errorMapping.js";
+import { getValidationErrorsMap } from "../../../../utils/errorMapping.js";
 import {useSpace} from "../../../../context/SpaceContext.jsx";
 import {login} from "../../../../services/api/authApi.js";
 

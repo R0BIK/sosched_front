@@ -1,6 +1,6 @@
 import { API_ENDPOINTS } from '../../constants/constants.js';
 import {api} from "../../api/apiClient.ts";
-import {generateFilterString} from "../filterStringGenerator/generateFilterString.js";
+import {generateFilterString} from "../../utils/generateFilterString.js";
 
 export const getUserById = async (userId, domain) => {
     const response = await api.get(`${domain}${API_ENDPOINTS.USER}/${userId}`);

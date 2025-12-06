@@ -4,6 +4,7 @@ import {useSpace} from "../../context/SpaceContext.jsx";
 import TagsColumn from "./TagsColumn.jsx";
 import {useState} from "react";
 import PropTypes from "prop-types";
+import InfiniteScrollTrigger from "./InfinityScroll/InfiniteScrollTrigger.jsx";
 
 export default function UserFilter({ onChange }) {
     const { activeSpace } = useSpace();
@@ -36,15 +37,21 @@ export default function UserFilter({ onChange }) {
     };
 
     return (
-        <div className="w-full h-full flex flex-col gap-6 overflow-y-auto p-4">
-            {tagTypes?.map((type) => (
-                <div key={type.id} className="flex flex-col">
-                    <p className="mb-2">
-                        {type?.name}
-                    </p>
-                    <TagsColumn tagTypeId={type.id} selectedTags={selectedTags} onToggle={handleToggleTag} />
-                </div>
-            ))}
+        <div className="w-full h-full flex flex-col overflow-y-auto px-4">
+            <div className="flex flex-col w-full divide-y divide-gray-200">
+                {tagTypes?.map((type) => (
+                    <div key={type.id} className="flex flex-col pb-4 py-2">
+                        <p className="mb-2">
+                            {type?.name}
+                        </p>
+                        <TagsColumn tagTypeId={type.id} selectedTags={selectedTags} onToggle={handleToggleTag} />
+                    </div>
+                ))}
+            </div>
+            <InfiniteScrollTrigger
+                ref={loadMoreRef}
+                isFetching={tagTypesQuery.isFetchingNextPage}
+            />
         </div>
     )
 }

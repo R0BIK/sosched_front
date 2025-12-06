@@ -17,15 +17,16 @@ import {useDeleteEvent} from "../../../../../tanStackQueries/event/useDeleteEven
 import {useCreateEvent} from "../../../../../tanStackQueries/event/useCreateEvent.js";
 import {useValidate} from "../../../../../hooks/useValidate.js";
 import {useToast} from "../../../../../context/Toast/useToast.js";
-import {getValidationErrorsMap} from "../../../../../services/errorMaping/errorMapping.js";
+import {getValidationErrorsMap} from "../../../../../utils/errorMapping.js";
 
 const FORM_CONFIG = {
     name: true,
     location: false,
     description: false,
     coordinatorId: false,
-    dateStart: true,
-    dateEnd: true,
+    date: true,
+    timeStart: true,
+    timeEnd: true,
     color: true,
 }
 

@@ -71,11 +71,10 @@ export const getValidationErrorsMap = (error) => {
         // Перебираем ошибки, привязанные к полям
         Object.entries(details.errors).forEach(([fieldKey, messages]) => {
             if (messages && messages.length > 0) {
-                const fieldName = fieldKey.toLowerCase();
-
-                // Проверяем, существует ли сообщение с кодом ошибки в нашем словаре.
-                // NOTE: errors[field][0] может быть либо кодом ошибки, либо просто сообщением.
                 const rawErrorMessage = messages[0];
+
+                const fieldName = FRIENDLY_ERROR_MESSAGES[rawErrorMessage]?.FIELD_KEY || fieldKey.toLowerCase();
+
 
                 // Если сообщение соответствует ключу в FRIENDLY_ERROR_MESSAGES, используем его.
                 errorsMap[fieldName] = FRIENDLY_ERROR_MESSAGES[rawErrorMessage]?.MESSAGE || rawErrorMessage;

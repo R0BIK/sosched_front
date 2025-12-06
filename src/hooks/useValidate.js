@@ -31,8 +31,6 @@ const ERRORS = {
     // Общая ошибка для пустых полей (если используется в валидаторе)
     EMPTY: "Поле не може бути пустим.",
 
-    // --- Ошибки, соответствующие REGEX_PATTERNS ---
-
     // Title: /^[\p{L}\p{N}\s\-.,_&()]+$/u
     name: "Дозволені лише літери, цифри та символи: -.,_&().",
 
@@ -77,7 +75,9 @@ export const useValidate = (formConfig) => {
 
     const validateField = useCallback((key, value, required) => {
         let error = SPECIAL.STRING.EMPTY;
-        let valueTrim = value ? value.trim() : SPECIAL.STRING.EMPTY;
+        let valueTrim = (typeof value === 'string')
+            ? value.trim()
+            : (value ?? SPECIAL.STRING.EMPTY);
         const regexPattern = REGEX_PATTERNS[key] || REGEX_PATTERNS.DEFAULT;
 
         if (!valueTrim && required)
@@ -128,3 +128,7 @@ export const useValidate = (formConfig) => {
 
     return { errors, validateField, validateForm, addExternalError, clearError, resetErrors };
 }
+
+// const additionalTest = (key) => {
+//
+// }

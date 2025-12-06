@@ -16,14 +16,13 @@ import UserFilter from "../../../../components/UserFilter.jsx";
 
 export default function Members() {
     const [search, setSearch] = useState("");
+    const [filterObj, setFilterObj] = useState({});
+    const [isFilter, setIsFilter] = useState(false);
+
     const navigate = useNavigate();
 
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
-
-    const [filterObj, setFilterObj] = useState({});
-
-    // console.log("filterObj", filterObj);
 
     const userQuery = useGetUsers(domain, filterObj, search);
 
@@ -33,6 +32,11 @@ export default function Members() {
     const loadMoreRef = useInfiniteScroll(userQuery);
 
     const handleClear = () => setSearch("");
+
+    const handleFilter = () => {
+        setIsFilter(!isFilter);
+        setFilterObj({});
+    }
 
     const onVisitClick = (id) => {
         navigate(`/profile/${id}`);
@@ -70,7 +74,7 @@ export default function Members() {
                         />
                         <button
                             type="button"
-                            onClick={handleClear}
+                            onClick={handleFilter}
                             className="absolute inset-y-0 end-0 flex pt-[1px] items-center pe-2 text-second-text hover:text-main-black"
                         >
                             <FilterAltIcon />
@@ -101,10 +105,10 @@ export default function Members() {
                         <div className="w-1/4 text-center">
                             Теги
                         </div>
-                        <div className="w-1/40">
+                        <div className="w-1/40 shrink-0 min-w-6">
                             <span className="sr-only">visit</span>
                         </div>
-                        <div className="w-1/40">
+                        <div className="w-1/40 shrink-0 min-w-6">
                             <span className="sr-only">visit</span>
                         </div>
                     </div>
@@ -112,10 +116,10 @@ export default function Members() {
                     <div className="w-full overflow-y-auto h-full min-h-40 no-scrollbar">
                         <div className="flex flex-col divide-y divide-gray-200">
                             {users?.map((user) => (
-                                <div key={user.id} className="flex w-full items-center py-3">
+                                <div key={user.id} className="flex w-full items-center py-3 overflow-hidden">
                                     <div className="w-9/20 text-sm break-all text-main-black">
                                         <div className="flex justify-start items-center gap-4">
-                                            <div className="shrink-0 min-h-10 min-w-10 rounded-full bg-red-400" />
+                                            <div className="shrink-0 min-h-10 min-w-10 rounded-full bg-gray-300" />
                                             <div className="flex flex-col justify-center">
                                                 <p className="text-main-black text-lg leading-tight">
                                                     {user.lastName} {user.firstName} {user.patronymic}
@@ -165,19 +169,22 @@ export default function Members() {
                             ))}
                         </div>
 
-                        {/* 4. Невидимый элемент-триггер в самом низу списка */}
                         <InfiniteScrollTrigger
                             ref={loadMoreRef}
                             isFetching={userQuery.isFetchingNextPage}
                         />
                     </div>
                 </div>
-                <div className="flex flex-col h-full w-60 pt-13 pl-4 shrink-0">
-                    <div className="w-full border rounded-md border-gray-200 overflow-hidden">
-                        <UserFilter onChange={handleFilterChange} />
+                {isFilter && (
+                    <div className="flex flex-col h-full w-60 pt-13 pl-4 shrink-0">
+                        <div className="flex flex-col min-h-0 w-full border rounded-md border-gray-200">
+                            <p className="mx-4 mt-4 pb-2 font-bold text-lg border-b border-gray-200">Фільтр</p>
+
+                            <UserFilter onChange={handleFilterChange} />
+                        </div>
+                        <div className="h-4" />
                     </div>
-                    <div className="h-4" />
-                </div>
+                )}
             </div>
         </div>
     );

@@ -8,7 +8,7 @@ import {useJoinSpace} from "../../../tanStackQueries/space/useJoinSpace.js";
 import {useSpace} from "../../../context/SpaceContext.jsx";
 import {useValidate} from "../../../hooks/useValidate.js";
 import {useToast} from "../../../context/Toast/useToast.js";
-import {getValidationErrorsMap} from "../../../services/errorMaping/errorMapping.js";
+import {getValidationErrorsMap} from "../../../utils/errorMapping.js";
 
 const TABS = {
     ADD: "addSpace",

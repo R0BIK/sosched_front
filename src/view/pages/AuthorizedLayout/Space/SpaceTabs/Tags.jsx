@@ -24,7 +24,7 @@ import { SPECIAL } from "../../../../../constants/constants.js";
 import {useValidate} from "../../../../../hooks/useValidate.js";
 import {useToast} from "../../../../../context/Toast/useToast.js";
 import {getChangedFields} from "../../../../../utils/getChangedFields.js";
-import {getValidationErrorsMap} from "../../../../../services/errorMaping/errorMapping.js";
+import {getValidationErrorsMap} from "../../../../../utils/errorMapping.js";
 
 const FORM_CONFIG = {
     name: true,

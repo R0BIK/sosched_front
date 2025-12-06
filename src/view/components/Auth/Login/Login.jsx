@@ -11,7 +11,7 @@ import {useAuth} from "../../../../context/AuthContext.jsx";
 import {SPECIAL} from "../../../../constants/constants.js";
 import {
     getValidationErrorsMap
-} from "../../../../services/errorMaping/errorMapping.js";
+} from "../../../../utils/errorMapping.js";
 
 export default function LoginForm() {
     const navigate = useNavigate();

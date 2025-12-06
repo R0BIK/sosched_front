@@ -17,7 +17,7 @@ import { useGetTagTypes } from "../../../../../tanStackQueries/tagType/useGetTag
 import { useDeleteTagType } from "../../../../../tanStackQueries/tagType/useDeleteTagType.js";
 import {useValidate} from "../../../../../hooks/useValidate.js";
 import {getChangedFields} from "../../../../../utils/getChangedFields.js";
-import {getValidationErrorsMap} from "../../../../../services/errorMaping/errorMapping.js";
+import {getValidationErrorsMap} from "../../../../../utils/errorMapping.js";
 import {useToast} from "../../../../../context/Toast/useToast.js";
 import {useUpdateTagType} from "../../../../../tanStackQueries/tagType/useUpdateTagType.js";
 

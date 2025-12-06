@@ -1,6 +1,6 @@
 import { api } from "../../api/apiClient.ts";
 import { API_ENDPOINTS } from "../../constants/constants.js";
-import {generateFilterString} from "../filterStringGenerator/generateFilterString.js";
+import {generateFilterString} from "../../utils/generateFilterString.js";
 
 export const getTags = async (domain, params, filterObj) => {
     const filterString = generateFilterString(filterObj);
