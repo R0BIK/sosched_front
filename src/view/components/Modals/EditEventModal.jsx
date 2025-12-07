@@ -262,6 +262,7 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                         id="date"
                         name="date"
                         label="Дата"
+                        error={errors?.date || ""}
                         value={getDateAndTime(formData.dateStart).date}
                         onChange={(e) => handleChange("date", e.target.value)}
                         onBlur={(e) => onBlur(e.target.id, e.target.value)}
@@ -300,7 +301,7 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                         <label className="block font-semibold ml-1 text-main-black">
                             Організатор
                         </label>
-                        <div className="w-full mt-2 relative">
+                        <div className="w-full my-2 relative">
                             <div className="absolute text-second-text inset-y-0 start-0 flex items-center ps-2 pointer-events-none">
                                 <SearchIcon fontSize="small" />
                             </div>

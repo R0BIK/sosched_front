@@ -45,8 +45,8 @@ export default function RepeatSelector({ repeatType, repeatNumber, repeatEnd, on
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4">
-                <p className="font-noto pt-1">Кожен</p>
+            <div className="flex gap-4">
+                <p className="font-noto pt-4">Кожен</p>
                 <div>
                     <SelectMenu
                         array={numbers}
@@ -61,14 +61,14 @@ export default function RepeatSelector({ repeatType, repeatNumber, repeatEnd, on
                         onChange={handlePeriodChange}
                     />
                 </div>
-                <p className="font-noto pt-1">До</p>
+                <p className="font-noto pt-4">До</p>
                 <DateBox
                     id="repeatEnd"
                     name="repeatEnd"
                     value={repeatEnd || ""}
                     onChange={handleRepeatEndChange}
                 />
-                <p className="font-noto pt-1">включно</p>
+                <p className="font-noto pt-4">включно</p>
             </div>
 
             <div className="flex items-center gap-4">

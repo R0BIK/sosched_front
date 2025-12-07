@@ -73,7 +73,7 @@ const initializeErrors = (formConfig) => {
 export const useValidate = (formConfig) => {
     const [errors, setErrors] = useState(initializeErrors(formConfig));
 
-    const validateField = useCallback((key, value, required) => {
+    const validateField = useCallback((key, value, required, formData) => {
         let error = SPECIAL.STRING.EMPTY;
         let valueTrim = (typeof value === 'string')
             ? value.trim()
@@ -85,6 +85,9 @@ export const useValidate = (formConfig) => {
 
         else if (valueTrim && !regexPattern.test(valueTrim))
             error = ERRORS[key] || SPECIAL.STRING.EMPTY;
+
+        if (error === SPECIAL.STRING.EMPTY)
+            error = additionalTest(key, value, formData);
 
         setErrors((prev) => ({ ...prev, [key]: error }));
 
@@ -118,7 +121,7 @@ export const useValidate = (formConfig) => {
                 continue;
             }
 
-            const error = validateField(key, value, formConfig[key]);
+            const error = validateField(key, value, formConfig[key], formData);
             if (error.trim() !== "") isValid = false;
         }
 
@@ -129,6 +132,32 @@ export const useValidate = (formConfig) => {
     return { errors, validateField, validateForm, addExternalError, clearError, resetErrors };
 }
 
-// const additionalTest = (key) => {
-//
-// }
+const additionalTest = (key, value, formData) => {
+    if (key === "date") {
+        if (!value) return false;
+
+        const inputDate = new Date(value);
+        const today = new Date();
+
+        today.setHours(0, 0, 0, 0);
+        inputDate.setHours(0, 0, 0, 0);
+
+        if (today.getTime() > inputDate.getTime())
+            return "Не можна створити подію в минулому."
+    }
+
+    else if (key === "timeEnd" && formData.timeStart && value) {
+        // Сравнение строк времени ("14:00" > "12:00") работает корректно в JS
+        if (value <= formData.timeStart) {
+            return "Час закінчення має бути пізніше часу початку.";
+        }
+    }
+    // Проверка, если мы редактируем timeStart, а timeEnd уже заполнен
+    else if (key === "timeStart" && formData.timeEnd && value) {
+        if (value >= formData.timeEnd) {
+            return "Час початку має бути раніше часу кінця.";
+        }
+    }
+
+    return "";
+}

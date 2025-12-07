@@ -10,6 +10,7 @@ import {useEffect} from "react";
 export default function SelectMenu({
    array,
    value,
+    error,
    label,
    onChange = null,
    withColor = false
@@ -25,7 +26,7 @@ export default function SelectMenu({
     useEffect(() => {
         if (!onChange || !selectedItem) return;
         onChange(selectedItem.id);
-    }, [selectedItem]);
+    }, [onChange, selectedItem]);
 
 
     const handleOnChange = (id) => {
@@ -81,6 +82,7 @@ export default function SelectMenu({
                 </ListboxOptions>
             </div>
             <p className="mt-2 block text-xs ml-1 text-red-false h-4">
+                {error}
             </p>
         </Listbox>
     )
@@ -92,6 +94,7 @@ SelectMenu.propTypes = {
         name: PropTypes.string.isRequired
     })).isRequired,
     value: PropTypes.any,
+    error: PropTypes.string,
     label: PropTypes.string,
     onChange: PropTypes.func,
     withColor: PropTypes.bool,
