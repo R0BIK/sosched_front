@@ -10,7 +10,7 @@ import {REGISTER_FIELDS} from "../../../../constants/authConstants.js";
 import {useAuth} from "../../../../context/AuthContext.jsx";
 import {SPECIAL} from "../../../../constants/constants.js";
 import { getValidationErrorsMap } from "../../../../utils/errorMapping.js";
-import {useSpace} from "../../../../context/SpaceContext.jsx";
+import {useSpace} from "../../../../context/Space/useSpace.js";
 import {login} from "../../../../services/api/authApi.js";
 
 export default function RegisterForm() {

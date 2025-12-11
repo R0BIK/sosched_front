@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useSpace } from "../../../../../context/SpaceContext.jsx";
+import { useSpace } from "../../../../../context/Space/useSpace.js";
 import { useGetUsers } from "../../../../../tanStackQueries/user/useGetUsers.js";
 import {useInfiniteScroll} from "../../../../components/InfinityScroll/useInfiniteScroll.js";
 

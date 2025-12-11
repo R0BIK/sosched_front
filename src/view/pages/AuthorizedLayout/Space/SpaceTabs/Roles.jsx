@@ -1,7 +1,7 @@
 import {useState, useCallback} from "react";
 import {EditIcon} from "../../../../../img/svg/Icons.jsx";
 import {useLockBodyScroll} from "../../../../../hooks/useLockBodyScroll.js";
-import {useSpace} from "../../../../../context/SpaceContext.jsx";
+import {useSpace} from "../../../../../context/Space/useSpace.js";
 import {useInfiniteScroll} from "../../../../components/InfinityScroll/useInfiniteScroll.js";
 import {useGetRoles} from "../../../../../tanStackQueries/role/useGetRoles.js";
 import EditRoleModal from "../../../../components/Modals/EditRoleModal.jsx";

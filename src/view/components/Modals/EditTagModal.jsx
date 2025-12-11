@@ -8,7 +8,7 @@ import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx";
 import SelectMenuLazy from "../BasicInputs/SelectMenuLazy.jsx";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from '@mui/icons-material/Clear';
-import {useSpace} from "../../../context/SpaceContext.jsx";
+import {useSpace} from "../../../context/Space/useSpace.js";
 import {useSearch} from "../../../tanStackQueries/search/useSearch.jsx";
 import Badge from "../Badges/Badge.jsx";
 import {useGetUsers} from "../../../tanStackQueries/user/useGetUsers.js";

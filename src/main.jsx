@@ -7,7 +7,7 @@ import { router } from './router/router.jsx'
 import "./i18n/i18n.js";
 import './index.css'
 import {AuthProvider} from "./context/AuthContext.jsx";
-import {SpaceProvider} from "./context/SpaceContext.jsx";
+import {SpaceProvider} from "./context/Space/SpaceContext.jsx";
 import {ToastProvider} from "./context/Toast/ToastContext.jsx";
 
 const queryClient = new QueryClient()

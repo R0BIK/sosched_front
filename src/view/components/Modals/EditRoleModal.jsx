@@ -9,7 +9,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import Badge from "../Badges/Badge.jsx";
 import ClearIcon from "@mui/icons-material/Clear";
 import InfiniteScrollTrigger from "../InfinityScroll/InfiniteScrollTrigger.jsx";
-import {useSpace} from "../../../context/SpaceContext.jsx";
+import {useSpace} from "../../../context/Space/useSpace.js";
 import {useSearch} from "../../../tanStackQueries/search/useSearch.jsx";
 import {useInfiniteScroll} from "../InfinityScroll/useInfiniteScroll.js";
 

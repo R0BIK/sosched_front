@@ -1,11 +1,10 @@
 import PropTypes from "prop-types";
-import {createContext, useCallback, useContext, useEffect, useMemo, useState} from "react";
-import { useAuth } from "./AuthContext.jsx";
-import { LOCAL_STORAGE_NAMES } from "../constants/constants.js";
-import {getSpaces, createSpace, updateSpace} from "../services/api/spaceApi.js";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import { useAuth } from "../AuthContext.jsx";
+import { LOCAL_STORAGE_NAMES } from "../../constants/constants.js";
+import {getSpaces, createSpace, updateSpace} from "../../services/api/spaceApi.js";
 import {useMutation, useInfiniteQuery, useQueryClient} from "@tanstack/react-query";
-
-const SpaceContext = createContext();
+import { SpaceContext } from './useSpace.js';
 
 const getSpaceStorageKey = (userId) => {
     return `${LOCAL_STORAGE_NAMES.ACTIVE_SPACE}_${userId}`;
@@ -87,6 +86,7 @@ export function SpaceProvider({ children }) {
         <SpaceContext.Provider
             value={{
                 spaces,
+                domain: activeSpace?.domain,
                 activeSpace,
                 spaceQuery: infiniteQuery,
                 switchSpace,
@@ -104,5 +104,3 @@ export function SpaceProvider({ children }) {
 SpaceProvider.propTypes = {
     children: PropTypes.node,
 };
-
-export const useSpace = () => useContext(SpaceContext);

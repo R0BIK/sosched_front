@@ -1,7 +1,7 @@
 import {useState, useCallback, useEffect, useRef} from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from "prop-types";
-import { ToastContext } from './useToast.js'; // Предполагаемый путь
+import { ToastContext } from './useToast.js';
 import {ToastNotification} from "./ToastNotification.jsx";
 import autoAnimate, {getTransitionSizes} from "@formkit/auto-animate";
 

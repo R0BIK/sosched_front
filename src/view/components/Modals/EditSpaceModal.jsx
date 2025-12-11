@@ -3,7 +3,7 @@ import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx";
 import InputBox from "../BasicInputs/InputBox.jsx";
 import ToggleWithDescription from "../BasicInputs/ToggleWithDescription.jsx";
 import {useCallback, useState} from "react";
-import {useSpace} from "../../../context/SpaceContext.jsx";
+import {useSpace} from "../../../context/Space/useSpace.js";
 import {useToast} from "../../../context/Toast/useToast.js";
 import {getChangedFields} from "../../../utils/getChangedFields.js";
 

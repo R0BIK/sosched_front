@@ -8,7 +8,7 @@ import InfiniteScrollTrigger from "../../../../components/InfinityScroll/Infinit
 
 // Хуки и контекст
 import { useLockBodyScroll } from "../../../../../hooks/useLockBodyScroll.js";
-import { useSpace } from "../../../../../context/SpaceContext.jsx";
+import { useSpace } from "../../../../../context/Space/useSpace.js";
 import { useInfiniteScroll } from "../../../../components/InfinityScroll/useInfiniteScroll.js";
 
 // Запросы

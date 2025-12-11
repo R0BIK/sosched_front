@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ViewProfile from "../../components/Profile/ViewProfile.jsx";
 import {Navigate, useNavigate, useParams} from "react-router-dom";
 import {useAuth} from "../../../context/AuthContext.jsx";
-import {useSpace} from "../../../context/SpaceContext.jsx";
+import {useSpace} from "../../../context/Space/useSpace.js";
 import {useGetUserById} from "../../../tanStackQueries/user/useGetUserById.js";
 import {LoadingIndicator} from "../../components/LoadingIndicator.js";
 

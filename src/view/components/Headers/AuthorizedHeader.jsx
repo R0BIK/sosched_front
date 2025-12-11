@@ -2,7 +2,7 @@ import UnderlinedButton from "../UnderlinedButton.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useAuth} from "../../../context/AuthContext.jsx";
 import {useGetUserById} from "../../../tanStackQueries/user/useGetUserById.js";
-import {useSpace} from "../../../context/SpaceContext.jsx";
+import {useSpace} from "../../../context/Space/useSpace.js";
 
 export default function AuthorizedHeader() {
     const navigate = useNavigate();

@@ -5,7 +5,7 @@ import {useCallback, useState} from "react";
 import InputBox from "../BasicInputs/InputBox.jsx";
 import ToggleWithDescription from "../BasicInputs/ToggleWithDescription.jsx";
 import {useJoinSpace} from "../../../tanStackQueries/space/useJoinSpace.js";
-import {useSpace} from "../../../context/SpaceContext.jsx";
+import {useSpace} from "../../../context/Space/useSpace.js";
 import {useValidate} from "../../../hooks/useValidate.js";
 import {useToast} from "../../../context/Toast/useToast.js";
 import {getValidationErrorsMap} from "../../../utils/errorMapping.js";

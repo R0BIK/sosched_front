@@ -1,6 +1,6 @@
 import {useInfiniteScroll} from "./InfinityScroll/useInfiniteScroll.js";
 import {useGetTags} from "../../tanStackQueries/tag/useGetTags.js";
-import {useSpace} from "../../context/SpaceContext.jsx";
+import {useSpace} from "../../context/Space/useSpace.js";
 import Badge from "../components/Badges/Badge.jsx";
 import PropTypes from "prop-types";
 

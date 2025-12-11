@@ -6,7 +6,7 @@ import {useState} from "react";
 import {useUpdateUser} from "../../../tanStackQueries/user/useUpdateUser.js";
 import {getChangedFields} from "../../../utils/getChangedFields.js";
 import {useToast} from "../../../context/Toast/useToast.js";
-import {useSpace} from "../../../context/SpaceContext.jsx";
+import {useSpace} from "../../../context/Space/useSpace.js";
 import {useNavigate} from "react-router-dom";
 
 export default function EditProfile({user}) {

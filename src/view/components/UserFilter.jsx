@@ -1,6 +1,6 @@
 import {useGetTagTypes} from "../../tanStackQueries/tagType/useGetTagTypes.js";
 import {useInfiniteScroll} from "./InfinityScroll/useInfiniteScroll.js";
-import {useSpace} from "../../context/SpaceContext.jsx";
+import {useSpace} from "../../context/Space/useSpace.js";
 import TagsColumn from "./TagsColumn.jsx";
 import {useState} from "react";
 import PropTypes from "prop-types";

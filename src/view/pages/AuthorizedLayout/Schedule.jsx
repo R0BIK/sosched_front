@@ -2,7 +2,7 @@ import WeekCalendar from "../../components/Schedule/WeekCalendar.jsx";
 import {useCallback, useMemo, useState} from "react";
 import MonthCalendar from "../../components/Schedule/MonthCalendar.jsx";
 import TabComponent from "../../components/TabComponent.jsx";
-import { useSpace } from "../../../context/SpaceContext.jsx";
+import { useSpace } from "../../../context/Space/useSpace.js";
 import { useGetEvents } from "../../../tanStackQueries/event/useGetEvents.js";
 import Drawer from "../../components/Schedule/Drawers/Drawer.jsx";
 import {DRAWER_MODES} from "../../../constants/constants.js";
