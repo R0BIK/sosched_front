@@ -26,7 +26,7 @@ export default function SelectMenu({
     useEffect(() => {
         if (!onChange || !selectedItem) return;
         onChange(selectedItem.id);
-    }, [onChange, selectedItem]);
+    }, [selectedItem]);
 
 
     const handleOnChange = (id) => {

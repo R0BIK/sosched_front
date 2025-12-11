@@ -11,7 +11,7 @@ export function useUpdateEvent(domain) {
             console.log("Event updated successfully:", data);
 
             void queryClient.invalidateQueries({
-                queryKey: ["event", domain]
+                queryKey: ["events", domain]
             });
         },
 

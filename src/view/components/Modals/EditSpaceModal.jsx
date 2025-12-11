@@ -63,13 +63,13 @@ export default function EditSpaceModal({ handleClose }) {
 
                         onChange={(e) => handleChange("domain", e.target.value)}
                     />
-                    <button className="absolute bottom-1 right-1  group-data-disabled:invisible text-second-text flex items-center justify-center p-1 hover:text-main-black"
-                        // onClick={async () => await copyToClipboard("Test")}
-                    >
-                    <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
-                        content_copy
-                    </span>
-                    </button>
+                    {/*<button className="absolute bottom-1 right-1  group-data-disabled:invisible text-second-text flex items-center justify-center p-1 hover:text-main-black"*/}
+                    {/*    // onClick={async () => await copyToClipboard("Test")}*/}
+                    {/*>*/}
+                    {/*<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>*/}
+                    {/*    content_copy*/}
+                    {/*</span>*/}
+                    {/*</button>*/}
                 </div>
             </div>
             <div className="flex gap-20 w-full items-center justify-center">
@@ -91,13 +91,13 @@ export default function EditSpaceModal({ handleClose }) {
                         inputClassName="pr-8"
                         onChange={(e) => handleChange("password", e.target.value)}
                     />
-                    <button className="absolute bottom-1 right-1  group-data-disabled:invisible text-second-text flex items-center justify-center p-1 hover:text-main-black"
-                        // onClick={async () => await copyToClipboard("Test")}
-                    >
-                    <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>
-                        content_copy
-                    </span>
-                    </button>
+                    {/*<button className="absolute bottom-1 right-1  group-data-disabled:invisible text-second-text flex items-center justify-center p-1 hover:text-main-black"*/}
+                    {/*    // onClick={async () => await copyToClipboard("Test")}*/}
+                    {/*>*/}
+                    {/*<span className="material-symbols-outlined" style={{ fontSize: '20px' }}>*/}
+                    {/*    content_copy*/}
+                    {/*</span>*/}
+                    {/*</button>*/}
                 </div>
             </div>
         </ModalWrapperTitleSaveDelete>

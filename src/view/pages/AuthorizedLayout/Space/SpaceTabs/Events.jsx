@@ -18,6 +18,7 @@ import {useCreateEvent} from "../../../../../tanStackQueries/event/useCreateEven
 import {useValidate} from "../../../../../hooks/useValidate.js";
 import {useToast} from "../../../../../context/Toast/useToast.js";
 import {getValidationErrorsMap} from "../../../../../utils/errorMapping.js";
+import {getChangedFields} from "../../../../../utils/getChangedFields.js";
 
 const FORM_CONFIG = {
     name: true,
@@ -94,6 +95,8 @@ export default function Events() {
         const isValid = validateForm(updatedEvent);
         if (!isValid) return;
 
+        console.log(updatedEvent)
+
         const request = {
             name: updatedEvent.name,
             location: updatedEvent.location,
@@ -113,26 +116,31 @@ export default function Events() {
                     location: currentEvent.location,
                     description: currentEvent.description,
                     coordinatorId: currentEvent.coordinator?.id,
-                    dateStart: currentEvent.dateStart,
-                    dateEnd: currentEvent.dateEnd,
+                    dateStart: new Date(currentEvent.dateStart),
+                    dateEnd: new Date(currentEvent.dateEnd),
                     color: currentEvent.color,
                 }
 
                 const changedData = getChangedFields(currentObj, request);
 
-                if (changedData) {
+                if (changedData.isChanged) {
+                    changedData.data.coordinatorId = updatedEvent.coordinator?.id;
+
                     await updateEventMutate({
                         id: updatedEvent.id,
-                        data: changedData
+                        data: changedData.data
                     });
 
                     showToast("Успішно!", "Ви оновили подію.")
                 }
 
-                updateEventUsersMutate({
-                    eventId: updatedEvent.id,
-                    data: usersToAdd
-                });
+                if (!isUpdateDataEmpty(usersToAdd)){
+
+                    updateEventUsersMutate({
+                        eventId: updatedEvent.id,
+                        data: usersToAdd
+                    });
+                }
             } else {
                 if (!isRepeating) repeatRule = null;
 
@@ -140,7 +148,7 @@ export default function Events() {
 
                 showToast("Успішно!", "Ви створили подію.")
 
-                if (isUpdateDataEmpty(usersToAdd)){
+                if (!isUpdateDataEmpty(usersToAdd)){
                     const data = {...usersToAdd, eventIds: created.eventIds};
 
                     updateEventUsersMutate({
@@ -270,18 +278,20 @@ export default function Events() {
     );
 }
 
-function getChangedFields(original, updated) {
-    const changed = {};
-
-    Object.keys(updated).forEach(key => {
-        if (key === "coordinatorId") {
-            changed[key] = updated[key];
-            return;
-        }
-        if (updated[key] !== original[key]) {
-            changed[key] = updated[key];
-        }
-    });
-
-    return changed;
-}
+// function getChangedFields(original, updated) {
+//     const changed = {};
+//
+//     Object.keys(updated).forEach(key => {
+//         if (key === "coordinatorId") {
+//             changed[key] = updated[key];
+//             return;
+//         }
+//         if (updated[key] !== original[key]) {
+//             changed[key] = updated[key];
+//             console.log(updated[key])
+//             console.log(original[key])
+//         }
+//     });
+//
+//     return changed;
+// }

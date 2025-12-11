@@ -152,7 +152,7 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
     };
 
     const onBlur = (key, value) => {
-        validateField(key, value);
+        validateField(key, value, formData);
     }
 
     const handleMarkForRemoval = (userId) => {
@@ -272,6 +272,7 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                         id="timeStart"
                         name="timeStart"
                         label="Початок"
+                        error={errors?.timeStart || ""}
                         value={getDateAndTime(formData.dateStart).time}
                         onChange={(e) => handleChange("timeStart", e.target.value)}
                         onBlur={(e) => onBlur(e.target.id, e.target.value)}
@@ -281,6 +282,7 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
                         id="timeEnd"
                         name="timeEnd"
                         label="Кінець"
+                        error={errors?.timeEnd || ""}
                         value={getDateAndTime(formData.dateEnd).time}
                         onChange={(e) => handleChange("timeEnd", e.target.value)}
                         onBlur={(e) => onBlur(e.target.id, e.target.value)}

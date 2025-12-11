@@ -46,3 +46,17 @@ export const updateUser = async (data, domain) => {
 
     return response.data;
 };
+
+export const deleteSpaceUser = async (domain, userId) => {
+    const response = await api.delete(`${domain}${API_ENDPOINTS.USER}/leave/${userId}`);
+
+    if (!response.isSuccess) {
+        throw {
+            message: response.error?.message || "Failed to remove user from space",
+            code: response.error?.code,
+            details: response.error?.details
+        };
+    }
+
+    return response.data;
+};

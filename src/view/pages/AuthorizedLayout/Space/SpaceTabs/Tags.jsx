@@ -109,6 +109,12 @@ export default function Tags() {
                     showToast("Успішно!", "Ви змінили тег.")
                 }
 
+                if (!isUpdateDataEmpty(updatedUsers)) {
+                    updateUsersMutate({
+                        tagId: updatedTag.id,
+                        data: updatedUsers
+                    });
+                }
 
             } else {
                 const created = await createTagMutate(updatedTag);

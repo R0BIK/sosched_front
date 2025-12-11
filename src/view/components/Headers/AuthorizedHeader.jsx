@@ -36,7 +36,12 @@ export default function AuthorizedHeader() {
             <div className="flex justify-center items-center whitespace-nowrap">
                 <UnderlinedButton text="Головна" onClick={handleNavigationClick("/home")} isActive={getIsActive("/home")} />
                 <UnderlinedButton text="Календар" onClick={handleNavigationClick("/schedule")} isActive={getIsActive("/schedule")} />
-                <UnderlinedButton text="Мій простір" onClick={handleNavigationClick("/mySpace")} isActive={getIsActive("/mySpace")} />
+                {userData?.role === "Admin" && (
+                    <UnderlinedButton text="Мій простір" onClick={handleNavigationClick("/mySpace")} isActive={getIsActive("/mySpace")} />
+                )}
+                {userData?.role === "Guest" && (
+                    <UnderlinedButton text="Учасники" onClick={handleNavigationClick("/members")} isActive={getIsActive("/members")} />
+                )}
             </div>
 
             <div className="flex justify-end items-center">
@@ -51,9 +56,6 @@ export default function AuthorizedHeader() {
                             <p className="font-noto text-second-text text-[14px] group-hover:text-main-black">
                                 {userData?.role}
                             </p>
-                            {/*<p className="border-[2px] text-second-text text-[12px] rounded-[5px] border-second-text px-[5px] group-hover:text-main-black group-hover:border-main-black">*/}
-                            {/*    11-A*/}
-                            {/*</p>*/}
                         </div>
                     </div>
                     <div className="min-w-[42px] min-h-[42px] rounded-full bg-gray-400 flex items-center justify-center">

@@ -13,16 +13,22 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import {useNavigate} from "react-router-dom";
 import UserFilter from "../../../../components/UserFilter.jsx";
+import PropTypes from "prop-types";
+import {useLeaveSpace} from "../../../../../tanStackQueries/space/useLeaveSpace.js";
+import {useToast} from "../../../../../context/Toast/useToast.js";
 
-export default function Members() {
+export default function Members({ isAdmin=false }) {
     const [search, setSearch] = useState("");
     const [filterObj, setFilterObj] = useState({});
     const [isFilter, setIsFilter] = useState(false);
 
     const navigate = useNavigate();
+    const { showToast } = useToast();
 
     const { activeSpace } = useSpace();
     const domain = activeSpace?.domain;
+
+    const { mutate: removeUser } = useLeaveSpace(domain);
 
     const userQuery = useGetUsers(domain, filterObj, search);
 
@@ -32,6 +38,20 @@ export default function Members() {
     const loadMoreRef = useInfiniteScroll(userQuery);
 
     const handleClear = () => setSearch("");
+
+    const handleRemoveUser = (userId) => {
+        if (confirm("Ви впевнені, що хочете видалити цього користувача?")) {
+            removeUser(userId, {
+                onSuccess: () => {
+                    // Можна показати тост або закрити модалку
+                    showToast("Успішно!", "Користувача видалено", "success");
+                },
+                onError: (err) => {
+                    showToast(err.message, "Сталась невідома помилка.", "error");
+                }
+            });
+        }
+    };
 
     const handleFilter = () => {
         setIsFilter(!isFilter);
@@ -148,13 +168,15 @@ export default function Members() {
                                     </div>
 
                                     <div className="w-1/40 text-right shrink-0 min-w-6">
-                                        <button
-                                            onClick={() => onVisitClick(user.id)}
-                                            title="Видалити"
-                                            className="p-1 inline-block text-second-text hover:text-accent"
-                                        >
-                                            <UserMinusIcon className="size-5" />
-                                        </button>
+                                        {isAdmin && (
+                                            <button
+                                                onClick={() => handleRemoveUser(user.id)}
+                                                title="Видалити"
+                                                className="p-1 inline-block text-second-text hover:text-accent"
+                                            >
+                                                <UserMinusIcon className="size-5" />
+                                            </button>
+                                        )}
                                     </div>
                                     <div className="w-1/40 text-right shrink-0 min-w-6">
                                         <button
@@ -188,4 +210,8 @@ export default function Members() {
             </div>
         </div>
     );
+}
+
+Members.propTypes = {
+    isAdmin: PropTypes.bool,
 }

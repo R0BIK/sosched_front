@@ -84,7 +84,7 @@ export default function EventInfo({
                 {eventForm.location && (
                     <div className="flex px-4 py-6 gap-4 text-gray-600 border-b border-gray-200">
                         <MapPinIcon className="size-5 shrink-0 mt-1" />
-                        <p>
+                        <p className="break-all">
                             {eventForm.location}
                         </p>
                     </div>

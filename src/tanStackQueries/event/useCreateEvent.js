@@ -8,7 +8,7 @@ export function useCreateEvent(domain) {
         mutationFn: (request) => createEvent(request, domain),
         onSuccess: async (data) => {
             console.log('Event created successfully:', data);
-            await queryClient.invalidateQueries(['event']);
+            await queryClient.invalidateQueries(['events']);
         },
         onError: (error) => {
             console.error('Error creating event:', error);

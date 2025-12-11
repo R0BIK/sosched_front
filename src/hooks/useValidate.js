@@ -73,7 +73,9 @@ const initializeErrors = (formConfig) => {
 export const useValidate = (formConfig) => {
     const [errors, setErrors] = useState(initializeErrors(formConfig));
 
-    const validateField = useCallback((key, value, required, formData) => {
+    const validateField = useCallback((key, value, formData) => {
+        const required = formConfig[key] || false;
+
         let error = SPECIAL.STRING.EMPTY;
         let valueTrim = (typeof value === 'string')
             ? value.trim()
@@ -121,8 +123,8 @@ export const useValidate = (formConfig) => {
                 continue;
             }
 
-            const error = validateField(key, value, formConfig[key], formData);
-            if (error.trim() !== "") isValid = false;
+            const error = validateField(key, value, formData);
+            if (error.trim() !== SPECIAL.STRING.EMPTY) isValid = false;
         }
 
         return isValid;
@@ -159,5 +161,5 @@ const additionalTest = (key, value, formData) => {
         }
     }
 
-    return "";
+    return SPECIAL.STRING.EMPTY;
 }
