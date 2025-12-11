@@ -6,10 +6,14 @@ import {useCallback, useState} from "react";
 import {useSpace} from "../../../context/Space/useSpace.js";
 import {useToast} from "../../../context/Toast/useToast.js";
 import {getChangedFields} from "../../../utils/getChangedFields.js";
+import {useUpdateSpace} from "../../../tanStackQueries/space/useUpdateSpace.js";
 
 export default function EditSpaceModal({ handleClose }) {
-    const { updateSpace, activeSpace } = useSpace();
+    const { activeSpace } = useSpace();
     const { showToast } = useToast();
+
+    const { mutateAsync: updateSpace } = useUpdateSpace();
+
 
     const [form, setForm] = useState({...activeSpace});
 

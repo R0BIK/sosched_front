@@ -26,8 +26,8 @@ export default function Schedule() {
 
     const userId = paramId ? routeUserId : currentUserId;
 
-    const { switchSpace, spaces, activeSpace, spaceQuery } = useSpace();
-    const domain = activeSpace?.domain;
+    const { switchSpace, spaces, domain, spaceQuery } = useSpace();
+
     // -------------------------------
     // 📅 Calendar State
     // -------------------------------
@@ -112,7 +112,7 @@ export default function Schedule() {
                                     key={space.id}
                                     text={space.name}
                                     initial={getInitial(space.domain)}
-                                    isActive={activeSpace?.domain === space.domain}
+                                    isActive={domain === space.domain}
                                     onClick={() => switchSpace(space)}
                                 />
                             ))}

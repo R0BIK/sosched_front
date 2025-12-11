@@ -33,10 +33,9 @@ const FORM_CONFIG = {
 
 export default function Events() {
     const { domain } = useSpace();
-
-    const validation = useValidate(FORM_CONFIG);
     const { showToast } = useToast();
 
+    const validation = useValidate(FORM_CONFIG);
     const { validateForm, addExternalError, resetErrors } = validation;
 
     // --- Queries ---
@@ -276,21 +275,3 @@ export default function Events() {
         </div>
     );
 }
-
-// function getChangedFields(original, updated) {
-//     const changed = {};
-//
-//     Object.keys(updated).forEach(key => {
-//         if (key === "coordinatorId") {
-//             changed[key] = updated[key];
-//             return;
-//         }
-//         if (updated[key] !== original[key]) {
-//             changed[key] = updated[key];
-//             console.log(updated[key])
-//             console.log(original[key])
-//         }
-//     });
-//
-//     return changed;
-// }

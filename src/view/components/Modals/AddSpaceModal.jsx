@@ -9,6 +9,8 @@ import {useSpace} from "../../../context/Space/useSpace.js";
 import {useValidate} from "../../../hooks/useValidate.js";
 import {useToast} from "../../../context/Toast/useToast.js";
 import {getValidationErrorsMap} from "../../../utils/errorMapping.js";
+import {useMutation} from "@tanstack/react-query";
+import {useCreateSpace} from "../../../tanStackQueries/space/useCreateSpace.js";
 
 const TABS = {
     ADD: "addSpace",
@@ -30,7 +32,7 @@ export default function AddSpaceModal({handleClose}) {
     }, []);
 
     const { mutateAsync: joinSpace } = useJoinSpace();
-    const { createSpace } = useSpace();
+    const { mutateAsync: createSpace } = useCreateSpace()
 
     const handleJoin = async () => {
         const isValid = validateForm(addForm);

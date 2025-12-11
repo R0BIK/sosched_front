@@ -11,8 +11,6 @@ import {
     Gear1Solid
 } from "@lineiconshq/free-icons";
 import {useState} from "react";
-import ModalWrapperTitleSaveDelete from "../../../components/Modals/ModalWrapperTitleSaveDelete.jsx";
-import InputBox from "../../../components/BasicInputs/InputBox.jsx";
 import {useLockBodyScroll} from "../../../../hooks/useLockBodyScroll.js";
 import EditSpaceModal from "../../../components/Modals/EditSpaceModal.jsx";
 

@@ -2,9 +2,8 @@ import PropTypes from "prop-types";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import { useAuth } from "../AuthContext.jsx";
 import { LOCAL_STORAGE_NAMES } from "../../constants/constants.js";
-import {getSpaces, createSpace, updateSpace} from "../../services/api/spaceApi.js";
-import {useMutation, useInfiniteQuery, useQueryClient} from "@tanstack/react-query";
 import { SpaceContext } from './useSpace.js';
+import {useGetSpaces} from "../../tanStackQueries/space/useGetSpaces.js";
 
 const getSpaceStorageKey = (userId) => {
     return `${LOCAL_STORAGE_NAMES.ACTIVE_SPACE}_${userId}`;
@@ -12,19 +11,8 @@ const getSpaceStorageKey = (userId) => {
 
 export function SpaceProvider({ children }) {
     const { user } = useAuth();
-    const queryClient = useQueryClient();
-
     const [activeSpace, setActiveSpace] = useState(null);
-
-    const infiniteQuery = useInfiniteQuery({
-        queryKey: ["spaces", user?.id],
-        queryFn: async ({ pageParam = 1 }) => {
-            return await getSpaces({ page: pageParam, pageSize: 5 });
-        },
-        getNextPageParam: (lastPage) =>
-            lastPage.hasNextPage ? lastPage.page + 1 : undefined,
-        enabled: !!user,
-    });
+    const infiniteQuery = useGetSpaces();
 
     const spaces = useMemo(() => {
         return infiniteQuery?.data?.pages.flatMap(page => page.items) || [];
@@ -32,7 +20,9 @@ export function SpaceProvider({ children }) {
 
     const switchSpace = useCallback((space) => {
         setActiveSpace(space);
-        localStorage.setItem(getSpaceStorageKey(user?.id), space.domain);
+        if (user?.id) {
+            localStorage.setItem(getSpaceStorageKey(user.id), space.domain);
+        }
     }, [user?.id]);
 
     useEffect(() => {
@@ -46,38 +36,14 @@ export function SpaceProvider({ children }) {
         if (!spaces.length) return;
 
         const storageKey = getSpaceStorageKey(userId);
-
-        // Чтение домена, привязанного к текущему пользователю
         const savedDomain = localStorage.getItem(storageKey);
 
-
-        // Находим сохраненный Space или берем первый в списке
         const defaultSpace = spaces.find(s => s.domain === savedDomain) || spaces[0];
 
-        switchSpace(defaultSpace);
-    }, [spaces, user, switchSpace]);
-
-
-    const createSpaceMutation = useMutation({
-        mutationFn: createSpace,
-        onSuccess: (newSpace) => {
-            void queryClient.invalidateQueries({ queryKey: ["spaces", user?.id] });
-            switchSpace(newSpace);
-        },
-        onError: (err) => {
-            console.error("Error creating space:", err);
-        },
-    });
-
-    const updateSpaceMutation = useMutation({
-        mutationFn: ({id, data}) => updateSpace(id, data),
-        onSuccess: (newSpace) => {
-            void queryClient.invalidateQueries({queryKey: ["spaces", user?.id] });
-        },
-        onError: (err) => {
-            console.error("Error editing space:", err);
-        },
-    })
+        if (!activeSpace || (defaultSpace && activeSpace.id !== defaultSpace.id)) {
+            switchSpace(defaultSpace);
+        }
+    }, [spaces, user, switchSpace, activeSpace]);
 
     return (
         <SpaceContext.Provider
@@ -87,8 +53,6 @@ export function SpaceProvider({ children }) {
                 activeSpace,
                 spaceQuery: infiniteQuery,
                 switchSpace,
-                createSpace: createSpaceMutation.mutateAsync,
-                updateSpace: updateSpaceMutation.mutateAsync,
             }}
         >
             {children}
