@@ -12,8 +12,7 @@ export default function Roles() {
     const [selectedRole, setSelectedRole] = useState(null);
     useLockBodyScroll(!!selectedRole);
 
-    const { activeSpace } = useSpace();
-    const domain = activeSpace?.domain;
+    const { domain } = useSpace();
 
     const roleQuery = useGetRoles(domain);
 

@@ -25,8 +25,7 @@ export default function Members({ isAdmin=false }) {
     const navigate = useNavigate();
     const { showToast } = useToast();
 
-    const { activeSpace } = useSpace();
-    const domain = activeSpace?.domain;
+    const { domain } = useSpace();
 
     const { mutate: removeUser } = useLeaveSpace(domain);
 

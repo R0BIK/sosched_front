@@ -20,8 +20,7 @@ export default function EditRoleModal({ handleClose, role, handleSaveRole, handl
     const [isSearchFocused, setIsSearchFocused] = useState(false);
     const filterObj = { role: [role.name] }
 
-    const { activeSpace } = useSpace();
-    const domain = activeSpace?.domain;
+    const { domain } = useSpace();
 
     const searchQuery = useSearch(domain, search);
 

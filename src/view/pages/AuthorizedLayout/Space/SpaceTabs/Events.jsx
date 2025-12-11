@@ -32,8 +32,7 @@ const FORM_CONFIG = {
 }
 
 export default function Events() {
-    const { activeSpace } = useSpace();
-    const domain = activeSpace?.domain;
+    const { domain } = useSpace();
 
     const validation = useValidate(FORM_CONFIG);
     const { showToast } = useToast();

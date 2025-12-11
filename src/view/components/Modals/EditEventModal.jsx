@@ -82,8 +82,7 @@ export default function EditEventModal({ handleClose, selected, handleSaveEvent,
         setIsRepeating(e.target.checked);
     };
 
-    const { activeSpace } = useSpace();
-    const domain = activeSpace?.domain;
+    const { domain } = useSpace();
 
     const searchQuery = useSearch(domain, search);
     const result = searchQuery.data;

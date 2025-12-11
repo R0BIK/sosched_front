@@ -5,8 +5,7 @@ import Badge from "../components/Badges/Badge.jsx";
 import PropTypes from "prop-types";
 
 export default function TagsColumn({ tagTypeId, selectedTags, onToggle }) {
-    const { activeSpace } = useSpace();
-    const domain = activeSpace?.domain;
+    const { domain } = useSpace();
     const filterObj = { tagType: tagTypeId };
 
     const tagQuery = useGetTags(domain, filterObj);

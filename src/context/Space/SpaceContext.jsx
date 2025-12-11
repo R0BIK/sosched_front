@@ -30,9 +30,6 @@ export function SpaceProvider({ children }) {
         return infiniteQuery?.data?.pages.flatMap(page => page.items) || [];
     }, [infiniteQuery?.data]);
 
-    const isLoading = infiniteQuery?.isLoading;
-    const isError = infiniteQuery?.isError;
-
     const switchSpace = useCallback((space) => {
         setActiveSpace(space);
         localStorage.setItem(getSpaceStorageKey(user?.id), space.domain);
@@ -92,8 +89,6 @@ export function SpaceProvider({ children }) {
                 switchSpace,
                 createSpace: createSpaceMutation.mutateAsync,
                 updateSpace: updateSpaceMutation.mutateAsync,
-                loading: isLoading,
-                isError,
             }}
         >
             {children}

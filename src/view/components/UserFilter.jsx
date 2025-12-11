@@ -7,8 +7,7 @@ import PropTypes from "prop-types";
 import InfiniteScrollTrigger from "./InfinityScroll/InfiniteScrollTrigger.jsx";
 
 export default function UserFilter({ onChange }) {
-    const { activeSpace } = useSpace();
-    const domain = activeSpace?.domain;
+    const { domain } = useSpace();
 
     const [selectedTags, setSelectedTags] = useState([]);
 

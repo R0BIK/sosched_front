@@ -24,8 +24,7 @@ export default function EditTagModal({ handleClose, selected, handleSaveTag, han
     const filterObj = { tag: [selected.tag.shortName] }
     const { errors, validateField, clearError } = validation;
 
-    const { activeSpace } = useSpace();
-    const domain = activeSpace?.domain;
+    const { domain } = useSpace();
 
     const searchQuery = useSearch(domain, search);
 
