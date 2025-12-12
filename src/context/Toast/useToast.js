@@ -2,7 +2,6 @@ import { createContext, useContext } from 'react';
 
 export const ToastContext = createContext();
 
-// 2. Хук для использования контекста
 export const useToast = () => {
     const context = useContext(ToastContext);
     if (!context) {

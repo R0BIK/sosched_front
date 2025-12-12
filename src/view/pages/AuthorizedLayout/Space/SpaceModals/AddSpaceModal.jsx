@@ -1,16 +1,16 @@
-import ModalWrapper from "./ModalWrapper.jsx";
+import ModalWrapper from "../../../../components/Modals/ModalWrapper.jsx";
 import PropTypes from "prop-types";
-import UnderlinedButton from "../UnderlinedButton.jsx";
+import UnderlinedButton from "../../../../components/UnderlinedButton.jsx";
 import {useCallback, useState} from "react";
-import InputBox from "../BasicInputs/InputBox.jsx";
-import ToggleWithDescription from "../BasicInputs/ToggleWithDescription.jsx";
-import {useJoinSpace} from "../../../tanStackQueries/space/useJoinSpace.js";
-import {useSpace} from "../../../context/Space/useSpace.js";
-import {useValidate} from "../../../hooks/useValidate.js";
-import {useToast} from "../../../context/Toast/useToast.js";
-import {getValidationErrorsMap} from "../../../utils/errorMapping.js";
+import InputBox from "../../../../components/BasicInputs/InputBox.jsx";
+import ToggleWithDescription from "../../../../components/BasicInputs/ToggleWithDescription.jsx";
+import {useJoinSpace} from "../../../../../tanStackQueries/space/useJoinSpace.js";
+import {useSpace} from "../../../../../context/Space/useSpace.js";
+import {useValidate} from "../../../../../hooks/useValidate.js";
+import {useToast} from "../../../../../context/Toast/useToast.js";
+import {getValidationErrorsMap} from "../../../../../utils/errorMapping.js";
 import {useMutation} from "@tanstack/react-query";
-import {useCreateSpace} from "../../../tanStackQueries/space/useCreateSpace.js";
+import {useCreateSpace} from "../../../../../tanStackQueries/space/useCreateSpace.js";
 
 const TABS = {
     ADD: "addSpace",

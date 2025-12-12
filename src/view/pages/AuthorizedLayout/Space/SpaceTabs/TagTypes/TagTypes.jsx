@@ -1,25 +1,27 @@
 import { useCallback, useState } from "react";
-import { EditIcon } from "../../../../../img/svg/Icons.jsx";
+import { EditIcon } from "../../../../../../img/svg/Icons.jsx";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 // Компоненты
-import EditTagTypeModal from "../../../../components/Modals/EditTagTypeModal.jsx";
-import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
+import EditTagTypeModal from "./EditTagTypeModal.jsx";
+import InfiniteScrollTrigger from "../../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
 
 // Хуки и контекст
-import { useLockBodyScroll } from "../../../../../hooks/useLockBodyScroll.js";
-import { useSpace } from "../../../../../context/Space/useSpace.js";
-import { useInfiniteScroll } from "../../../../components/InfinityScroll/useInfiniteScroll.js";
+import { useLockBodyScroll } from "../../../../../../hooks/useLockBodyScroll.js";
+import { useSpace } from "../../../../../../context/Space/useSpace.js";
+import { useInfiniteScroll } from "../../../../../components/InfinityScroll/useInfiniteScroll.js";
 
 // Запросы
-import { useCreateTagType } from "../../../../../tanStackQueries/tagType/useCreateTagType.js";
-import { useGetTagTypes } from "../../../../../tanStackQueries/tagType/useGetTagTypes.js";
-import { useDeleteTagType } from "../../../../../tanStackQueries/tagType/useDeleteTagType.js";
-import {useValidate} from "../../../../../hooks/useValidate.js";
-import {getChangedFields} from "../../../../../utils/getChangedFields.js";
-import {getValidationErrorsMap} from "../../../../../utils/errorMapping.js";
-import {useToast} from "../../../../../context/Toast/useToast.js";
-import {useUpdateTagType} from "../../../../../tanStackQueries/tagType/useUpdateTagType.js";
+import { useCreateTagType } from "../../../../../../tanStackQueries/tagType/useCreateTagType.js";
+import { useGetTagTypes } from "../../../../../../tanStackQueries/tagType/useGetTagTypes.js";
+import { useDeleteTagType } from "../../../../../../tanStackQueries/tagType/useDeleteTagType.js";
+import {useValidate} from "../../../../../../hooks/useValidate.js";
+import {getChangedFields} from "../../../../../../utils/getChangedFields.js";
+import {getValidationErrorsMap} from "../../../../../../utils/errorMapping.js";
+import {useToast} from "../../../../../../context/Toast/useToast.js";
+import {useUpdateTagType} from "../../../../../../tanStackQueries/tagType/useUpdateTagType.js";
+import {useInfiniteQueryData} from "../../../../../../hooks/useInfiniteQueryData.js";
+import BasicButton from "../../../../../components/Buttons/BasicButton.jsx";
 
 const FORM_CONFIG = {
     name: true
@@ -35,11 +37,7 @@ export default function TagTypes() {
 
     // --- Queries ---
     const tagTypesQuery = useGetTagTypes(domain);
-
-    const tagTypes = tagTypesQuery.data?.pages.flatMap((p) => p.items) ?? [];
-    const totalCount = tagTypesQuery.data?.pages?.[0]?.totalCount ?? 0;
-
-    // --- Infinite Scroll Hook ---
+    const { items: tagTypes, totalCount  } = useInfiniteQueryData(tagTypesQuery);
     const loadMoreRef = useInfiniteScroll(tagTypesQuery);
 
     // --- Mutations ---
@@ -127,15 +125,7 @@ export default function TagTypes() {
                         A list of all the users in your account including their name, title, email and role.
                     </p>
                 </div>
-                <div className="flex items-start">
-                    <button
-                        type="button"
-                        onClick={handleCreate}
-                        className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        Створити тип тегу
-                    </button>
-                </div>
+                <BasicButton onClick={handleCreate} text="Створити тип тегу" />
             </div>
 
             <div className="mt-8 w-full flex flex-col min-h-0">

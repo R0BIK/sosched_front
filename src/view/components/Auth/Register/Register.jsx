@@ -1,27 +1,31 @@
 import { useNavigate } from "react-router-dom";
-import { useValidateForm } from "../../../../hooks/authHooks.js";
-import { useKeyDownEnterHandler } from "../../../../hooks/KeyDownHooks.js";
-import { useRef } from 'react';
+import {useCallback, useState} from 'react';
 
 import AuthInputBox from '../AuthInputBox.jsx';
 import HoverButton from "../HoverButton.jsx";
 
 import {REGISTER_FIELDS} from "../../../../constants/authConstants.js";
 import {useAuth} from "../../../../context/AuthContext.jsx";
-import {SPECIAL} from "../../../../constants/constants.js";
 import { getValidationErrorsMap } from "../../../../utils/errorMapping.js";
-import {useSpace} from "../../../../context/Space/useSpace.js";
-import {login} from "../../../../services/api/authApi.js";
+import {useCreateSpace} from "../../../../tanStackQueries/space/useCreateSpace.js";
+import {useValidate} from "../../../../hooks/useValidate.js";
+
+const FORM_CONFIG = {
+    firstName: true,
+    lastName: true,
+    email: true,
+    password: true,
+}
 
 export default function RegisterForm() {
     const navigate = useNavigate();
-    const inputRefs = useRef([]);
-    const buttonRef = useRef(null);
-    const { errors, inputOnBlur, handleSubmit, addError } = useValidateForm({inputRefs});
-    const { handleEnterAsTab } = useKeyDownEnterHandler();
+    const { register } = useAuth();
+    const { mutateAsync: createSpace } = useCreateSpace();
 
-    const { register, user } = useAuth();
-    const { createSpace } = useSpace();
+    const validation = useValidate(FORM_CONFIG);
+    const { errors, validateForm, addExternalError, resetErrors, validateField, clearError } = validation;
+
+    const [formData, setFormData] = useState({ firstName: "", lastName: "", email: "", password: "" });
 
     const getDomain = (email) => {
         if (!email || typeof email !== "string") return "";
@@ -31,66 +35,54 @@ export default function RegisterForm() {
     }
 
     const onSubmit = async (e) => {
-        const newErrors =  handleSubmit(e);
-        if (Object.values(newErrors).every(error => error === SPECIAL.STRING.EMPTY)) {
-            sessionStorage.removeItem("register-form");
+        e.preventDefault();
 
-            const formData = Object.fromEntries(new FormData(e.target));
+        const isValid = validateForm(formData);
+        if (!isValid) return;
 
-            try {
-                const registerResult = await register(formData);
-                const userId = registerResult?.id;
+        try {
+            const registerResult = await register(formData);
+            const userId = registerResult?.id;
 
-                if (userId) {
-                    await createSpace({
-                        name: "Мій простір",
-                        domain: getDomain(formData.email),
-                        isPublic: false,
-                    });
-                }
-
-                console.log(user);
-
-                navigate("/schedule");
-                e.target.reset();
-            } catch (error) {
-                const errors = getValidationErrorsMap(error);
-                for (const [key, value] of Object.entries(errors)) {
-                    const inputRef = getRef(key);
-                    await addError(key, value, inputRef);
-                }
-                focusFirstErrorField(errors);
+            if (userId) {
+                await createSpace({
+                    name: "Мій простір",
+                    domain: getDomain(formData.email),
+                    isPublic: false,
+                });
             }
-        } else {
-            focusFirstErrorField(newErrors);
+
+            navigate("/schedule");
+            resetErrors();
+            e.target.reset();
+        } catch (error) {
+            const errors = getValidationErrorsMap(error);
+            for (const [key, value] of Object.entries(errors)) {
+                await addExternalError(key, value);
+            }
+            // focusFirstErrorField(errors);
         }
     }
 
-    const getRef = (id) => {
-        if (id) {
-            const index = REGISTER_FIELDS.findIndex(fieldKey =>
-                fieldKey.id === id
-            );
-
-            if (index !== -1 && inputRefs.current[index]) {
-                return inputRefs.current[index]
-            }
-        }
+    const handleBlur = (key, value) => {
+        if (value !== "")
+            validateField(key, value, formData);
+        else
+            clearError(key)
     }
 
-    const focusFirstErrorField = (newErrors, inputRef=null) => {
-        if (!inputRef) {
-            const firstErrorKey = Object.keys(newErrors).find(id => newErrors[id]);
-            inputRef = getRef(firstErrorKey);
-        }
+    const handleChange = useCallback((key, value) => {
+        setFormData((prev) => ({ ...prev, [key]: value }));
+        clearError(key);
+    }, [clearError]);
 
-        inputRef?.focus();
+    const handleClear = (key) => {
+        handleChange(key, "");
     }
 
     return (
         <form
             name="register-form"
-            method="POST"
             noValidate
             onSubmit={onSubmit}
             className="flex flex-col items-center justify-center gap-13 w-full text-left"
@@ -99,26 +91,23 @@ export default function RegisterForm() {
                 const autoComplete = field.name === "password" ? "new-password" : field.autoComplete;
                 return (
                     <AuthInputBox
+                        className="w-full"
                         key={index}
                         id={field.id}
-                        className="w-full"
-                        placeholder={field.placeholder}
                         type={field.type}
+                        placeholder={field.placeholder}
                         autoComplete={autoComplete}
                         name={field.name}
-                        onBlur={(e) => inputOnBlur(e.target)}
+                        value={formData[field.id]}
                         errorText={errors[field.id]}
-                        onKeyDown={(e) =>
-                            handleEnterAsTab({ e, index, formFields: REGISTER_FIELDS, inputRefs, buttonRef })
-                        }
-                        isSaving={field.isSaving}
-                        formName="register-form"
-                        ref={(el) => (inputRefs.current[index] = el)}
+                        onBlur={(e) => handleBlur(e.target.id, e.target.value)}
+                        onChange={(e) => handleChange(e.target.id, e.target.value)}
+                        handleClear={() => handleClear(field.id)}
                     />
                 );
             })}
 
-            <HoverButton type="submit" ref={buttonRef}>
+            <HoverButton type="submit">
                 Зареєструватись
             </HoverButton>
         </form>

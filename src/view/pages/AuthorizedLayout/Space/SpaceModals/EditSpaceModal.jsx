@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
-import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx";
-import InputBox from "../BasicInputs/InputBox.jsx";
-import ToggleWithDescription from "../BasicInputs/ToggleWithDescription.jsx";
+import ModalWrapperTitleSaveDelete from "../../../../components/Modals/ModalWrapperTitleSaveDelete.jsx";
+import InputBox from "../../../../components/BasicInputs/InputBox.jsx";
+import ToggleWithDescription from "../../../../components/BasicInputs/ToggleWithDescription.jsx";
 import {useCallback, useState} from "react";
-import {useSpace} from "../../../context/Space/useSpace.js";
-import {useToast} from "../../../context/Toast/useToast.js";
-import {getChangedFields} from "../../../utils/getChangedFields.js";
-import {useUpdateSpace} from "../../../tanStackQueries/space/useUpdateSpace.js";
+import {useSpace} from "../../../../../context/Space/useSpace.js";
+import {useToast} from "../../../../../context/Toast/useToast.js";
+import {getChangedFields} from "../../../../../utils/getChangedFields.js";
+import {useUpdateSpace} from "../../../../../tanStackQueries/space/useUpdateSpace.js";
 
 export default function EditSpaceModal({ handleClose }) {
     const { activeSpace } = useSpace();

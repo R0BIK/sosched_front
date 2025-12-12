@@ -1,12 +1,13 @@
 import {useState, useCallback} from "react";
-import {EditIcon} from "../../../../../img/svg/Icons.jsx";
-import {useLockBodyScroll} from "../../../../../hooks/useLockBodyScroll.js";
-import {useSpace} from "../../../../../context/Space/useSpace.js";
-import {useInfiniteScroll} from "../../../../components/InfinityScroll/useInfiniteScroll.js";
-import {useGetRoles} from "../../../../../tanStackQueries/role/useGetRoles.js";
-import EditRoleModal from "../../../../components/Modals/EditRoleModal.jsx";
-import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
-import {useUpdateRoleUsers} from "../../../../../tanStackQueries/role/useUpdateRoleUsers.js";
+import {EditIcon} from "../../../../../../img/svg/Icons.jsx";
+import {useLockBodyScroll} from "../../../../../../hooks/useLockBodyScroll.js";
+import {useSpace} from "../../../../../../context/Space/useSpace.js";
+import {useInfiniteScroll} from "../../../../../components/InfinityScroll/useInfiniteScroll.js";
+import {useGetRoles} from "../../../../../../tanStackQueries/role/useGetRoles.js";
+import EditRoleModal from "./EditRoleModal.jsx";
+import InfiniteScrollTrigger from "../../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
+import {useUpdateRoleUsers} from "../../../../../../tanStackQueries/role/useUpdateRoleUsers.js";
+import {useInfiniteQueryData} from "../../../../../../hooks/useInfiniteQueryData.js";
 
 export default function Roles() {
     const [selectedRole, setSelectedRole] = useState(null);
@@ -15,13 +16,11 @@ export default function Roles() {
     const { domain } = useSpace();
 
     const roleQuery = useGetRoles(domain);
-
-    const roles = roleQuery.data?.pages.flatMap((p) => p.items) ?? [];
-    const totalCount = roleQuery.data?.pages?.[0]?.totalCount ?? 0;
+    const { items: roles, totalCount  } = useInfiniteQueryData(roleQuery);
+    const loadMoreRef = useInfiniteScroll(roleQuery);
 
     const { mutate: updateUsersMutate } = useUpdateRoleUsers(domain);
 
-    const loadMoreRef = useInfiniteScroll(roleQuery);
 
     const handleEdit = (role) => setSelectedRole(role);
     const handleClose = () => setSelectedRole(null);
@@ -82,7 +81,7 @@ export default function Roles() {
                 {/* Шапка (Header) */}
                 <div className="flex w-full border-b border-gray-300 py-3.5 text-sm font-semibold text-main-black shrink-0">
                     <div className="w-9/20 text-left">
-                        Роль – {roles?.length}
+                        Роль – {totalCount}
                     </div>
                     <div className="w-1/4 text-center">
                         Учасники

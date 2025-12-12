@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-import InputBox from "../BasicInputs/InputBox.jsx";
-import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx";
+import InputBox from "../../../../../components/BasicInputs/InputBox.jsx";
+import ModalWrapperTitleSaveDelete from "../../../../../components/Modals/ModalWrapperTitleSaveDelete.jsx";
 
 export default function EditTagTypeModal({ handleClose, selected, handleSaveTagType, handleDeleteTagType, validation }) {
     const [formData, setFormData] = useState({ ...selected.tagType });

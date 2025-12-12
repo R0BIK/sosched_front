@@ -1,30 +1,31 @@
 import { useCallback, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { EditIcon } from "../../../../../img/svg/Icons.jsx";
+import { EditIcon } from "../../../../../../img/svg/Icons.jsx";
 
 // Компоненты
-import EditTagModal from "../../../../components/Modals/EditTagModal.jsx";
-import Badge from "../../../../components/Badges/Badge.jsx";
-import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx"; // <-- Новый компонент
+import EditTagModal from "./EditTagModal.jsx";
+import Badge from "../../../../../components/Badges/Badge.jsx";
+import InfiniteScrollTrigger from "../../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx"; // <-- Новый компонент
 
 // Хуки и контекст
-import { useLockBodyScroll } from "../../../../../hooks/useLockBodyScroll.js";
-import { useSpace } from "../../../../../context/Space/useSpace.js";
-import { useInfiniteScroll } from "../../../../components/InfinityScroll/useInfiniteScroll.js"; // <-- Новый хук
+import { useLockBodyScroll } from "../../../../../../hooks/useLockBodyScroll.js";
+import { useSpace } from "../../../../../../context/Space/useSpace.js";
+import { useInfiniteScroll } from "../../../../../components/InfinityScroll/useInfiniteScroll.js"; // <-- Новый хук
 
 // Запросы (React Query)
-import { useGetTags } from "../../../../../tanStackQueries/tag/useGetTags.js";
-import { useGetTagTypes } from "../../../../../tanStackQueries/tagType/useGetTagTypes.js";
-import { useDeleteTag } from "../../../../../tanStackQueries/tag/useDeleteTag.js";
-import { useCreateTag } from "../../../../../tanStackQueries/tag/useCreateTag.js";
-import { useUpdateTagUsers } from "../../../../../tanStackQueries/tag/useUpdateTagUsers.js";
-import { useUpdateTag } from "../../../../../tanStackQueries/tag/useUpdateTag.js";
+import { useGetTags } from "../../../../../../tanStackQueries/tag/useGetTags.js";
+import { useGetTagTypes } from "../../../../../../tanStackQueries/tagType/useGetTagTypes.js";
+import { useDeleteTag } from "../../../../../../tanStackQueries/tag/useDeleteTag.js";
+import { useCreateTag } from "../../../../../../tanStackQueries/tag/useCreateTag.js";
+import { useUpdateTagUsers } from "../../../../../../tanStackQueries/tag/useUpdateTagUsers.js";
+import { useUpdateTag } from "../../../../../../tanStackQueries/tag/useUpdateTag.js";
 
-import { SPECIAL } from "../../../../../constants/constants.js";
-import {useValidate} from "../../../../../hooks/useValidate.js";
-import {useToast} from "../../../../../context/Toast/useToast.js";
-import {getChangedFields} from "../../../../../utils/getChangedFields.js";
-import {getValidationErrorsMap} from "../../../../../utils/errorMapping.js";
+import { SPECIAL } from "../../../../../../constants/constants.js";
+import {useValidate} from "../../../../../../hooks/useValidate.js";
+import {useToast} from "../../../../../../context/Toast/useToast.js";
+import {getChangedFields} from "../../../../../../utils/getChangedFields.js";
+import {getValidationErrorsMap} from "../../../../../../utils/errorMapping.js";
+import BasicButton from "../../../../../components/Buttons/BasicButton.jsx";
 
 const FORM_CONFIG = {
     name: true,
@@ -150,15 +151,7 @@ export default function Tags() {
                         A list of all the users in your account including their name, title, email and role.
                     </p>
                 </div>
-                <div className="flex items-start">
-                    <button
-                        type="button"
-                        onClick={handleCreate}
-                        className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        Створити тег
-                    </button>
-                </div>
+                <BasicButton onClick={handleCreate} text="Створити тег" />
             </div>
 
             <div className="mt-8 w-full flex flex-col min-h-0">

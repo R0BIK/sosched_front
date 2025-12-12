@@ -1,77 +1,71 @@
 import { useNavigate } from "react-router-dom";
-import { useValidateForm } from "../../../../hooks/authHooks.js";
-import { useKeyDownEnterHandler } from "../../../../hooks/KeyDownHooks.js";
-import { useRef } from 'react';
+import {useCallback, useState} from 'react';
 
 import AuthInputBox from '../AuthInputBox.jsx';
 import HoverButton from "../HoverButton.jsx";
 
 import {LOGIN_FIELDS} from "../../../../constants/authConstants.js";
 import {useAuth} from "../../../../context/AuthContext.jsx";
-import {SPECIAL} from "../../../../constants/constants.js";
 import {
     getValidationErrorsMap
 } from "../../../../utils/errorMapping.js";
+import {useValidate} from "../../../../hooks/useValidate.js";
+
+const FORM_CONFIG = {
+    email: true,
+    password: true,
+}
 
 export default function LoginForm() {
     const navigate = useNavigate();
-    const inputRefs = useRef([]);
-    const buttonRef = useRef(null);
-    const { errors, inputOnBlur, handleSubmit, addError } = useValidateForm({inputRefs });
-    const { handleEnterAsTab } = useKeyDownEnterHandler();
+
+    const validation = useValidate(FORM_CONFIG);
+    const { errors, validateForm, addExternalError, resetErrors, validateField, clearError } = validation;
+
+    const [formData, setFormData] = useState({ email: "", password: "" });
 
     const { login } = useAuth();
 
     const onSubmit = async (e) => {
-        const newErrors = handleSubmit(e);
-        if (Object.values(newErrors).every(error => error === SPECIAL.STRING.EMPTY)) {
-            sessionStorage.removeItem("login-form");
+        e.preventDefault();
 
-            const formData = Object.fromEntries(new FormData(e.target));
+        const isValid = validateForm(formData);
+        if (!isValid) return;
 
-            try {
-                await login(formData);
+        try {
+            await login(formData);
 
-                navigate("/schedule");
-                e.target.reset();
-            } catch (error) {
-                const errors = getValidationErrorsMap(error);
-                for (const [key, value] of Object.entries(errors)) {
-                    const inputRef = getRef(key);
-                    await addError(key, value, inputRef);
-                }
-                focusFirstErrorField(errors);
+            navigate("/schedule");
+            resetErrors();
+            e.target.reset();
+        } catch (error) {
+            const errors = getValidationErrorsMap(error);
+            for (const [key, value] of Object.entries(errors)) {
+                await addExternalError(key, value);
             }
-        } else {
-            focusFirstErrorField(newErrors);
+            // focusFirstErrorField(errors);
         }
     }
 
-    const getRef = (id) => {
-        if (id) {
-            const index = LOGIN_FIELDS.findIndex(fieldKey =>
-                fieldKey.id === id
-            );
-
-            if (index !== -1 && inputRefs.current[index]) {
-                return inputRefs.current[index]
-            }
-        }
+    const handleBlur = (key, value) => {
+        if (value !== "")
+            validateField(key, value, formData);
+        else
+            clearError(key)
     }
 
-    const focusFirstErrorField = (newErrors, inputRef=null) => {
-        if (!inputRef) {
-            const firstErrorKey = Object.keys(newErrors).find(key => newErrors[key]);
-            inputRef = getRef(firstErrorKey);
-        }
+    const handleChange = useCallback((key, value) => {
+        setFormData((prev) => ({ ...prev, [key]: value }));
+        clearError(key);
+    }, [clearError]);
 
-        inputRef?.focus();
+    const handleClear = (key) => {
+        handleChange(key, "");
     }
 
     return (
         <form
             name="login-form"
-            method="POST"
             noValidate
             onSubmit={onSubmit}
             className="flex flex-col items-center justify-center gap-[50px] w-full text-left"
@@ -79,26 +73,23 @@ export default function LoginForm() {
             {LOGIN_FIELDS.map((field, index) => {
                 return (
                     <AuthInputBox
+                        className="w-full"
                         key={index}
                         id={field.id}
-                        className="w-full"
-                        placeholder={field.placeholder}
                         type={field.type}
+                        placeholder={field.placeholder}
                         autoComplete={field.autoComplete}
                         name={field.name}
-                        onBlur={(e) => inputOnBlur(e.target)}
+                        value={formData[field.id]}
                         errorText={errors[field.id]}
-                        onKeyDown={(e) =>
-                            handleEnterAsTab({ e, index, formFields: LOGIN_FIELDS, inputRefs, buttonRef })
-                        }
-                        isSaving={field.isSaving}
-                        formName="login-form"
-                        ref={(el) => (inputRefs.current[index] = el)}
+                        onBlur={(e) => handleBlur(e.target.id, e.target.value)}
+                        onChange={(e) => handleChange(e.target.id, e.target.value)}
+                        handleClear={() => handleClear(field.id)}
                     />
                 );
             })}
 
-            <HoverButton type="submit" ref={buttonRef}>
+            <HoverButton type="submit">
                 Увійти
             </HoverButton>
         </form>

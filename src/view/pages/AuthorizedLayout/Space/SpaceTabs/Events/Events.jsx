@@ -1,24 +1,26 @@
 import { useCallback, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { EditIcon } from "../../../../../img/svg/Icons.jsx";
-import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx"; // <-- Новый компонент
+import { EditIcon } from "../../../../../../img/svg/Icons.jsx";
+import InfiniteScrollTrigger from "../../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx"; // <-- Новый компонент
 
 // Хуки и контекст
-import { useLockBodyScroll } from "../../../../../hooks/useLockBodyScroll.js";
-import { useSpace } from "../../../../../context/Space/useSpace.js";
-import { useInfiniteScroll } from "../../../../components/InfinityScroll/useInfiniteScroll.js"; // <-- Новый хук
+import { useLockBodyScroll } from "../../../../../../hooks/useLockBodyScroll.js";
+import { useSpace } from "../../../../../../context/Space/useSpace.js";
+import { useInfiniteScroll } from "../../../../../components/InfinityScroll/useInfiniteScroll.js"; // <-- Новый хук
 
-import { SPECIAL } from "../../../../../constants/constants.js";
-import {useGetPagedEvents} from "../../../../../tanStackQueries/event/useGetPagedEvents.js";
-import EditEventModal from "../../../../components/Modals/EditEventModal.jsx";
-import {useUpdateEventUsers} from "../../../../../tanStackQueries/event/useUpdateEventUsers.js";
-import {useUpdateEvent} from "../../../../../tanStackQueries/event/useUpdateEvent.js";
-import {useDeleteEvent} from "../../../../../tanStackQueries/event/useDeleteEvent.js";
-import {useCreateEvent} from "../../../../../tanStackQueries/event/useCreateEvent.js";
-import {useValidate} from "../../../../../hooks/useValidate.js";
-import {useToast} from "../../../../../context/Toast/useToast.js";
-import {getValidationErrorsMap} from "../../../../../utils/errorMapping.js";
-import {getChangedFields} from "../../../../../utils/getChangedFields.js";
+import { SPECIAL } from "../../../../../../constants/constants.js";
+import {useGetPagedEvents} from "../../../../../../tanStackQueries/event/useGetPagedEvents.js";
+import EditEventModal from "./EditEventModal.jsx";
+import {useUpdateEventUsers} from "../../../../../../tanStackQueries/event/useUpdateEventUsers.js";
+import {useUpdateEvent} from "../../../../../../tanStackQueries/event/useUpdateEvent.js";
+import {useDeleteEvent} from "../../../../../../tanStackQueries/event/useDeleteEvent.js";
+import {useCreateEvent} from "../../../../../../tanStackQueries/event/useCreateEvent.js";
+import {useValidate} from "../../../../../../hooks/useValidate.js";
+import {useToast} from "../../../../../../context/Toast/useToast.js";
+import {getValidationErrorsMap} from "../../../../../../utils/errorMapping.js";
+import {getChangedFields} from "../../../../../../utils/getChangedFields.js";
+import {useInfiniteQueryData} from "../../../../../../hooks/useInfiniteQueryData.js";
+import BasicButton from "../../../../../components/Buttons/BasicButton.jsx";
 
 const FORM_CONFIG = {
     name: true,
@@ -40,10 +42,7 @@ export default function Events() {
 
     // --- Queries ---
     const eventQuery = useGetPagedEvents(null, domain);
-
-    const events = eventQuery.data?.pages.flatMap((p) => p.items) ?? [];
-    const totalCount = eventQuery.data?.pages?.[0]?.totalCount ?? 0;
-
+    const { items: events, totalCount  } = useInfiniteQueryData(eventQuery);
     const loadMoreRef = useInfiniteScroll(eventQuery);
 
     const { mutateAsync: createEventMutate } = useCreateEvent(domain);
@@ -92,8 +91,6 @@ export default function Events() {
     const handleSaveEvent = useCallback(async (updatedEvent, usersToAdd, type, repeatRule, isRepeating) => {
         const isValid = validateForm(updatedEvent);
         if (!isValid) return;
-
-        console.log(updatedEvent)
 
         const request = {
             name: updatedEvent.name,
@@ -170,8 +167,6 @@ export default function Events() {
 
     }, [validateForm, handleClose, selectedEvent?.event, updateEventUsersMutate, updateEventMutate, showToast, createEventMutate, addExternalError]);
 
-    // console.log(events);
-
     return (
         <div className="pt-5 px-9 w-full h-full flex flex-col overflow-auto">
             <div className="flex justify-between">
@@ -181,15 +176,7 @@ export default function Events() {
                         A list of all the users in your account including their name, title, email and role.
                     </p>
                 </div>
-                <div className="flex items-start">
-                    <button
-                        type="button"
-                        onClick={handleCreate}
-                        className="block whitespace-nowrap rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        Створити подію
-                    </button>
-                </div>
+                <BasicButton onClick={handleCreate} text="Створити подію" />
             </div>
 
             <div className="mt-8 w-full flex flex-col min-h-0">

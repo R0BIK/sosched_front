@@ -1,40 +1,38 @@
 import { useState } from "react";
 
-import { useSpace } from "../../../../../context/Space/useSpace.js";
-import { useGetUsers } from "../../../../../tanStackQueries/user/useGetUsers.js";
-import {useInfiniteScroll} from "../../../../components/InfinityScroll/useInfiniteScroll.js";
+import { useSpace } from "../../../../../../context/Space/useSpace.js";
+import { useGetUsers } from "../../../../../../tanStackQueries/user/useGetUsers.js";
+import {useInfiniteScroll} from "../../../../../components/InfinityScroll/useInfiniteScroll.js";
 
-import Badge from "../../../../components/Badges/Badge.jsx";
+import Badge from "../../../../../components/Badges/Badge.jsx";
 
 import SearchIcon from '@mui/icons-material/Search';
-import InfiniteScrollTrigger from "../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
+import InfiniteScrollTrigger from "../../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
 import { UserMinusIcon, ArrowRightEndOnRectangleIcon } from "@heroicons/react/24/outline/index.js";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import {useNavigate} from "react-router-dom";
-import UserFilter from "../../../../components/UserFilter.jsx";
+import UserFilter from "../../../../../components/UserFilter.jsx";
 import PropTypes from "prop-types";
-import {useLeaveSpace} from "../../../../../tanStackQueries/space/useLeaveSpace.js";
-import {useToast} from "../../../../../context/Toast/useToast.js";
+import {useLeaveSpace} from "../../../../../../tanStackQueries/space/useLeaveSpace.js";
+import {useToast} from "../../../../../../context/Toast/useToast.js";
+import {useInfiniteQueryData} from "../../../../../../hooks/useInfiniteQueryData.js";
 
 export default function Members({ isAdmin=false }) {
+    const navigate = useNavigate();
+
     const [search, setSearch] = useState("");
     const [filterObj, setFilterObj] = useState({});
     const [isFilter, setIsFilter] = useState(false);
 
-    const navigate = useNavigate();
     const { showToast } = useToast();
-
     const { domain } = useSpace();
 
-    const { mutate: removeUser } = useLeaveSpace(domain);
-
     const userQuery = useGetUsers(domain, filterObj, search);
-
-    const users = userQuery.data?.pages.flatMap((p) => p.items) ?? [];
-    const totalCount = userQuery.data?.pages?.[0]?.totalCount ?? 0;
-
+    const { items: users, totalCount  } = useInfiniteQueryData(userQuery);
     const loadMoreRef = useInfiniteScroll(userQuery);
+
+    const { mutate: removeUser } = useLeaveSpace(domain);
 
     const handleClear = () => setSearch("");
 

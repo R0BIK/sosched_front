@@ -12,7 +12,7 @@ import {
 } from "@lineiconshq/free-icons";
 import {useState} from "react";
 import {useLockBodyScroll} from "../../../../hooks/useLockBodyScroll.js";
-import EditSpaceModal from "../../../components/Modals/EditSpaceModal.jsx";
+import EditSpaceModal from "./SpaceModals/EditSpaceModal.jsx";
 
 export default function Space() {
     const [isModalVisible, setModalVisible] = useState(false);

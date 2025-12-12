@@ -1,17 +1,17 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-import InputBox from "../BasicInputs/InputBox.jsx";
+import InputBox from "../../../../../components/BasicInputs/InputBox.jsx";
 
-import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx";
-import {useGetUsers} from "../../../tanStackQueries/user/useGetUsers.js";
+import ModalWrapperTitleSaveDelete from "../../../../../components/Modals/ModalWrapperTitleSaveDelete.jsx";
+import {useGetUsers} from "../../../../../../tanStackQueries/user/useGetUsers.js";
 import SearchIcon from "@mui/icons-material/Search";
-import Badge from "../Badges/Badge.jsx";
+import Badge from "../../../../../components/Badges/Badge.jsx";
 import ClearIcon from "@mui/icons-material/Clear";
-import InfiniteScrollTrigger from "../InfinityScroll/InfiniteScrollTrigger.jsx";
-import {useSpace} from "../../../context/Space/useSpace.js";
-import {useSearch} from "../../../tanStackQueries/search/useSearch.jsx";
-import {useInfiniteScroll} from "../InfinityScroll/useInfiniteScroll.js";
+import InfiniteScrollTrigger from "../../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
+import {useSpace} from "../../../../../../context/Space/useSpace.js";
+import {useSearch} from "../../../../../../tanStackQueries/search/useSearch.jsx";
+import {useInfiniteScroll} from "../../../../../components/InfinityScroll/useInfiniteScroll.js";
 
 export default function EditRoleModal({ handleClose, role, handleSaveRole, handleDeleteRole }) {
     const [formData, setFormData] = useState({ ...role });

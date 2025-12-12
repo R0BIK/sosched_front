@@ -1,24 +1,36 @@
 @import "tailwindcss";
 
 @theme {
-  --color-black-shadow: rgba(11, 18, 21, 0.4);
-  --color-accent: #023488;
-  --color-accent-on-hover: #0047bf;
-  --color-accent-rgb: 2, 52, 136;
-  --color-main-white: #FAF9F6;
-  --color-main-black: #0B1215;
-  --color-second-text: rgba(11, 18, 21, 0.40);
-  --color-green-true: #44aa55;
-  --color-red-false: #c62c2c;
+    --color-text-black: #0B1215;
+    --color-text-white: #FAF9F6;
+    --color-text-accent: #023488;
+    --color-text-accent-on-hover: #0047bf;
 
-  --color-glass-bg: color-mix(in oklab, transparent 80%, transparent);
-  --color-glass-border: color-mix(in oklab, var(--color-glass-bg) 70%, white);
+    --color-accent: #023488;
+    --color-accent-on-hover: #0047bf;
+    --color-green: #44aa55;
+    --color-green-on-hover: #50c763;
+    --color-red: #c62c2c;
+    --color-red-on-hover: #f53636;
 
-  --font-sans: "SF Compact Display", sans-serif;
-  --font-noto: "Noto", sans-serif;
-  --font-dancing: "Dancing Script", sans-serif;
-  --font-mono: "Fira Code", monospace;
-  --font-heading: "Playfair Display", serif;
+
+    --color-black-shadow: rgba(11, 18, 21, 0.4);
+
+    --color-accent-rgb: 2, 52, 136;
+    --color-main-white: #FAF9F6;
+    --color-main-black: #0B1215;
+    --color-second-text: rgba(11, 18, 21, 0.40);
+    --color-green-true: #44aa55;
+    --color-red-false: #c62c2c;
+
+    --color-glass-bg: color-mix(in oklab, transparent 80%, transparent);
+    --color-glass-border: color-mix(in oklab, var(--color-glass-bg) 70%, white);
+
+    --font-sans: "SF Compact Display", sans-serif;
+    --font-noto: "Noto", sans-serif;
+    --font-dancing: "Dancing Script", sans-serif;
+    --font-mono: "Fira Code", monospace;
+    --font-heading: "Playfair Display", serif;
 }
 
 @layer base {

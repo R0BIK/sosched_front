@@ -1,24 +1,24 @@
 import PropTypes from "prop-types";
 import {useState, useMemo, useCallback} from "react";
 
-import InputBox from "../BasicInputs/InputBox.jsx";
-import SelectMenu from "../BasicInputs/SelectMenu.jsx";
-import { SPECIAL } from "../../../constants/constants.js";
-import ModalWrapperTitleSaveDelete from "./ModalWrapperTitleSaveDelete.jsx";
+import InputBox from "../../../../../components/BasicInputs/InputBox.jsx";
+import SelectMenu from "../../../../../components/BasicInputs/SelectMenu.jsx";
+import { SPECIAL } from "../../../../../../constants/constants.js";
+import ModalWrapperTitleSaveDelete from "../../../../../components/Modals/ModalWrapperTitleSaveDelete.jsx";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from '@mui/icons-material/Clear';
-import {useSpace} from "../../../context/Space/useSpace.js";
-import {useSearch} from "../../../tanStackQueries/search/useSearch.jsx";
-import Badge from "../Badges/Badge.jsx";
-import {useGetUsers} from "../../../tanStackQueries/user/useGetUsers.js";
+import {useSpace} from "../../../../../../context/Space/useSpace.js";
+import {useSearch} from "../../../../../../tanStackQueries/search/useSearch.jsx";
+import Badge from "../../../../../components/Badges/Badge.jsx";
+import {useGetUsers} from "../../../../../../tanStackQueries/user/useGetUsers.js";
 
-import { useInfiniteScroll } from "../InfinityScroll/useInfiniteScroll.js";
-import InfiniteScrollTrigger from "../InfinityScroll/InfiniteScrollTrigger.jsx";
-import {DateBox} from "../BasicInputs/DateBox.jsx";
-import {TimeBox} from "../BasicInputs/TimeBox.jsx";
-import {createDate, getDateAndTime} from "../../../utils/dateConverter.js";
-import Checkbox from "../BasicInputs/CheckBox.jsx";
-import RepeatSelector from "../Schedule/RepeatSelector.jsx";
+import { useInfiniteScroll } from "../../../../../components/InfinityScroll/useInfiniteScroll.js";
+import InfiniteScrollTrigger from "../../../../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
+import {DateBox} from "../../../../../components/BasicInputs/DateBox.jsx";
+import {TimeBox} from "../../../../../components/BasicInputs/TimeBox.jsx";
+import {createDate, getDateAndTime} from "../../../../../../utils/dateConverter.js";
+import Checkbox from "../../../../../components/BasicInputs/CheckBox.jsx";
+import RepeatSelector from "../../../../../components/Schedule/RepeatSelector.jsx";
 
 export default function EditEventModal({ handleClose, selected, handleSaveEvent, handleDeleteTag, validation }) {
     const [formData, setFormData] = useState(() => {

@@ -10,7 +10,7 @@ import EventInfo from "../../components/Schedule/Drawers/EventInfo.jsx";
 import InfiniteScrollTrigger from "../../components/InfinityScroll/InfiniteScrollTrigger.jsx";
 import {useInfiniteScroll} from "../../components/InfinityScroll/useInfiniteScroll.js";
 import { PlusOutlined } from "@lineiconshq/free-icons";
-import AddSpaceModal from "../../components/Modals/AddSpaceModal.jsx";
+import AddSpaceModal from "./Space/SpaceModals/AddSpaceModal.jsx";
 import {useLockBodyScroll} from "../../../hooks/useLockBodyScroll.js";
 import {Navigate, useParams} from "react-router-dom";
 import {useAuth} from "../../../context/AuthContext.jsx";
